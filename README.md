@@ -2,6 +2,8 @@
 
 ##Team Members
 
-Name - Gihan Kaushal Weerappullige
-Email - gihan-kaushal.weerappullige@informatik.hs-fulda.de
-GitHub - gihanHsFulda
+| Name | Email | GitHub |
+| :---:         | :---:          | :---:          |
+| Gihan Kaushal Weerappullige         | gihan-kaushal.weerappullige@informatik.hs-fulda.de             | gihanHsFulda  |
+| Seshenya Weerasinghe         | seshenya.weerasinghe@informatik.hs-fulda.de       | Seshenya-Weerasinghe |
+
