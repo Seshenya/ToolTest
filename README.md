@@ -6,4 +6,4 @@
 | :---:         | :---:          | :---:          |
 | Gihan Kaushal Weerappullige         | gihan-kaushal.weerappullige@informatik.hs-fulda.de             | gihanHsFulda  |
 | Seshenya Weerasinghe         | seshenya.weerasinghe@informatik.hs-fulda.de       | Seshenya-Weerasinghe |
-
+| Rohan Kolagada         | rohan.kolagada@informatik.hs-fulda.de       | Rohan-Kolagada |
