@@ -10,6 +10,11 @@ const Developer = React.lazy(
 
 export const aboutRouteConfig = [
     {
+        path: '/',
+        element: <About />,
+        exact: true
+    },
+    {
         path: '/about/',
         element: <About />,
         exact: true
