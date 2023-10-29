@@ -8,3 +8,4 @@
 | Seshenya Weerasinghe         | seshenya.weerasinghe@informatik.hs-fulda.de       | Seshenya-Weerasinghe |
 | Rohan Kolagada         | rohan.kolagada@informatik.hs-fulda.de       | Rohan-Kolagada |
 | Jonas Wagner | jonas.wagner@informatik.hs-fulda.de | choan312 |
+| Dipesh Kewalramani | dipesh.kewalramani@informatik.hs-fulda.de | DipeshK1999 |
