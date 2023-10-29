@@ -10,7 +10,8 @@ export const aboutData: Developer = {
         skills: ["Pie Throwing", "Banana Peeling", "Invisible Balloon Animal Crafting", "Anti-Gravity Acrobatics"],
         contact: {
             mail: "john@laughter.com",
-        }
+        },
+        image: ''
     },
     'Dipesh': {
         name: "Dipesh Kewalramani",
@@ -24,6 +25,7 @@ export const aboutData: Developer = {
         skills: ["Javascript", "Python", "Typescript", "SQL", "React.Js", "Node.Js"],
         contact: {
             mail: "dipesh.kewalramani@informatik.hs-fulda.de",
-        }
-    }
+        },
+        image: '/photos/Dipesh.jpeg'
+    },
 }

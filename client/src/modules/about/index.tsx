@@ -1,19 +1,27 @@
 import { aboutData } from '@gdsdt4/constants/AboutData';
 import type { DeveloperData } from '@gdsdt4/types/About';
+import { Avatar } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
     developer: DeveloperData;
-    member: string
+    member: string;
 };
 
 const TeamMember = (props: Props) => {
     const navigate = useNavigate();
 
     return (
-        <div className="bg-gray-100 rounded-lg p-4 m-4 w-72 transition transform hover:scale-105 hover:shadow-lg cursor-pointer" onClick={() => navigate(`/about/${props.member}`)}>
-            <h2 className="text-2xl font-semibold text-indigo-700 mt-2">{props.developer.name}</h2>
-            <p className="text-gray-600 mt-2">{props.developer.role}</p>
+        <div className="bg-gray-100 rounded-lg p-4 m-4 w-100 transition transform hover:scale-105 hover:shadow-lg cursor-pointer" onClick={() => navigate(`/about/${props.member}`)}>
+            <div className="flex items-center">
+                <div className="w-16 h-16 rounded-full overflow-hidden mr-4">
+                    {props.developer.image ? <Avatar size={64} src={<img src={props.developer.image} alt={`${props.developer.name.charAt(0)}`} className="w-full h-full object-cover filter brightness-85" />} /> : <Avatar>{props.developer.name.charAt(0)}</Avatar>}
+                </div>
+                <div>
+                    <h2 className="text-2xl font-semibold text-indigo-700 mt-2">{props.developer.name}</h2>
+                    <p className="text-gray-600 mt-2">{props.developer.role}</p>
+                </div>
+            </div>
         </div>
     );
 }

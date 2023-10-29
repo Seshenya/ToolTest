@@ -9,5 +9,6 @@ export type DeveloperData = {
     skills: string[],
     contact: {
         mail: string,
-    }
+    },
+    image: string
 }
