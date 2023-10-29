@@ -1,0 +1,37 @@
+import { aboutData } from '@gdsdt4/constants/AboutData';
+import type { DeveloperData } from '@gdsdt4/types/About';
+import { useNavigate } from 'react-router-dom';
+
+type Props = {
+    developer: DeveloperData;
+    member: string
+};
+
+const TeamMember = (props: Props) => {
+    const navigate = useNavigate();
+
+    return (
+        <div className="bg-gray-100 rounded-lg p-4 m-4 w-72 transition transform hover:scale-105 hover:shadow-lg cursor-pointer" onClick={() => navigate(`/about/${props.member}`)}>
+            <h2 className="text-2xl font-semibold text-indigo-700 mt-2">{props.developer.name}</h2>
+            <p className="text-gray-600 mt-2">{props.developer.role}</p>
+        </div>
+    );
+}
+
+const Team = () => {
+
+    return (
+        <div className="min-h-screen flex flex-col items-center p-8">
+            <h1 className="text-4xl font-bold text-indigo-800 mt-8 mb-4">Meet Our Team</h1>
+            <div className="flex flex-wrap justify-center mb-8 ">
+                {Object.keys(aboutData).map((member, index) => (
+                    member !== "John" ? (
+                        <TeamMember key={index} developer={aboutData[member]} member={member} />
+                    ) : null
+                ))}
+            </div>
+        </div>
+    );
+}
+
+export default Team;
