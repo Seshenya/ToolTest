@@ -28,4 +28,17 @@ export const aboutData: Developer = {
         },
         image: '/photos/Dipesh.jpeg'
     },
+    'Seshenya': {
+        name: "Seshenya Weerasinghe",
+        role: "Full Stack Developer",
+        resume: "/resumes/Seshenya.pdf",
+        github: "https://github.com/Seshenya-Weerasinghe",
+        description: `An enthusiastic full-stack developer with experience in scalable product development. I am looking for opportunities to learn from experience to expand my technical skills and knowledge.
+        I love facing challenges as they fascinate me and expose me to cutting-edge technologies. I am a good team player working towards building quality software with robust code.`,
+        skills: ["Javascript", "MongoDB", "MySQL", "React.Js", "Node.Js", "Python", "Angular"],
+        contact: {
+            mail: "seshenya.weerasinghe@informatik.hs-fulda.de",
+        },
+        image: '/photos/Seshenya.JPG'
+    },
 }
