@@ -1,6 +1,18 @@
 import { Developer } from "@gdsdt4/types/About";
 
 export const aboutData: Developer = {
+    'Rohan': {
+        name: "Rohan Kolagada",
+        role: "Android Developer",
+        resume: "/resumes/meres.pdf",
+        github: "https://github.com/Rohan-Kolagada",
+        description: `I can code.`,
+        skills: ["Flutter", "Dart", "Android Studio",],
+        contact: {
+            mail: "rohan.kolagada@informatik.hs-fulda.de",
+        },
+        image: '/photos/147.jpg'
+    },
     'John': {
         name: "John Doe",
         role: "Chief Laughter Officer",
