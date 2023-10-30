@@ -40,4 +40,16 @@ export const aboutData: Developer = {
         },
         image: '/photos/Dipesh.jpeg'
     },
+    'Jonas': {
+        name: "Jonas Wagner",
+        role: "Backend Developer",
+        resume: "/resumes/Jonas.pdf",
+        github: "https://github.com/choan312",
+        description: `👋 Hey, Jonas here. 👨🏻‍💻 I'm a software engineer from Germany near Kassel. I'm currently a working student at GLS IT Services, focusing on Geo & Addresses. Meanwhile I am doing a Master of Science in Global Software Development @ Hochschule Fulda.`,
+        skills: ["Java", "Spring Boot", "REST-API", "SQL", "PostgreSQL", "Python", "Flask", "AWS"],
+        contact: {
+            mail: "jonas.wagner@informatik.hs-fulda.de",
+        },
+        image: '/photos/Jonas.jpeg'
+    },
 }
