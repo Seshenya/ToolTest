@@ -1,6 +1,6 @@
 import { aboutData } from '@gdsdt4/constants/AboutData';
 import type { DeveloperData } from '@gdsdt4/types/About';
-import { Avatar } from 'antd';
+import { Avatar, Divider } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -30,7 +30,10 @@ const Team = () => {
 
     return (
         <div className="min-h-screen flex flex-col items-center p-8">
-            <h1 className="text-4xl font-bold text-indigo-800 mt-8 mb-4">Meet Our Team</h1>
+            <h1 className="text-4xl font-bold text-indigo-800">GDSD Winter 2023</h1>
+            <h1 className="text-3xl font-bold text-indigo-800">Meet Our Team</h1>
+            <h3 className="text-xl font-bold text-indigo-800">(Team 4)</h3>
+            <Divider />
             <div className="flex flex-wrap justify-center mb-8 ">
                 {Object.keys(aboutData).map((member, index) => (
                     member !== "John" ? (
