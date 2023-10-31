@@ -1,6 +1,18 @@
 import { Developer } from "@gdsdt4/types/About";
 
 export const aboutData: Developer = {
+    'Rohan': {
+        name: "Rohan Kolagada",
+        role: "Android Developer",
+        resume: "/resumes/meres.pdf",
+        github: "https://github.com/Rohan-Kolagada",
+        description: `I can code.`,
+        skills: ["Flutter", "Dart", "Android Studio",],
+        contact: {
+            mail: "rohan.kolagada@informatik.hs-fulda.de",
+        },
+        image: '/photos/147.jpg'
+    },
     'John': {
         name: "John Doe",
         role: "Chief Laughter Officer",
@@ -27,6 +39,18 @@ export const aboutData: Developer = {
             mail: "dipesh.kewalramani@informatik.hs-fulda.de",
         },
         image: '/photos/Dipesh.jpeg'
+    },
+    'Jonas': {
+        name: "Jonas Wagner",
+        role: "Backend Developer",
+        resume: "/resumes/Jonas.pdf",
+        github: "https://github.com/choan312",
+        description: `👋 Hey, Jonas here. 👨🏻‍💻 I'm a software engineer from Germany near Kassel. I'm currently a working student at GLS IT Services, focusing on Geo & Addresses. Meanwhile I am doing a Master of Science in Global Software Development @ Hochschule Fulda.`,
+        skills: ["Java", "Spring Boot", "REST-API", "SQL", "PostgreSQL", "Python", "Flask", "AWS"],
+        contact: {
+            mail: "jonas.wagner@informatik.hs-fulda.de",
+        },
+        image: '/photos/Jonas.jpeg'
     },
     'Gihan': {
         name: "Gihan Kaushal",
