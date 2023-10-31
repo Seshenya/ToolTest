@@ -65,4 +65,18 @@ export const aboutData: Developer = {
         },
         image: '/photos/Seshenya.JPG'
     },
+    'Gihan': {
+        name: "Gihan Kaushal",
+        role: "Backend Developer",
+        resume: "/resumes/Gihan.pdf",
+        github: "https://github.com/gihanHsFulda",
+        description: `Hello, I'm Gihan, a software engineering enthusiast currently studying 
+        for my Master's in Global Software Development at the University of Fulda. I'm passionate 
+        about learning and always excited to explore new advancements in the tech world! 😊.`,
+        skills: ["Erlang", "Javascript", "Python", "SQL", "Docker", "Azure", "GCP"],
+        contact: {
+            mail: "gihan-kaushal.weerappullige@informatik.hs-fulda.de",
+        },
+        image: '/photos/Gihan.jpeg'
+    },
 }
