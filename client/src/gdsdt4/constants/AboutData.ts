@@ -1,6 +1,18 @@
 import { Developer } from "@gdsdt4/types/About";
 
 export const aboutData: Developer = {
+    'Rohan': {
+        name: "Rohan Kolagada",
+        role: "Android Developer",
+        resume: "/resumes/meres.pdf",
+        github: "https://github.com/Rohan-Kolagada",
+        description: `I can code.`,
+        skills: ["Flutter", "Dart", "Android Studio",],
+        contact: {
+            mail: "rohan.kolagada@informatik.hs-fulda.de",
+        },
+        image: '/photos/147.jpg'
+    },
     'John': {
         name: "John Doe",
         role: "Chief Laughter Officer",
@@ -27,5 +39,44 @@ export const aboutData: Developer = {
             mail: "dipesh.kewalramani@informatik.hs-fulda.de",
         },
         image: '/photos/Dipesh.jpeg'
+    },
+    'Jonas': {
+        name: "Jonas Wagner",
+        role: "Backend Developer",
+        resume: "/resumes/Jonas.pdf",
+        github: "https://github.com/choan312",
+        description: `👋 Hey, Jonas here. 👨🏻‍💻 I'm a software engineer from Germany near Kassel. I'm currently a working student at GLS IT Services, focusing on Geo & Addresses. Meanwhile I am doing a Master of Science in Global Software Development @ Hochschule Fulda.`,
+        skills: ["Java", "Spring Boot", "REST-API", "SQL", "PostgreSQL", "Python", "Flask", "AWS"],
+        contact: {
+            mail: "jonas.wagner@informatik.hs-fulda.de",
+        },
+        image: '/photos/Jonas.jpeg'
+    },
+    'Seshenya': {
+        name: "Seshenya Weerasinghe",
+        role: "Full Stack Developer",
+        resume: "/resumes/Seshenya.pdf",
+        github: "https://github.com/Seshenya-Weerasinghe",
+        description: `An enthusiastic full-stack developer with experience in scalable product development. I am looking for opportunities to learn from experience to expand my technical skills and knowledge.
+        I love facing challenges as they fascinate me and expose me to cutting-edge technologies. I am a good team player working towards building quality software with robust code.`,
+        skills: ["Javascript", "MongoDB", "MySQL", "React.Js", "Node.Js", "Python", "Angular"],
+        contact: {
+            mail: "seshenya.weerasinghe@informatik.hs-fulda.de",
+        },
+        image: '/photos/Seshenya.JPG'
+    },
+    'Gihan': {
+        name: "Gihan Kaushal",
+        role: "Backend Developer",
+        resume: "/resumes/Gihan.pdf",
+        github: "https://github.com/gihanHsFulda",
+        description: `Hello, I'm Gihan, a software engineering enthusiast currently studying 
+        for my Master's in Global Software Development at the University of Fulda. I'm passionate 
+        about learning and always excited to explore new advancements in the tech world! 😊.`,
+        skills: ["Erlang", "Javascript", "Python", "SQL", "Docker", "Azure", "GCP"],
+        contact: {
+            mail: "gihan-kaushal.weerappullige@informatik.hs-fulda.de",
+        },
+        image: '/photos/Gihan.jpeg'
     },
 }
