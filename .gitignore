@@ -128,3 +128,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# .DS_Store files created by macOS
+.DS_Store
+
+# Vite cache directory
+.vite/
