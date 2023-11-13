@@ -54,7 +54,7 @@ const Developer = () => {
 
             {/* Contact */}
 
-            <div className="mt-8">
+            <div className="mt-8 mb-4">
                 <h2 className="text-2xl font-semibold mt-4 text-gray-700 md:mt-2 mb-8">CONTACT</h2>
                 <a href={`mailto:${contact.mail}`} target="_blank" rel="noopener noreferrer" className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
                     <MailOutlined style={{ fontSize: 12 }} /> Email me!
