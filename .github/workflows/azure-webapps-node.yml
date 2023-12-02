@@ -19,7 +19,7 @@
 
 on:
   push:
-    branches: [ "be-development" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 env:
