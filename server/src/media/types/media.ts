@@ -1,4 +1,4 @@
 import { NonMethods } from '../../util/types/class-to-type'
-import { Media } from '../entities'
+import { DigitalProduct } from '../entities'
 
-export type MediaType = NonMethods<Media>
+export type MediaType = NonMethods<DigitalProduct>
