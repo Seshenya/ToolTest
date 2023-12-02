@@ -8,14 +8,35 @@ export class User extends BaseEntity {
     }
 
     @PrimaryGeneratedColumn()
-    id: number
+    user_id: number
 
     @Column()
-    firstName: string
+    firstname: string
 
     @Column()
-    lastName: string
+    lastname: string
 
     @Column()
-    age: number
+    username: string
+
+    @Column()
+    password: string
+
+    @Column({ unique: true })
+    email: string
+
+    @Column({ type: 'tinyint' })
+    type: number
+
+    @Column({ type: 'tinyint' })
+    active_status: number
+
+    @Column({ type: 'text', nullable: true })
+    skills: string
+
+    @Column({ nullable: true })
+    profile_picture: string
+
+    @Column({ type: 'text', nullable: true })
+    description: string
 }

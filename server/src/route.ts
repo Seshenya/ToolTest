@@ -1,6 +1,11 @@
 import express from 'express'
 import { addUser, fetchUser, fetchUsers } from './user/api'
-import { addMedia, fetchAllMedia, fetchMedia } from './media/api'
+import {
+    addMedia,
+    fetchAllMedia,
+    fetchMedia,
+    fetchSearchedMedia,
+} from './media/api'
 
 const router = express.Router()
 
@@ -10,6 +15,7 @@ router.post('/users', addUser)
 
 router.get('/media/:id', fetchMedia)
 router.get('/media', fetchAllMedia)
+router.post('/media/search', fetchSearchedMedia)
 router.post('/media', addMedia)
 
 router.get('/', function (req, res) {

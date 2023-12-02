@@ -1,3 +1,3 @@
-import { Media } from './media'
+import { DigitalProduct } from './digital-product'
 
-export { Media }
+export { DigitalProduct }

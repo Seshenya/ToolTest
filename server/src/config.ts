@@ -3,7 +3,7 @@ const config = {
     port: 3306,
     username: 'root',
     password: 'rootuser',
-    database: 'media_app',
+    database: 'artsync',
     clientUrl: ['http://localhost:5173/', 'http://localhost:3000'],
 }
 
