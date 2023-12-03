@@ -25,10 +25,10 @@ export class User extends BaseEntity {
     @Column({ unique: true })
     email: string
 
-    @Column({ type: 'tinyint' })
+    @Column({ type: 'tinyint', default: 1 })
     type: number
 
-    @Column({ type: 'tinyint' })
+    @Column({ type: 'tinyint', default: 1 })
     active_status: number
 
     @Column({ type: 'text', nullable: true })
