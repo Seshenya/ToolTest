@@ -86,7 +86,7 @@ function Shop() {
 
   useEffect(() => {
     getMedia()
-  })
+  }, [])
 
   return (
     <DashboardLayout>
