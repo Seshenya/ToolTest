@@ -159,6 +159,7 @@ function Cover() {
                   fullWidth
                   error={!!errors.email}
                   helperText={errors.email?.message}
+                  required
                 />
               </MDBox>
               <MDBox mb={2}>

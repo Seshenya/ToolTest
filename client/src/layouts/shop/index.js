@@ -19,7 +19,7 @@ import Footer from "examples/Footer";
 import { useState } from "react";
 
 import ProductCard from "examples/Cards/ProductCard";
-import { products } from "constants/DummyProducts";
+import { products as dummyProducts } from "constants/DummyProducts";
 
 
 import { useRef, useEffect } from "react";
@@ -34,6 +34,7 @@ import { Pagination } from "@mui/material";
 function Shop() {
 
   const [page, setPage] = useState(2);
+  const [products, setProducts] = useState([]);
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -61,7 +62,7 @@ function Shop() {
         ...filters
       }
     }).then((res) => {
-      console.log(res)
+      setProducts(res.data)
     }).catch((error) => {
       setSb({
         open: true,
@@ -108,21 +109,21 @@ function Shop() {
           </MDBox>
           <MDBox p={3}>
             <Grid container spacing={6}>
-              {products.map((product) => {
+              {products.map((product, index) => {
                 return (
                   <Grid item xs={12} md={6} xl={4}>
                     <ProductCard
-                      image={product.image}
+                      image={dummyProducts[index].image}
                       label={product.title}
                       title={product.title}
                       description={product.description}
                       action={{
                         type: "internal",
-                        route: "/pages/profile/profile-overview",
+                        route: "/shop",
                         color: "primary",
                         label: "Explore",
                       }}
-                      authors={[product.creator]}
+                      authors={[product.ownerId]}
                     />
                   </Grid>
                 )
