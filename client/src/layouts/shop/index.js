@@ -13,26 +13,83 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
 // Data
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
 
-import banner1 from "assets/images/banners/banner1.png";
-import banner2 from "assets/images/banners/banner2.png";
 import { useState } from "react";
 
 import ProductCard from "examples/Cards/ProductCard";
 import { products } from "constants/DummyProducts";
 
 
+import { useRef, useEffect } from "react";
 
+import axios from "axios";
 
+import { baseUrl } from "baseUrl";
+
+import MDSnackbar from "components/MDSnackbar";
+import { Pagination } from "@mui/material";
 
 function Shop() {
 
+  const [page, setPage] = useState(2);
+
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
+  const filtersRef = useRef({
+    categoty: '',
+    mediatype: '',
+    query: ''
+  })
+
+  const [sb, setSb] = useState({
+    open: false,
+    color: "",
+    icon: "",
+    title: "",
+    message: "",
+  });
+
+  const getMedia = (filters = filtersRef.current) => {
+    axios.get(`${baseUrl}/media`, {
+      params: {
+        page: 1,
+        size: 10,
+        ...filters
+      }
+    }).then((res) => {
+      console.log(res)
+    }).catch((error) => {
+      setSb({
+        open: true,
+        color: 'error',
+        icon: 'error',
+        title: error.message,
+        message: ""
+      })
+    })
+  }
+
+  const closeSb = () => {
+    setSb({
+      open: false,
+      color: "",
+      icon: "",
+      title: "",
+      message: "",
+    })
+  }
+
+  useEffect(() => {
+    getMedia()
+  })
+
   return (
     <DashboardLayout>
-      <DashboardNavbar filters />
+      <DashboardNavbar filters reCallApi={getMedia} filtersRef={filtersRef} />
       <MDBox py={3}>
         <Card sx={{ margin: 3 }}>
           <MDBox
@@ -72,9 +129,20 @@ function Shop() {
               })}
             </Grid>
           </MDBox>
+          {/* <Pagination sx={{ padding: 2, width: '100%' }} count={10} page={page} onChange={handleChange} /> */}
         </Card>
       </MDBox>
       <Footer />
+      <MDSnackbar
+        color={sb.color}
+        icon={sb.icon}
+        title={sb.title}
+        content={sb.message}
+        open={sb.open}
+        onClose={closeSb}
+        close={closeSb}
+        bgWhite
+      />
     </DashboardLayout>
   );
 }
