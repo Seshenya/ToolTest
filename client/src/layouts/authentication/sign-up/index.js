@@ -67,7 +67,7 @@ function Cover() {
     }).then((res) => {
       if (res.data) {
         localStorage.setItem('user', JSON.stringify(res.data))
-        navigate('/sell')
+        navigate('/shop')
       }
     }).catch((error) => {
       setSb({

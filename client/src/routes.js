@@ -170,6 +170,7 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+    notProtected: true
   },
   {
     type: "collapse",
