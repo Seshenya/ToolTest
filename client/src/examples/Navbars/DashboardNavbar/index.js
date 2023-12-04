@@ -189,16 +189,16 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
                   </MDBox> */}
                   <MDBox pr={1}>
                     <FormControl sx={{ width: 140 }}>
-                      <InputLabel id="mediatype">Media Type</InputLabel>
+                      <InputLabel id="media_type">Media Type</InputLabel>
                       <Select
                         sx={{ padding: 1.5 }}
                         fullWidth
-                        labelId="mediatype"
-                        id="mediatype"
+                        labelId="media_type"
+                        id="media_type"
                         defaultValue={''}
                         label="File Type"
                         onChange={(e) => {
-                          filtersRef.current.mediatype = e.target.value
+                          filtersRef.current.media_type = e.target.value
                           reCallApi(filtersRef.current)
                         }}
                       >

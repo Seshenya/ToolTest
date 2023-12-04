@@ -62,7 +62,8 @@ function Shop() {
         ...filters
       }
     }).then((res) => {
-      setProducts(res.data)
+      setProducts(res.data.media)
+      console.log(res.data.media)
     }).catch((error) => {
       setSb({
         open: true,
@@ -123,7 +124,7 @@ function Shop() {
                         color: "primary",
                         label: "Explore",
                       }}
-                      authors={[product.ownerId]}
+                      authors={[product.owner_id]}
                     />
                   </Grid>
                 )
