@@ -1,8 +1,3 @@
-import {
-    addMedia,
-    fetchAllMedia,
-    fetchMedia,
-    fetchSearchedMedia,
-} from './media'
+import { addMedia, fetchMedia, fetchSearchedMedia } from './media'
 
-export { fetchMedia, fetchAllMedia, addMedia, fetchSearchedMedia }
+export { fetchMedia, addMedia, fetchSearchedMedia }

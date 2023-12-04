@@ -8,15 +8,10 @@ async function getMedia(product_id: number) {
     return media
 }
 
-async function getAllMedia() {
-    const allMedia = await DigitalProduct.find()
-    return allMedia
-}
-
 async function createMedia(media: MediaType) {
     const newDigitalProduct = new DigitalProduct(media)
     const createdMedia = await newDigitalProduct.save()
     return createdMedia
 }
 
-export { getMedia, getAllMedia, createMedia }
+export { getMedia, createMedia }

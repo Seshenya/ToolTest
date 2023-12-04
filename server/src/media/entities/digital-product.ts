@@ -4,7 +4,10 @@ import {
     Column,
     BaseEntity,
     Index,
+    ManyToOne,
+    JoinColumn,
 } from 'typeorm'
+import { User } from '../../user/entities'
 
 @Entity('product')
 @Index('idx_title_fulltext', ['title', 'tags'], { fulltext: true })
@@ -29,8 +32,13 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'timestamp' })
     date: Date
 
-    @Column({ name: 'owner_id' })
-    ownerId: number
+    @Column()
+    owner_id: number
+
+    // foreign key on owner_id with userInfo.user_id
+    @ManyToOne(() => User)
+    @JoinColumn({ name: 'owner_id', referencedColumnName: 'user_id' })
+    owner: User
 
     @Column({ type: 'decimal', precision: 12, scale: 4, default: 0 })
     price: number
