@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -88,6 +88,12 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("user")
+    navigate('/authentication/sign-up')
+  }
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -106,7 +112,7 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
         <NotificationItem icon={<Icon>person</Icon>} title="My Profile" />
       </Link>
       <NotificationItem icon={<Icon>history</Icon>} title="Order History" />
-      <NotificationItem icon={<Icon>logout</Icon>} title="Logout" />
+      <NotificationItem onClick={logout} icon={<Icon>logout</Icon>} title="Logout" />
     </Menu>
   );
 
