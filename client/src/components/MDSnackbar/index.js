@@ -44,7 +44,7 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
   return (
     <Snackbar
       TransitionComponent={Fade}
-      autoHideDuration={5000}
+      autoHideDuration={2000}
       anchorOrigin={{
         vertical: "bottom",
         horizontal: "right",
@@ -109,7 +109,7 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
           </MDBox>
         </MDBox>
         <Divider sx={{ margin: 0 }} light={dividerColor} />
-        <MDBox
+        {content && <MDBox
           p={1.5}
           sx={{
             fontSize: ({ typography: { size } }) => size.sm,
@@ -125,7 +125,7 @@ function MDSnackbar({ color, icon, title, dateTime, content, close, bgWhite, ...
           }}
         >
           {content}
-        </MDBox>
+        </MDBox>}
       </MDBox>
     </Snackbar>
   );

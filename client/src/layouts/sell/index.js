@@ -17,16 +17,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 
-// Data
-
-// Dashboard components
-
 
 import ProductCard from "examples/Cards/ProductCard";
 
-
 import { products } from "constants/DummyProducts";
-
 
 
 function Sell() {

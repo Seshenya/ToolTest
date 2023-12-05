@@ -16,7 +16,7 @@ import Icon from "@mui/material/Icon";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -33,7 +33,7 @@ import {
   navbarContainer,
   navbarRow,
   navbarIconButton,
-  navbarMobileMenu,
+  navbarMobileMenu
 } from "examples/Navbars/DashboardNavbar/styles";
 
 // Material Dashboard 2 React context
@@ -43,13 +43,17 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import MDTypography from "components/MDTypography";
+import { debounce } from "lodash";
 
-function DashboardNavbar({ absolute, light, isMini, filters }) {
+function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersRef }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
+  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
+  console.log(user)
 
   // TODO: Create a hook to check if the user is logged in or not
   const [isLoggedIn, setIsLoggedIn] = useState(true)
@@ -142,9 +146,14 @@ function DashboardNavbar({ absolute, light, isMini, filters }) {
                         fullWidth
                         labelId="category"
                         id="category"
-                        defaultValue={'Social Media'}
+                        defaultValue={''}
                         label="Category"
+                        onChange={(e) => {
+                          filtersRef.current.categoty = e.target.value
+                          reCallApi(filtersRef.current)
+                        }}
                       >
+                        <MenuItem value={''}>All</MenuItem>
                         <MenuItem value={'Social Media'}>Social Media</MenuItem>
                         <MenuItem value={'Tech'}>Tech</MenuItem>
                         <MenuItem value={'Flowers'}>Flowes</MenuItem>
@@ -179,38 +188,38 @@ function DashboardNavbar({ absolute, light, isMini, filters }) {
                     </FormControl>
                   </MDBox> */}
                   <MDBox pr={1}>
-                    <FormControl sx={{ width: 120 }}>
-                      <InputLabel id="filetype">File Type</InputLabel>
+                    <FormControl sx={{ width: 140 }}>
+                      <InputLabel id="media_type">Media Type</InputLabel>
                       <Select
                         sx={{ padding: 1.5 }}
                         fullWidth
-                        labelId="filetype"
-                        id="filetype"
-                        defaultValue={'Image'}
+                        labelId="media_type"
+                        id="media_type"
+                        defaultValue={''}
                         label="File Type"
+                        onChange={(e) => {
+                          filtersRef.current.media_type = e.target.value
+                          reCallApi(filtersRef.current)
+                        }}
                       >
-                        <MenuItem value={'Image'}>Image</MenuItem>
-                        <MenuItem value={'Video'}>Video</MenuItem>
-                        <MenuItem value={'Document'}>Document</MenuItem>
+                        <MenuItem value={''}>All</MenuItem>
+                        <MenuItem value={'1'}>Image</MenuItem>
+                        <MenuItem value={'2'}>Audio</MenuItem>
+                        <MenuItem value={'3'}>Video</MenuItem>
                       </Select>
                     </FormControl>
                   </MDBox>
                   <MDBox pr={1}>
-                    <MDInput label="Search..." />
+                    <MDInput
+                      onChange={debounce((e) => {
+                        filtersRef.current.query = e.target.value
+                        reCallApi(filtersRef.current)
+                      }, 400)} label="Search..." />
                   </MDBox>
                 </> : null}
 
               <MDBox color={light ? "white" : "inherit"}>
                 <IconButton
-                  sx={navbarIconButton}
-                  size="small"
-                  disableRipple
-                  onClick={handleOpenMenu}
-                >
-                  <Icon sx={iconsStyle} >account_circle</Icon>
-                  &nbsp;Hello, John
-                </IconButton>
-                {/* <IconButton
                   size="small"
                   disableRipple
                   color="inherit"
@@ -220,7 +229,17 @@ function DashboardNavbar({ absolute, light, isMini, filters }) {
                   <Icon sx={iconsStyle} fontSize="medium">
                     {miniSidenav ? "menu_open" : "menu"}
                   </Icon>
-                </IconButton> */}
+                </IconButton>
+                <IconButton
+                  sx={navbarIconButton}
+                  size="small"
+                  disableRipple
+                  onClick={handleOpenMenu}
+                >
+                  <Icon sx={iconsStyle} >account_circle</Icon>
+                  <MDTypography>&nbsp;Hello, {`${user?.firstname}`}</MDTypography>
+                </IconButton>
+
                 {/* <IconButton
                   size="small"
                   disableRipple
