@@ -29,12 +29,21 @@ import axios from "axios";
 import { baseUrl } from "baseUrl";
 
 import MDSnackbar from "components/MDSnackbar";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
+
+import product1 from "assets/images/trending/product1.png";
+import product2 from "assets/images/trending/product2.png";
+import product3 from "assets/images/trending/product3.png";
+import product4 from "assets/images/trending/product4.png";
+import product5 from "assets/images/trending/product5.png";
+import product6 from "assets/images/trending/product6.png";
 
 function Shop() {
 
   const [page, setPage] = useState(2);
   const [products, setProducts] = useState([]);
+  const dummyImages = [product1, product2, product3, product4, product5, product6]
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -55,6 +64,7 @@ function Shop() {
   });
 
   const getMedia = (filters = filtersRef.current) => {
+    setLoading(true)
     axios.get(`${baseUrl}/media`, {
       params: {
         page: 1,
@@ -62,9 +72,11 @@ function Shop() {
         ...filters
       }
     }).then((res) => {
+      setLoading(false)
       setProducts(res.data.media)
       console.log(res.data.media)
     }).catch((error) => {
+      setLoading(false)
       setSb({
         open: true,
         color: 'error',
@@ -109,27 +121,29 @@ function Shop() {
             </MDTypography>
           </MDBox>
           <MDBox p={3}>
-            <Grid container spacing={6}>
-              {products.map((product, index) => {
-                return (
-                  <Grid item xs={12} md={6} xl={4}>
-                    <ProductCard
-                      image={dummyProducts[index].image}
-                      label={product.title}
-                      title={product.title}
-                      description={product.description}
-                      action={{
-                        type: "internal",
-                        route: "/shop",
-                        color: "primary",
-                        label: "Explore",
-                      }}
-                      authors={[product.owner_id]}
-                    />
-                  </Grid>
-                )
-              })}
-            </Grid>
+            {loading ? <MDBox style={{ textAlign: 'center' }}><CircularProgress /></MDBox> :
+              <Grid container spacing={6}>
+                {products.map((product, index) => {
+                  return (
+                    <Grid item xs={12} md={6} xl={4}>
+                      <ProductCard
+                        image={dummyImages[product.product_id - 1]}
+                        label={product.title}
+                        title={product.title}
+                        description={product.description}
+                        action={{
+                          type: "internal",
+                          route: "/shop",
+                          color: "primary",
+                          label: "Explore",
+                        }}
+                        authors={[product.owner_id]}
+                      />
+                    </Grid>
+                  )
+                })}
+              </Grid>
+            }
           </MDBox>
           {/* <Pagination sx={{ padding: 2, width: '100%' }} count={10} page={page} onChange={handleChange} /> */}
         </Card>
