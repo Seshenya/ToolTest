@@ -11,8 +11,13 @@ async function fetchUsers(req: any, res: any) {
 }
 
 async function addUser(req: any, res: any) {
-    const user = await createUser(req.body)
-    res.send(user)
+    createUser(req.body)
+        .then((user) => {
+            res.send(user)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
 }
 
 export { fetchUser, fetchUsers, addUser }

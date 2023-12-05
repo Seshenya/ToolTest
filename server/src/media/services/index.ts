@@ -1,4 +1,4 @@
-import { createMedia, getAllMedia, getMedia } from './media'
+import { createMedia, getMedia } from './media'
 import { searchMedia } from './search-media'
 
-export { getMedia, getAllMedia, createMedia, searchMedia }
+export { getMedia, createMedia, searchMedia }
