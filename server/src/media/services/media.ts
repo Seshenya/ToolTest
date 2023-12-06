@@ -2,10 +2,16 @@ import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
 
 async function getMedia(product_id: number) {
-    const media = await DigitalProduct.findOneBy({
-        product_id,
-    })
-    return media
+    const media = await DigitalProduct.findOne({
+        where: {product_id},
+        relations: ['owner'],
+    });
+
+    if(!media) {
+        throw new Error('Media not found');
+    }
+
+    return media;
 }
 
 async function createMedia(media: MediaType) {
