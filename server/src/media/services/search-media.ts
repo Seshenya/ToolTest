@@ -1,4 +1,3 @@
-import { User } from '../../user/entities'
 import { DigitalProduct } from '../entities'
 
 async function searchMedia(
@@ -7,8 +6,9 @@ async function searchMedia(
     query: string
 ) {
     try {
-        let baseQuery =
-            DigitalProduct.createQueryBuilder('product').leftJoinAndSelect('product.owner', 'owner');
+        let baseQuery = DigitalProduct.createQueryBuilder(
+            'product'
+        ).leftJoinAndSelect('product.owner', 'owner')
 
         if (category) {
             baseQuery = baseQuery.andWhere('product.category = :category', {
