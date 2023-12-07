@@ -13,7 +13,7 @@ export const AppDataSource = new DataSource({
     username,
     password,
     database,
-    synchronize: true,
+    synchronize: false, // will not create/update the db schema to match the defined entities
     logging: false,
     entities: [User, DigitalProduct],
     subscribers: [],

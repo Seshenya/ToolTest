@@ -2,9 +2,15 @@ import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
 
 async function getMedia(product_id: number) {
-    const media = await DigitalProduct.findOneBy({
-        product_id,
+    const media = await DigitalProduct.findOne({
+        where: { product_id },
+        relations: ['owner'],
     })
+
+    if (!media) {
+        throw new Error('Media not found')
+    }
+
     return media
 }
 
@@ -15,18 +21,18 @@ async function createMedia(media: MediaType) {
 }
 
 async function alterMedia(media: MediaType) {
-    const { product_id, status } = media;
+    const { product_id, status } = media
 
     try {
-        const existingMedia = await DigitalProduct.findOneBy({ product_id });
+        const existingMedia = await DigitalProduct.findOneBy({ product_id })
 
-        if(!existingMedia) {
+        if (!existingMedia) {
             throw 'Media Not Found'
         }
 
         // Update only the 'status' column in the existing media
-        await DigitalProduct.update(existingMedia.product_id, { status });
-        const updatedMedia = await DigitalProduct.findOneBy({ product_id });
+        await DigitalProduct.update(existingMedia.product_id, { status })
+        const updatedMedia = await DigitalProduct.findOneBy({ product_id })
         return updatedMedia
     } catch (error) {
         // eslint-disable-next-line no-console
@@ -35,4 +41,4 @@ async function alterMedia(media: MediaType) {
     }
 }
 
-export { getMedia, createMedia, alterMedia}
+export { getMedia, createMedia, alterMedia }
