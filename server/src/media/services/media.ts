@@ -3,15 +3,15 @@ import { MediaType } from '../types'
 
 async function getMedia(product_id: number) {
     const media = await DigitalProduct.findOne({
-        where: {product_id},
+        where: { product_id },
         relations: ['owner'],
-    });
+    })
 
-    if(!media) {
-        throw new Error('Media not found');
+    if (!media) {
+        throw new Error('Media not found')
     }
 
-    return media;
+    return media
 }
 
 async function createMedia(media: MediaType) {
