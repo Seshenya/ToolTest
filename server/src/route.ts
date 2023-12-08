@@ -7,7 +7,7 @@ const router = express.Router()
 
 router.get('/users/:id', hasToken, fetchUser)
 router.get('/users', hasToken, fetchUsers)
-router.get('/login', loginUser)
+router.post('/login', loginUser)
 router.post('/users', addUser)
 
 router.get('/media/:id', hasToken, fetchMedia)
