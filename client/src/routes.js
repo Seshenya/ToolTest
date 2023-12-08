@@ -162,6 +162,7 @@ const routes = [
     icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-in",
     component: <SignIn />,
+    notProtected: true
   },
   {
     type: "title",

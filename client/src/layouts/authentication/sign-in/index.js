@@ -1,36 +1,82 @@
 
-import { useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Switch from "@mui/material/Switch";
-import Grid from "@mui/material/Grid";
-import MuiLink from "@mui/material/Link";
-
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import GoogleIcon from "@mui/icons-material/Google";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
+
+import { TextField } from "@mui/material";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 
 // Images
 import bgImage from "assets/images/hs-fulda.jpeg";
+import axios from "api/axios";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import useAuth from "hooks/useAuth";
 
 function Basic() {
-  const [rememberMe, setRememberMe] = useState(false);
 
-  const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const [sb, setSb] = useState({
+    open: false,
+    color: "",
+    icon: "",
+    title: "",
+    message: "",
+  });
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm();
+
+  const { updateAuth } = useAuth();
+
+  const navigate = useNavigate();
+
+  const onSubmit = (data) => {
+    axios
+      .post(`login`,
+        {
+          ...data
+        }
+      )
+      .then((res) => {
+        console.log(res.data)
+        updateAuth({ ...res.data })
+        navigate('/shop')
+      }).catch((error) => {
+        setSb({
+          open: true,
+          color: 'error',
+          icon: 'error',
+          title: error?.response?.data?.message || error?.message,
+          message: ""
+        })
+      })
+  }
+
+  const closeSb = () => {
+    setSb({
+      open: false,
+      color: "",
+      icon: "",
+      title: "",
+      message: "",
+    })
+  }
 
   return (
     <BasicLayout image={bgImage}>
@@ -54,36 +100,79 @@ function Basic() {
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
-            <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
-            </MDBox>
-            <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="primary" fullWidth>
-                sign in
-              </MDButton>
-            </MDBox>
-            <MDBox mt={3} mb={1} textAlign="center">
-              <MDTypography variant="button" color="text">
-                Don&apos;t have an account?{" "}
-                <MDTypography
-                  component={Link}
-                  to="/authentication/sign-up"
-                  variant="button"
-                  color="primary"
-                  fontWeight="medium"
-                  textGradient
-                >
-                  Sign up
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <MDBox >
+              <MDBox mb={2}>
+                <TextField
+                  {...register("email", {
+                    required: 'Email is Required', pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@(?:[a-zA-Z0-9-]+\.)?hs-fulda\.de$/,
+                      message: 'Invalid email format',
+                    },
+                  })}
+                  type="email"
+                  name="email"
+                  label="Email"
+                  variant="standard"
+                  fullWidth
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                  required
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <TextField
+                  {...register("password", {
+                    required: 'Password is Required',
+                    minLength: {
+                      value: 8,
+                      message: "Password must have at least 8 characters"
+                    }
+                  })}
+                  type="password"
+                  name="password"
+                  label="Password"
+                  variant="standard"
+                  fullWidth
+                  required
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
+              </MDBox>
+              <MDBox mt={4} mb={1}>
+                <MDButton variant="gradient" color="primary" type="submit" fullWidth>
+                  sign in
+                </MDButton>
+              </MDBox>
+              <MDBox mt={3} mb={1} textAlign="center">
+                <MDTypography variant="button" color="text">
+                  Don&apos;t have an account?{" "}
+                  <MDTypography
+                    component={Link}
+                    to="/authentication/sign-up"
+                    variant="button"
+                    color="primary"
+                    fontWeight="medium"
+                    textGradient
+                  >
+                    Sign up
+                  </MDTypography>
                 </MDTypography>
-              </MDTypography>
+              </MDBox>
             </MDBox>
-          </MDBox>
+          </form>
         </MDBox>
       </Card>
+      <MDSnackbar
+        color={sb.color}
+        icon={sb.icon}
+        title={sb.title}
+        content={sb.message}
+        open={sb.open}
+        onClose={closeSb}
+        close={closeSb}
+        bgWhite
+      />
     </BasicLayout>
   );
 }

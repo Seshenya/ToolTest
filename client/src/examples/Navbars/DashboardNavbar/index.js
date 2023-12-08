@@ -92,7 +92,7 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
 
   const logout = () => {
     localStorage.removeItem("user")
-    navigate('/authentication/sign-up')
+    navigate('/authentication/sign-in')
   }
 
   // Render the notifications menu

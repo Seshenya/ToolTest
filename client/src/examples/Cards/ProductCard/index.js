@@ -33,24 +33,24 @@ function ProductCard({ image, label, title, description, action, authors, delete
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [discountOpen, setDiscountOpen] = useState(false)
 
-  const renderAuthors = authors.map(({ image: media, name }) => (
-    <Tooltip key={name} title={name} placement="bottom">
-      <MDAvatar
-        src={media}
-        alt={name}
-        size="xs"
-        sx={({ borders: { borderWidth }, palette: { white } }) => ({
-          border: `${borderWidth[2]} solid ${white.main}`,
-          cursor: "pointer",
-          position: "relative",
-          ml: -1.25,
-          "&:hover, &:focus": {
-            zIndex: "10",
-          },
-        })}
-      />
-    </Tooltip>
-  ));
+  // const renderAuthors = authors.map(({ image: media, name }) => (
+  //   <Tooltip key={name} title={name} placement="bottom">
+  //     <MDAvatar
+  //       src={media}
+  //       alt={name}
+  //       size="xs"
+  //       sx={({ borders: { borderWidth }, palette: { white } }) => ({
+  //         border: `${borderWidth[2]} solid ${white.main}`,
+  //         cursor: "pointer",
+  //         position: "relative",
+  //         ml: -1.25,
+  //         "&:hover, &:focus": {
+  //           zIndex: "10",
+  //         },
+  //       })}
+  //     />
+  //   </Tooltip>
+  // ));
 
   return (
     <Card
@@ -137,7 +137,7 @@ function ProductCard({ image, label, title, description, action, authors, delete
                 {action.label}
               </MDButton>
             )) : null}
-          <MDBox display="flex">{renderAuthors}</MDBox>
+          {/* <MDBox display="flex">{renderAuthors}</MDBox> */}
           <MDBox display="flex" justifyContent="space-evenly" mr={3}>
             {
               editBtn ?
