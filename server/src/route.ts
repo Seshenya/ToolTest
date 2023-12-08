@@ -1,11 +1,6 @@
 import express from 'express'
 import { addUser, fetchUser, fetchUsers, loginUser } from './user/api'
-import {
-    addMedia,
-    updateMedia,
-    fetchMedia,
-    fetchSearchedMedia,
-} from './media/api'
+import { addMedia, updateMedia, fetchMedia, fetchSearchedMedia } from './media/api'
 import hasToken from './util/has-token'
 
 const router = express.Router()
