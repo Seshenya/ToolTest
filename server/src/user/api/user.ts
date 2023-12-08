@@ -38,7 +38,9 @@ async function loginUser(req: any, res: any) {
                             }
                         )
 
-                        res.status(200).send({ token })
+                        delete user['password']
+
+                        res.status(200).send({ token, ...user })
                     } else {
                         res.status(401).send({ reason: 'Invalid credentials' })
                     }
