@@ -21,7 +21,7 @@ async function createMedia(media: MediaType) {
 }
 
 async function alterMedia(media: MediaType) {
-    const { product_id, status } = media
+    const { product_id, price, status, title, description, tags, category } = media
 
     try {
         const existingMedia = await DigitalProduct.findOneBy({ product_id })
@@ -30,8 +30,20 @@ async function alterMedia(media: MediaType) {
             throw 'Media Not Found'
         }
 
-        // Update only the 'status' column in the existing media
-        await DigitalProduct.update(existingMedia.product_id, { status })
+        // Update the DigitalProduct entity
+        await DigitalProduct.createQueryBuilder()
+            .update(DigitalProduct)
+            .set({
+                ...(status !== undefined && { status: status}),
+                ...(price !== undefined && { price: price}),
+                ...(title !== undefined && { title: title}),
+                ...(description !== undefined && { description: description}),
+                ...(tags !== undefined && { tags: tags}),
+                ...(category !== undefined && { category: category}),
+            })
+            .where("product_id = :product_id", { product_id: product_id })
+            .execute();
+
         const updatedMedia = await DigitalProduct.findOneBy({ product_id })
         return updatedMedia
     } catch (error) {
