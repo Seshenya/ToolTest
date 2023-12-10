@@ -21,7 +21,7 @@ export default function ProductsTableData({ setUpdateStatusOpen }) {
   useEffect(() => {
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoic2VzaGVueWFAaW5mb3JtYXRpay5ocy1mdWxkYS5kZSIsImlhdCI6MTcwMjIzMDQ3NSwiZXhwIjoxNzAyMjM0MDc1fQ.5vAIsf8X6KSgZpwbIQAsxP4QKz6LZn7tD1Frlpc2-4M";
   
-    axios.get(`${baseUrl}/media`, {
+    axios.get(`${baseUrl}/media/:id`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
