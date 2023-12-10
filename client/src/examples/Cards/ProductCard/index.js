@@ -172,7 +172,7 @@ function ProductCard({
                             </MDButton>
                         )
                     ) : null}
-                    <MDBox display="flex">{renderAuthors}</MDBox>
+                    {/* <MDBox display="flex">{renderAuthors}</MDBox> */}
                     <MDBox display="flex" justifyContent="space-evenly" mr={3}>
                         {editBtn ? (
                             <MDBox display="flex" mr={3}>
