@@ -4,15 +4,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios"; // Import Axios
 
+
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDBadge from "components/MDBadge";
 
 import { baseUrl } from "baseUrl";
-
 import Icon from '@mui/material/Icon';
-
 // Images
 import { statusColors } from "constants/DummyProducts";
 
@@ -22,7 +21,7 @@ export default function ProductsTableData({ setUpdateStatusOpen }) {
   useEffect(() => {
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoic2VzaGVueWFAaW5mb3JtYXRpay5ocy1mdWxkYS5kZSIsImlhdCI6MTcwMjIzMDQ3NSwiZXhwIjoxNzAyMjM0MDc1fQ.5vAIsf8X6KSgZpwbIQAsxP4QKz6LZn7tD1Frlpc2-4M";
   
-    axios.get("https://gdsdt4-server.northeurope.cloudapp.azure.com/media/", {
+    axios.get(`${baseUrl}/media`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
