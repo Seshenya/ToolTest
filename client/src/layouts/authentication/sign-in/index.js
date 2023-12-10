@@ -54,8 +54,7 @@ function Basic() {
         }
       )
       .then((res) => {
-        console.log(res.data)
-        updateAuth({ ...res.data })
+        updateAuth({ ...res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken })
         navigate('/shop')
       }).catch((error) => {
         setSb({

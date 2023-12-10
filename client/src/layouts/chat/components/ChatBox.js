@@ -73,29 +73,23 @@ const StyledTextField = styled(TextField)({
     flex: '1',
 });
 
-const ChatBox = ({ socket }) => {
+const ChatBox = ({ socket, receiver, messages, setMessages }) => {
     const { auth } = useAuth();
 
-    const [user, setUser] = useState({
-        name: 'John Doe',
-        avatar: 'https://placekitten.com/40/40',
-    });
-
-    const [messages, setMessages] = useState([]);
 
     const [newMessage, setNewMessage] = useState('');
 
     const handleSendMessage = () => {
         if (newMessage.trim() !== '') {
             setNewMessage('');
-            socket.emit('chat message', newMessage);
+            socket.emit('message', { targetUserId: receiver.id, message: newMessage });
         }
     };
     useEffect(() => {
         // Listen for incoming chat messages
-        socket.on('chat message', (res) => {
+        socket.on('message', (res) => {
             console.log(res, auth)
-            setMessages((prevMessages) => [...prevMessages, { text: res.message, isSender: res.userId == auth.user_id }]);
+            setMessages((prevMessages) => [...prevMessages, { text: res.message, isSender: res.user.id == auth.user_id }]);
         });
 
         // Clean up socket connection when the component unmounts
@@ -109,9 +103,9 @@ const ChatBox = ({ socket }) => {
     return (
         <ChatBoxContainer elevation={3}>
             <HeaderContainer>
-                <AvatarImage src={user.avatar} alt="User Avatar" />
+                <Avatar>{receiver?.name?.charAt(0)}</Avatar>
                 <UserInfoContainer>
-                    <Typography variant="h6">{user.name}</Typography>
+                    <Typography variant="h6">{receiver.name}</Typography>
                 </UserInfoContainer>
             </HeaderContainer>
             <MessagesContainer>

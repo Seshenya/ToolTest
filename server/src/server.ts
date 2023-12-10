@@ -31,19 +31,38 @@ const io = new Server(server, {
         optionsSuccessStatus: 204,
     },
 });
+
+interface User {
+    id: string;
+    username: string;
+}
+
+const onlineUsers = new Map<string, User>();
+
 io.on('connection', (socket) => {
     console.log('User connected');
-    const { userId } = socket.handshake.query;
+    const user = JSON.parse(socket.handshake.query.user as string) as User
+    console.log(user)
+    if (user && user.id) {
+        onlineUsers.set(user.id, user);
+        io.emit('onlineUsers', Array.from(onlineUsers.values()));
 
-    // Listen for chat messages
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', { userId, message: msg }); // Broadcast the message to all connected clients
-    });
+        socket.join(user.id!);
 
-    // Listen for disconnection
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-    });
+        socket.on('message', ({ targetUserId, message }) => {
+            // Send the message to the target user only
+            io.to(targetUserId).emit('message', { user, message });
+            io.to(user.id).emit('message', { user, message });
+        });
+
+        // Listen for disconnection
+        socket.on('disconnect', () => {
+            console.log('User disconnected');
+            onlineUsers.delete(user.id);
+            io.emit('onlineUsers', Array.from(onlineUsers));
+        });
+    }
 });
+
 // eslint-disable-next-line no-console
 console.log('Running a API server at http://localhost:4000')
