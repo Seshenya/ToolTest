@@ -8,10 +8,6 @@ export const AuthProvider = ({ children }) => {
     const updateAuth = (data) => {
         setAuth(data)
 
-        if (data['token']) {
-            delete data['token']
-        }
-
         localStorage.setItem('user', JSON.stringify(data))
     }
 

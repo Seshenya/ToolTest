@@ -45,6 +45,8 @@ import {
 } from "context";
 import MDTypography from "components/MDTypography";
 import { debounce } from "lodash";
+import { axiosPrivate } from "api/axios";
+import useAuth from "hooks/useAuth";
 
 function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersRef }) {
   const [navbarType, setNavbarType] = useState();
@@ -52,11 +54,8 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
-  const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
-  console.log(user)
+  const { auth, updateAuth } = useAuth()
 
-  // TODO: Create a hook to check if the user is logged in or not
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
 
   useEffect(() => {
     // Setting the navbar type
@@ -91,8 +90,13 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
   const navigate = useNavigate();
 
   const logout = () => {
-    localStorage.removeItem("user")
-    navigate('/authentication/sign-in')
+    axiosPrivate.delete(`/logout`, {
+      data: { token: auth.refreshToken }
+    }).then((res) => {
+      updateAuth({})
+      localStorage.removeItem("user")
+      navigate('/authentication/sign-in')
+    })
   }
 
   // Render the notifications menu
@@ -139,7 +143,7 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
         </MDBox>
-        {isMini ? null : isLoggedIn ?
+        {isMini ? null : auth?.user_id ?
           (
             <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
               {filters ?
@@ -243,7 +247,7 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
                   onClick={handleOpenMenu}
                 >
                   <Icon sx={iconsStyle} >account_circle</Icon>
-                  <MDTypography>&nbsp;Hello, {`${user?.firstname}`}</MDTypography>
+                  <MDTypography>&nbsp;Hello, {`${auth?.firstname}`}</MDTypography>
                 </IconButton>
 
                 {/* <IconButton
