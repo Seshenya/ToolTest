@@ -14,7 +14,7 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDButton from "components/MDButton";
 
-function ProfilesList({ title, profiles, shadow }) {
+function ChatList({ title, profiles, shadow }) {
   const renderProfiles = profiles.map(({ image, name, description, action }) => (
     <MDBox key={name} component="li" display="flex" alignItems="center" py={1} mb={1}>
       <MDBox mr={2}>
@@ -28,7 +28,7 @@ function ProfilesList({ title, profiles, shadow }) {
           {description}
         </MDTypography>
       </MDBox>
-      <MDBox ml="auto">
+      {/* <MDBox ml="auto">
         {action.type === "internal" ? (
           <MDButton component={Link} to={action.route} variant="text" color="info">
             {action.label}
@@ -45,7 +45,7 @@ function ProfilesList({ title, profiles, shadow }) {
             {action.label}
           </MDButton>
         )}
-      </MDBox>
+      </MDBox> */}
     </MDBox>
   ));
 
@@ -65,16 +65,16 @@ function ProfilesList({ title, profiles, shadow }) {
   );
 }
 
-// Setting default props for the ProfilesList
-ProfilesList.defaultProps = {
+// Setting default props for the ChatList
+ChatList.defaultProps = {
   shadow: true,
 };
 
-// Typechecking props for the ProfilesList
-ProfilesList.propTypes = {
+// Typechecking props for the ChatList
+ChatList.propTypes = {
   title: PropTypes.string.isRequired,
   profiles: PropTypes.arrayOf(PropTypes.object).isRequired,
   shadow: PropTypes.bool,
 };
 
-export default ProfilesList;
+export default ChatList;

@@ -41,6 +41,7 @@ import Competitions from "layouts/competitions";
 import MyCompetitions from "layouts/competitions/myCompetitions";
 import Collaborations from "layouts/collaborations";
 import MyCollaborations from "layouts/collaborations/myCollaborations";
+import Chat from "layouts/chat";
 
 const routes = [
   {
@@ -172,6 +173,14 @@ const routes = [
     route: "/authentication/sign-up",
     component: <SignUp />,
     notProtected: true
+  },
+  {
+    type: "collapse",
+    name: "Chat",
+    key: "chat",
+    icon: <Icon fontSize="small">chat</Icon>,
+    route: "/chat",
+    component: <Chat />,
   },
   {
     type: "collapse",
