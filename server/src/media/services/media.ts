@@ -44,7 +44,12 @@ async function getMedia(product_id: number) {
     };
 
     const storageAccountName = "artsync";
-    const storageAccountKey = "2cgJp+r7A4BpXJhdJXijS6HbG0+pQy0eq0p9BNUjLmErzbo521XHftObwsP8yHiw1Ob99RA2M3IA+AStv1JGoQ==";
+    const storageAccountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
+
+    if(!storageAccountKey) {
+        throw new Error('Azure Storage account key is not defined');
+    }
+
     const sharedKeyCredential = new StorageSharedKeyCredential(storageAccountName, storageAccountKey);
 
     const sasToken = generateBlobSASQueryParameters({
