@@ -1,4 +1,5 @@
 import { BlobSASPermissions, BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters } from '@azure/storage-blob'
+import { User } from '../../user/entities'
 import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
 import { promises as fsPromises } from 'fs';
@@ -107,7 +108,11 @@ async function createMedia(media: MediaData) {
     return createdMedia
 }
 
-async function alterMedia(product_id: number, media: MediaType) {
+async function alterMedia(
+    product_id: number,
+    user_id: number,
+    media: MediaType
+) {
     const { price, status, title, description, tags, category } = media
 
     try {
@@ -117,17 +122,36 @@ async function alterMedia(product_id: number, media: MediaType) {
             throw 'Media Not Found'
         }
 
+        // Build the update object by excluding undefined values
+        const updateObject: Record<string, any> = {}
+        if (status !== undefined) {
+            const user = await User.findOneBy({ user_id })
+            if (user?.type !== 2) {
+                throw 'Unauthorized'
+            }
+
+            updateObject.status = status
+        }
+        if (price !== undefined) {
+            updateObject.price = price
+        }
+        if (title !== undefined) {
+            updateObject.title = title
+        }
+        if (description !== undefined) {
+            updateObject.description = description
+        }
+        if (tags !== undefined) {
+            updateObject.tags = tags
+        }
+        if (category !== undefined) {
+            updateObject.category = category
+        }
+
         // Update the DigitalProduct entity
         await DigitalProduct.createQueryBuilder()
             .update(DigitalProduct)
-            .set({
-                ...(status !== undefined && { status: status }),
-                ...(price !== undefined && { price: price }),
-                ...(title !== undefined && { title: title }),
-                ...(description !== undefined && { description: description }),
-                ...(tags !== undefined && { tags: tags }),
-                ...(category !== undefined && { category: category }),
-            })
+            .set(updateObject)
             .where('product_id = :product_id', { product_id: product_id })
             .execute()
 
