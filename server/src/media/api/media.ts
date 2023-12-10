@@ -1,4 +1,4 @@
-import { getMedia, createMedia, searchMedia } from '../services'
+import { getMedia, createMedia, alterMedia, searchMedia } from '../services'
 
 async function fetchMedia(req: any, res: any) {
     const media = await getMedia(req.id)
@@ -8,6 +8,16 @@ async function fetchMedia(req: any, res: any) {
 async function addMedia(req: any, res: any) {
     const media = await createMedia(req.body)
     res.send(media)
+}
+
+async function updateMedia(req: any, res: any) {
+    alterMedia(req.params.id, req.body)
+        .then((media) => {
+            res.send(media)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
 }
 
 async function fetchSearchedMedia(req: any, res: any) {
@@ -21,4 +31,4 @@ async function fetchSearchedMedia(req: any, res: any) {
         })
 }
 
-export { fetchMedia, addMedia, fetchSearchedMedia }
+export { fetchMedia, addMedia, updateMedia, fetchSearchedMedia }
