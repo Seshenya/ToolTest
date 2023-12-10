@@ -1,49 +1,46 @@
-
 // @mui material components
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
+import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography';
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
+import Footer from 'examples/Footer';
 
 // Data
 
 // Dashboard components
 
-import { useState } from "react";
+import { useState } from 'react';
 
-import ProductCard from "examples/Cards/ProductCard";
-import { products as dummyProducts } from "constants/DummyProducts";
+import ProductCard from 'examples/Cards/ProductCard';
+import { products as dummyProducts } from 'constants/DummyProducts';
 
+import { useRef, useEffect } from 'react';
 
-import { useRef, useEffect } from "react";
+import axios from 'axios';
 
-import axios from "axios";
+import { baseUrl } from 'baseUrl';
 
-import { baseUrl } from "baseUrl";
+import MDSnackbar from 'components/MDSnackbar';
+import { CircularProgress, Pagination } from '@mui/material';
 
-import MDSnackbar from "components/MDSnackbar";
-import { CircularProgress, Pagination } from "@mui/material";
-
-import product1 from "assets/images/trending/product1.png";
-import product2 from "assets/images/trending/product2.png";
-import product3 from "assets/images/trending/product3.png";
-import product4 from "assets/images/trending/product4.png";
-import product5 from "assets/images/trending/product5.png";
-import product6 from "assets/images/trending/product6.png";
+import product1 from 'assets/images/trending/product1.png';
+import product2 from 'assets/images/trending/product2.png';
+import product3 from 'assets/images/trending/product3.png';
+import product4 from 'assets/images/trending/product4.png';
+import product5 from 'assets/images/trending/product5.png';
+import product6 from 'assets/images/trending/product6.png';
 
 function Shop() {
-
   const [page, setPage] = useState(2);
   const [products, setProducts] = useState([]);
-  const dummyImages = [product1, product2, product3, product4, product5, product6]
-  const [loading, setLoading] = useState(false)
+  const dummyImages = [product1, product2, product3, product4, product5, product6];
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -52,54 +49,57 @@ function Shop() {
   const filtersRef = useRef({
     categoty: '',
     mediatype: '',
-    query: ''
-  })
+    query: '',
+  });
 
   const [sb, setSb] = useState({
     open: false,
-    color: "",
-    icon: "",
-    title: "",
-    message: "",
+    color: '',
+    icon: '',
+    title: '',
+    message: '',
   });
 
   const getMedia = (filters = filtersRef.current) => {
-    setLoading(true)
-    axios.get(`${baseUrl}/media`, {
-      params: {
-        page: 1,
-        size: 10,
-        ...filters
-      }
-    }).then((res) => {
-      setLoading(false)
-      setProducts(res.data.media)
-      console.log(res.data.media)
-    }).catch((error) => {
-      setLoading(false)
-      setSb({
-        open: true,
-        color: 'error',
-        icon: 'error',
-        title: error.message,
-        message: ""
+    setLoading(true);
+    axios
+      .get(`${baseUrl}/media`, {
+        params: {
+          page: 1,
+          size: 10,
+          ...filters,
+        },
       })
-    })
-  }
+      .then(res => {
+        setLoading(false);
+        setProducts(res.data.media);
+        console.log(res.data.media);
+      })
+      .catch(error => {
+        setLoading(false);
+        setSb({
+          open: true,
+          color: 'error',
+          icon: 'error',
+          title: error.message,
+          message: '',
+        });
+      });
+  };
 
   const closeSb = () => {
     setSb({
       open: false,
-      color: "",
-      icon: "",
-      title: "",
-      message: "",
-    })
-  }
+      color: '',
+      icon: '',
+      title: '',
+      message: '',
+    });
+  };
 
   useEffect(() => {
-    getMedia()
-  }, [])
+    getMedia();
+  }, []);
 
   return (
     <DashboardLayout>
@@ -111,39 +111,44 @@ function Shop() {
             mt={-3}
             py={3}
             px={2}
-            variant="gradient"
-            bgColor="info"
-            borderRadius="lg"
-            coloredShadow="info"
+            variant='gradient'
+            bgColor='info'
+            borderRadius='lg'
+            coloredShadow='info'
           >
-            <MDTypography variant="h6" color="white">
+            <MDTypography variant='h6' color='white'>
               Explore
             </MDTypography>
           </MDBox>
           <MDBox p={3}>
-            {loading ? <MDBox style={{ textAlign: 'center' }}><CircularProgress /></MDBox> :
+            {loading ? (
+              <MDBox style={{ textAlign: 'center' }}>
+                <CircularProgress />
+              </MDBox>
+            ) : (
               <Grid container spacing={6}>
                 {products.map((product, index) => {
                   return (
-                    <Grid item xs={12} md={6} xl={4}>
+                    <Grid item xs={12} md={6} xl={4} key={index}>
                       <ProductCard
+                        productId={product.product_id}
                         image={dummyImages[product.product_id - 1]}
                         label={product.title}
                         title={product.title}
                         description={product.description}
                         action={{
-                          type: "internal",
-                          route: "/shop",
-                          color: "primary",
-                          label: "Explore",
+                          type: 'internal',
+                          route: '/shop',
+                          color: 'primary',
+                          label: 'Explore',
                         }}
                         authors={[product.owner_id]}
                       />
                     </Grid>
-                  )
+                  );
                 })}
               </Grid>
-            }
+            )}
           </MDBox>
           {/* <Pagination sx={{ padding: 2, width: '100%' }} count={10} page={page} onChange={handleChange} /> */}
         </Card>
