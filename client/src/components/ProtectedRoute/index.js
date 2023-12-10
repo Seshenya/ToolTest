@@ -1,12 +1,14 @@
+import useAuth from 'hooks/useAuth';
 import React from 'react'
 import { Navigate, useLocation } from "react-router-dom"
 
 const ProtectedRoute = ({ children }) => {
-    const user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
+    const { auth } = useAuth();
     let location = useLocation();
+    console.log(auth)
 
-    if (!user?.user_id) {
-        return <Navigate to="/authentication/sign-up" state={{ from: location }} replace />
+    if (!auth.user_id) {
+        return <Navigate to="/authentication/sign-in" state={{ from: location }} replace />
     }
     return children
 

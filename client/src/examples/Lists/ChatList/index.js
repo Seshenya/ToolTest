@@ -13,22 +13,23 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDButton from "components/MDButton";
+import { Avatar } from "@mui/material";
 
-function ProfilesList({ title, profiles, shadow }) {
-  const renderProfiles = profiles.map(({ image, name, description, action }) => (
-    <MDBox key={name} component="li" display="flex" alignItems="center" py={1} mb={1}>
+function ChatList({ title, users, shadow, setReceiver }) {
+  const renderProfiles = users.map((user) => (
+    <MDBox style={{ cursor: 'pointer' }} onClick={() => setReceiver(user)} key={user.name} component="li" display="flex" alignItems="center" py={1} mb={1}>
       <MDBox mr={2}>
-        <MDAvatar src={image} alt="something here" shadow="md" />
+        <Avatar>{user.name?.charAt(0)}</Avatar>
       </MDBox>
       <MDBox display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center">
         <MDTypography variant="button" fontWeight="medium">
-          {name}
+          {user.name}
         </MDTypography>
-        <MDTypography variant="caption" color="text">
+        {/* <MDTypography variant="caption" color="text">
           {description}
-        </MDTypography>
+        </MDTypography> */}
       </MDBox>
-      <MDBox ml="auto">
+      {/* <MDBox ml="auto">
         {action.type === "internal" ? (
           <MDButton component={Link} to={action.route} variant="text" color="info">
             {action.label}
@@ -45,7 +46,7 @@ function ProfilesList({ title, profiles, shadow }) {
             {action.label}
           </MDButton>
         )}
-      </MDBox>
+      </MDBox> */}
     </MDBox>
   ));
 
@@ -65,16 +66,16 @@ function ProfilesList({ title, profiles, shadow }) {
   );
 }
 
-// Setting default props for the ProfilesList
-ProfilesList.defaultProps = {
+// Setting default props for the ChatList
+ChatList.defaultProps = {
   shadow: true,
 };
 
-// Typechecking props for the ProfilesList
-ProfilesList.propTypes = {
+// Typechecking props for the ChatList
+ChatList.propTypes = {
   title: PropTypes.string.isRequired,
-  profiles: PropTypes.arrayOf(PropTypes.object).isRequired,
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
   shadow: PropTypes.bool,
 };
 
-export default ProfilesList;
+export default ChatList;
