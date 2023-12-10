@@ -1,4 +1,4 @@
-import { BlobServiceClient } from '@azure/storage-blob'
+import { BlobSASPermissions, BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters } from '@azure/storage-blob'
 import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
 import { promises as fsPromises } from 'fs';
@@ -25,6 +25,7 @@ async function getMedia(product_id: number) {
     }
 
     const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+    blobServiceClient.generateAccountSasUrl
     const containerName = 'gdsdt4';
     const blobName = media.media;
 
@@ -32,28 +33,31 @@ async function getMedia(product_id: number) {
         throw new Error('Blob name not found');
     }
 
-    try {
-        const containerClient = blobServiceClient.getContainerClient(containerName);
-        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    let startDate = new Date();
+    let expiryDate = new Date(startDate);
+    expiryDate.setMinutes(startDate.getMinutes() + 60);
 
-        const downloadResponse = await blockBlobClient.download();
-        if(!downloadResponse.readableStreamBody) {
-            throw new Error('Readable stream body not found');
-        }
+    let sharedAccessPolicy = {
+        startsOn: startDate,
+        expiresOn: expiryDate,
+        permissions: BlobSASPermissions.parse("r")
+    };
 
-        const blobData = await streamToBuffer(downloadResponse.readableStreamBody);
-        const decodedData = Buffer.from(blobData).toString('base64');
+    const storageAccountName = "artsync";
+    const storageAccountKey = "2cgJp+r7A4BpXJhdJXijS6HbG0+pQy0eq0p9BNUjLmErzbo521XHftObwsP8yHiw1Ob99RA2M3IA+AStv1JGoQ==";
+    const sharedKeyCredential = new StorageSharedKeyCredential(storageAccountName, storageAccountKey);
 
-        const buffer = Buffer.from(decodedData, 'base64').toLocaleString();
+    const sasToken = generateBlobSASQueryParameters({
+        containerName: containerName,
+        blobName: blobName,
+        ...sharedAccessPolicy
+    }, sharedKeyCredential).toString();
 
-        return {
-            digitalProduct: media,
-            // Replace buffer with blobData to get the actual file
-            media: buffer,
-        };
-    } catch (error) {
-        throw new Error('Error fetching media from Azure Blob Storage');
-    }
+    const blobUrlWithSAS = `https://${storageAccountName}.blob.core.windows.net/${containerName}/${blobName}?${sasToken}`;
+
+    media.media = blobUrlWithSAS;
+
+    return media;
 }
 
 async function createMedia(media: MediaData) {
@@ -89,9 +93,8 @@ async function createMedia(media: MediaData) {
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
     const data = await fsPromises.readFile(media.file.path);
-    const base64Buffer = Buffer.from(data).toString('base64');
 
-    await blockBlobClient.upload(base64Buffer, Buffer.byteLength(base64Buffer));
+    await blockBlobClient.upload(data, Buffer.byteLength(data));
 
     newDigitalProduct.media = blobName;
 
