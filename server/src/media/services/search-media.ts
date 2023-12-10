@@ -6,8 +6,9 @@ async function searchMedia(
     query: string
 ) {
     try {
-        let baseQuery =
-            DigitalProduct.createQueryBuilder('product').where('1 = 1')
+        let baseQuery = DigitalProduct.createQueryBuilder(
+            'product'
+        ).leftJoinAndSelect('product.owner', 'owner')
 
         if (category) {
             baseQuery = baseQuery.andWhere('product.category = :category', {

@@ -24,9 +24,7 @@ import { products as dummyProducts } from "constants/DummyProducts";
 
 import { useRef, useEffect } from "react";
 
-import axios from "axios";
-
-import { baseUrl } from "baseUrl";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
 
 import MDSnackbar from "components/MDSnackbar";
 import { CircularProgress, Pagination } from "@mui/material";
@@ -44,6 +42,7 @@ function Shop() {
   const [products, setProducts] = useState([]);
   const dummyImages = [product1, product2, product3, product4, product5, product6]
   const [loading, setLoading] = useState(false)
+  const axiosPrivate = useAxiosPrivate();
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -65,7 +64,7 @@ function Shop() {
 
   const getMedia = (filters = filtersRef.current) => {
     setLoading(true)
-    axios.get(`${baseUrl}/media`, {
+    axiosPrivate.get(`/media`, {
       params: {
         page: 1,
         size: 10,
