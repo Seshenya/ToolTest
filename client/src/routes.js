@@ -21,165 +21,186 @@
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import RTL from "layouts/rtl";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
-import Team from "layouts/about/"
-import Home from "layouts/home"
+import Dashboard from 'layouts/dashboard'
+import Tables from 'layouts/tables'
+import Billing from 'layouts/billing'
+import RTL from 'layouts/rtl'
+import Notifications from 'layouts/notifications'
+import Profile from 'layouts/profile'
+import SignIn from 'layouts/authentication/sign-in'
+import SignUp from 'layouts/authentication/sign-up'
+import Team from 'layouts/about/'
+import Home from 'layouts/home'
 
 // @mui icons
-import Icon from "@mui/material/Icon";
-import Shop from "layouts/shop";
-import Sell from "layouts/sell";
-import AdminDashboard from "layouts/admin";
-import Competitions from "layouts/competitions";
-import MyCompetitions from "layouts/competitions/myCompetitions";
-import Collaborations from "layouts/collaborations";
-import MyCollaborations from "layouts/collaborations/myCollaborations";
+import Icon from '@mui/material/Icon'
+import Shop from 'layouts/shop'
+import Sell from 'layouts/sell'
+import AdminDashboard from 'layouts/admin'
+import Competitions from 'layouts/competitions'
+import MyCompetitions from 'layouts/competitions/myCompetitions'
+import Collaborations from 'layouts/collaborations'
+import MyCollaborations from 'layouts/collaborations/myCollaborations'
+import Chat from 'layouts/chat'
+
+//
+import ProductDetails from 'layouts/ProductDetails'
 
 const routes = [
-  {
-    type: "collapse",
-    name: "Home",
-    key: "home",
-    icon: <Icon fontSize="small">home</Icon>,
-    route: "/home",
-    component: <Home />,
-  },
-  {
-    type: "collapse",
-    name: "Shop",
-    key: "shop",
-    icon: <Icon fontSize="small">shoppingBasket</Icon>,
-    route: "/shop",
-    component: <Shop />,
-  },
-  {
-    type: "collapse",
-    name: "Sell",
-    key: "sell",
-    icon: <Icon fontSize="small">store</Icon>,
-    route: "/sell",
-    component: <Sell />,
-  },
-  {
-    type: "collapse",
-    name: "Competitions",
-    key: "competitions",
-    icon: <Icon fontSize="small">event</Icon>,
-    route: "/competitions",
-    component: <Competitions />,
-  },
-  {
-    type: "title",
-    name: "My Competitions",
-    key: "myCompetitions",
-    icon: <Icon fontSize="small">event</Icon>,
-    route: "/my-competitions",
-    component: <MyCompetitions />,
-  },
-  {
-    type: "collapse",
-    name: "Collaborations",
-    key: "collaborarions",
-    icon: <Icon fontSize="small">group_add</Icon>,
-    route: "/collaborarions",
-    component: <Collaborations />,
-  },
-  {
-    type: "title",
-    name: "My Collaborations",
-    key: "myCollaborarions",
-    icon: <Icon fontSize="small">event</Icon>,
-    route: "/my-collaborarions",
-    component: <MyCollaborations />,
-  },
-  {
-    type: "collapse",
-    name: "Admin Dashboard",
-    key: "admin",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/admin",
-    component: <AdminDashboard />,
-  },
-  {
-    type: "title",
-    name: "Dashboard",
-    key: "dashboard",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
-    component: <Dashboard />,
-  },
-  {
-    type: "title",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: <Tables />,
-  },
-  {
-    type: "title",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
-  },
-  {
-    type: "title",
-    name: "RTL",
-    key: "rtl",
-    icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-    route: "/rtl",
-    component: <RTL />,
-  },
-  {
-    type: "title",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: <Notifications />,
-  },
-  {
-    type: "title",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-  },
-  {
-    type: "title",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "title",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-    notProtected: true
-  },
-  {
-    type: "collapse",
-    name: "About Us",
-    key: "about-us",
-    icon: <Icon fontSize="small">group</Icon>,
-    route: "/about-us",
-    component: <Team />,
-  },
-];
+    {
+        type: 'collapse',
+        name: 'Home',
+        key: 'home',
+        icon: <Icon fontSize="small">home</Icon>,
+        route: '/home',
+        component: <Home />,
+    },
+    {
+        type: 'collapse',
+        name: 'Shop',
+        key: 'shop',
+        icon: <Icon fontSize="small">shoppingBasket</Icon>,
+        route: '/shop',
+        component: <Shop />,
+    },
+    {
+        // type: 'collapse',
+        // name: 'Shop',
+        // key: 'shop',
+        // icon: <Icon fontSize='small'>shoppingBasket</Icon>,
+        route: '/shop/:productId',
+        component: <ProductDetails />,
+    },
+    {
+        type: 'collapse',
+        name: 'Sell',
+        key: 'sell',
+        icon: <Icon fontSize="small">store</Icon>,
+        route: '/sell',
+        component: <Sell />,
+    },
+    {
+        type: 'collapse',
+        name: 'Competitions',
+        key: 'competitions',
+        icon: <Icon fontSize="small">event</Icon>,
+        route: '/competitions',
+        component: <Competitions />,
+    },
+    {
+        type: 'title',
+        name: 'My Competitions',
+        key: 'myCompetitions',
+        icon: <Icon fontSize="small">event</Icon>,
+        route: '/my-competitions',
+        component: <MyCompetitions />,
+    },
+    {
+        type: 'collapse',
+        name: 'Collaborations',
+        key: 'collaborarions',
+        icon: <Icon fontSize="small">group_add</Icon>,
+        route: '/collaborarions',
+        component: <Collaborations />,
+    },
+    {
+        type: 'title',
+        name: 'My Collaborations',
+        key: 'myCollaborarions',
+        icon: <Icon fontSize="small">event</Icon>,
+        route: '/my-collaborarions',
+        component: <MyCollaborations />,
+    },
+    {
+        type: 'collapse',
+        name: 'Admin Dashboard',
+        key: 'admin',
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: '/admin',
+        component: <AdminDashboard />,
+    },
+    {
+        type: 'title',
+        name: 'Dashboard',
+        key: 'dashboard',
+        icon: <Icon fontSize="small">dashboard</Icon>,
+        route: '/dashboard',
+        component: <Dashboard />,
+    },
+    {
+        type: 'title',
+        name: 'Tables',
+        key: 'tables',
+        icon: <Icon fontSize="small">table_view</Icon>,
+        route: '/tables',
+        component: <Tables />,
+    },
+    {
+        type: 'title',
+        name: 'Billing',
+        key: 'billing',
+        icon: <Icon fontSize="small">receipt_long</Icon>,
+        route: '/billing',
+        component: <Billing />,
+    },
+    {
+        type: 'title',
+        name: 'RTL',
+        key: 'rtl',
+        icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
+        route: '/rtl',
+        component: <RTL />,
+    },
+    {
+        type: 'title',
+        name: 'Notifications',
+        key: 'notifications',
+        icon: <Icon fontSize="small">notifications</Icon>,
+        route: '/notifications',
+        component: <Notifications />,
+    },
+    {
+        type: 'title',
+        name: 'Profile',
+        key: 'profile',
+        icon: <Icon fontSize="small">person</Icon>,
+        route: '/profile',
+        component: <Profile />,
+    },
+    {
+        type: 'title',
+        name: 'Sign In',
+        key: 'sign-in',
+        icon: <Icon fontSize="small">login</Icon>,
+        route: '/authentication/sign-in',
+        component: <SignIn />,
+        notProtected: true,
+    },
+    {
+        type: 'title',
+        name: 'Sign Up',
+        key: 'sign-up',
+        icon: <Icon fontSize="small">assignment</Icon>,
+        route: '/authentication/sign-up',
+        component: <SignUp />,
+        notProtected: true,
+    },
+    {
+        type: 'collapse',
+        name: 'Chat',
+        key: 'chat',
+        icon: <Icon fontSize="small">chat</Icon>,
+        route: '/chat',
+        component: <Chat />,
+    },
+    {
+        type: 'collapse',
+        name: 'About Us',
+        key: 'about-us',
+        icon: <Icon fontSize="small">group</Icon>,
+        route: '/about-us',
+        component: <Team />,
+    },
+]
 
-export default routes;
+export default routes

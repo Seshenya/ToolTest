@@ -26,14 +26,11 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'text' })
     media: string
 
-    @Column()
+    @Column({ type: 'text' })
     size: number
 
     @Column({ type: 'timestamp' })
     date: Date
-
-    @Column()
-    owner_id: number
 
     // foreign key on owner_id with userInfo.user_id
     @ManyToOne(() => User)
@@ -46,7 +43,7 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'tinyint' })
     status: number
 
-    @Column()
+    @Column({ type: 'text' })
     title: string
 
     @Column({ type: 'text' })
@@ -55,7 +52,7 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     tags: string
 
-    @Column()
+    @Column({ type: 'text' })
     file_format: string
 
     @Column({ type: 'text', nullable: true })
@@ -64,6 +61,6 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     thumbnail: string
 
-    @Column()
+    @Column({ type: 'text' })
     category: string
 }
