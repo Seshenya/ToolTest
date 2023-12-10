@@ -26,7 +26,7 @@ function Chat() {
     const { auth } = useAuth();
     const [onlineUsers, setOnlineUsers] = useState([])
     const [socket, setSocket] = useState(null);
-    const [receiver, setReceiver] = useState({});
+    const [receiver, setReceiver] = useState(null);
     const [messages, setMessages] = useState([]);
 
 
@@ -77,14 +77,14 @@ function Chat() {
                         <Grid container spacing={6}>
                             <Grid item xs={12} md={4}>
                                 <ChatList setReceiver={(user) => {
-                                    if (user.id != receiver.id) {
+                                    if (user?.id != receiver?.id) {
                                         setReceiver(user)
                                         setMessages([])
                                     }
                                 }} users={onlineUsers.filter((user) => user.id != auth.user_id)} shadow={false} />
                             </Grid>
                             <Grid item xs={12} md={8}>
-                                {socket && <ChatBox setMessages={setMessages} messages={messages} receiver={receiver} socket={socket} />}
+                                {socket && receiver && <ChatBox setMessages={setMessages} messages={messages} receiver={receiver} socket={socket} />}
                             </Grid>
                         </Grid>
                     </MDBox>
