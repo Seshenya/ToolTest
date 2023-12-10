@@ -2,7 +2,7 @@ const config = {
     host: 'localhost',
     port: 3306,
     username: 'root',
-    password: 'rootuser',
+    password: '1234',
     database: 'artsync',
     clientUrl: ['http://localhost:5173/', 'http://localhost:3000'],
     ACCESS_TOKEN_SECRET:
