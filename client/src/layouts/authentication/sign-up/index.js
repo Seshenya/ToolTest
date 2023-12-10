@@ -19,8 +19,7 @@ import bgImage from "assets/images/hs-fulda.jpeg";
 
 import { useForm } from "react-hook-form";
 import { TextField } from "@mui/material";
-import axios from "axios";
-import { baseUrl } from "baseUrl";
+import axios from "api/axios";
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -60,21 +59,21 @@ function Cover() {
 
     delete userData['passwordRepeat']
 
-    axios.post(`${baseUrl}/users`, {
+    axios.post(`/users`, {
       ...userData,
       type: 1,
       active_status: 1
     }).then((res) => {
       if (res.data) {
-        localStorage.setItem('user', JSON.stringify(res.data))
-        navigate('/shop')
+        navigate('/authentication/sign-in')
       }
     }).catch((error) => {
+      console.log(error.response.data.message)
       setSb({
         open: true,
         color: 'error',
         icon: 'error',
-        title: error.message,
+        title: error?.response?.data?.message || error?.message,
         message: ""
       })
     })

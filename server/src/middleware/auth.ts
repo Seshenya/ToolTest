@@ -88,7 +88,7 @@ function refreshToken(req: any, res: any) {
                     expiresIn: config.ACCESS_TOKEN_EXPIRE,
                 }
             )
-            return res.status(200).send({ accessToken, refreshToken })
+            return res.status(200).send({ accessToken })
         }
     )
 }
