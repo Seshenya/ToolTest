@@ -11,7 +11,7 @@ async function addMedia(req: any, res: any) {
 }
 
 async function updateMedia(req: any, res: any) {
-    alterMedia(req.params.id, req.body)
+    alterMedia(req.params.id, req.userId, req.body)
         .then((media) => {
             res.send(media)
         })
