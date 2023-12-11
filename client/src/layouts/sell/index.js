@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import useAxiosPrivate from 'hooks/useAxiosPrivate';
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -27,7 +27,6 @@ import Footer from "examples/Footer";
 import ProductCard from "examples/Cards/ProductCard";
 
 import { products } from "constants/DummyProducts";
-import { baseUrl } from 'baseUrl';
 
 
 function Sell() {
@@ -35,6 +34,7 @@ function Sell() {
   const [openModal, setOpenModal] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const { register, handleSubmit, reset, setValue } = useForm();
+  const axiosPrivate = useAxiosPrivate()
 
   const handleModalOpen = () => {
     setOpenModal(true);
@@ -46,10 +46,8 @@ function Sell() {
 
   const handleMediaCreation = async (formData) => {
     try {
-      const requestUrl = `${baseUrl}/media`;
-      const response = await axios.post(requestUrl, formData, {
+      const response = await axiosPrivate.post('/media/', formData, {
         headers: {
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImVtYWlsIjoiam9obi5kb2VAaW5mLmhzLWZ1bGRhLmRlIiwiaWF0IjoxNzAyMjI4NDMyLCJleHAiOjE3MDIyMzIwMzJ9.kgeHoGuOazbNqPs4piQ1VBezqwdIgn5r_NumaYaCX24',
           'Content-Type': 'multipart/form-data',
         },
       });
