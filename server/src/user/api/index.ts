@@ -1,3 +1,3 @@
-import { addUser, fetchUser, fetchUsers, loginUser } from './user'
+import { addUser, fetchUser, fetchUsers } from './user'
 
-export { fetchUser, fetchUsers, addUser, loginUser }
+export { fetchUser, fetchUsers, addUser }

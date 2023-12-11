@@ -1,14 +1,19 @@
 import { DigitalProduct } from '../entities'
 
 async function searchMedia(
+    page: number,
+    size: number,
     category: string,
     media_type: number,
     query: string
 ) {
+    const skip = (page - 1) * size;
+
     try {
-        let baseQuery = DigitalProduct.createQueryBuilder(
-            'product'
-        ).leftJoinAndSelect('product.owner', 'owner')
+        let baseQuery =
+            DigitalProduct.createQueryBuilder('product').where('1 = 1')
+            .skip(skip)
+            .take(size)
 
         if (category) {
             baseQuery = baseQuery.andWhere('product.category = :category', {
@@ -29,9 +34,9 @@ async function searchMedia(
                 { query }
             )
         }
-        const media = await baseQuery.getMany()
 
-        const totalCount = media.length
+        const [media, totalCount] = await baseQuery.getManyAndCount();
+        
         return {
             media,
             totalCount,
