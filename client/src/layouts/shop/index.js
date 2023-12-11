@@ -115,7 +115,10 @@ function Shop() {
         <DashboardLayout>
             <DashboardNavbar
                 filters
-                reCallApi={getMedia}
+                reCallApi={(filtersRef) => {
+                    getMedia(filtersRef, 1)
+                    setPage(1)
+                }}
                 filtersRef={filtersRef}
             />
             <MDBox py={3}>
