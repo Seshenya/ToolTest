@@ -3,6 +3,7 @@ import { User } from '../../user/entities'
 import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
 import { promises as fsPromises } from 'fs';
+import { generateSASUrl } from '../../middleware/fetch-media-blob-storage';
 
 interface MediaData {
     fields: any;
@@ -19,49 +20,15 @@ async function getMedia(product_id: number) {
         throw new Error('Media not found')
     }
 
-    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    const containerName = 'gdsdt4'
+    const blobName = media.media
 
-    if (!connectionString) {
-        throw new Error('Azure Storage connection string is not defined');
+    try {
+        const blobUrlWithSAS = await generateSASUrl(containerName, blobName);
+        media.media = blobUrlWithSAS;
+    } catch (error) {
+        throw new Error(`Error generating SAS URL for ${blobName}`);
     }
-
-    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
-    blobServiceClient.generateAccountSasUrl
-    const containerName = 'gdsdt4';
-    const blobName = media.media;
-
-    if(!blobName) {
-        throw new Error('Blob name not found');
-    }
-
-    let startDate = new Date();
-    let expiryDate = new Date(startDate);
-    expiryDate.setMinutes(startDate.getMinutes() + 60);
-
-    let sharedAccessPolicy = {
-        startsOn: startDate,
-        expiresOn: expiryDate,
-        permissions: BlobSASPermissions.parse("r")
-    };
-
-    const storageAccountName = "artsync";
-    const storageAccountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
-
-    if(!storageAccountKey) {
-        throw new Error('Azure Storage account key is not defined');
-    }
-
-    const sharedKeyCredential = new StorageSharedKeyCredential(storageAccountName, storageAccountKey);
-
-    const sasToken = generateBlobSASQueryParameters({
-        containerName: containerName,
-        blobName: blobName,
-        ...sharedAccessPolicy
-    }, sharedKeyCredential).toString();
-
-    const blobUrlWithSAS = `https://${storageAccountName}.blob.core.windows.net/${containerName}/${blobName}?${sasToken}`;
-
-    media.media = blobUrlWithSAS;
 
     return media;
 }

@@ -1,4 +1,6 @@
+import { BlobSASPermissions, BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters } from '@azure/storage-blob';
 import { DigitalProduct } from '../entities'
+import { generateSASUrl } from '../../middleware/fetch-media-blob-storage';
 
 async function searchMedia(
     page: number,
@@ -35,6 +37,23 @@ async function searchMedia(
             )
         }
         const media = await baseQuery.getMany()
+
+        const containerName = 'gdsdt4'
+
+        for (let i = 0; i < media.length; i++) {
+            const blobName = media[i].media;
+    
+            if (!blobName) {
+                throw new Error('Blob name not found');
+            }
+    
+            try {
+                const blobUrlWithSAS = await generateSASUrl(containerName, blobName);
+                media[i].media = blobUrlWithSAS;
+            } catch (error) {
+                throw new Error(`Error generating SAS URL for ${blobName}`);
+            }
+        }
 
         const totalCount = media.length
         return {
