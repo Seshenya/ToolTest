@@ -41,17 +41,29 @@ async function searchMedia(
         const containerName = 'gdsdt4'
 
         for (let i = 0; i < media.length; i++) {
-            const blobName = media[i].media;
-    
-            if (!blobName) {
-                throw new Error('Blob name not found');
-            }
+            const blobNameMedia = media[i].media;
+            const blobNamePreview = media[i].previews;
+            const blobNameThumbnail = media[i].thumbnail;
     
             try {
-                const blobUrlWithSAS = await generateSASUrl(containerName, blobName);
+                const blobUrlWithSAS = await generateSASUrl(containerName, blobNameMedia);
                 media[i].media = blobUrlWithSAS;
             } catch (error) {
-                throw new Error(`Error generating SAS URL for ${blobName}`);
+                throw new Error(`Error generating SAS URL for ${blobNameMedia}`);
+            }
+
+            try {
+                const blobUrlWithSAS = await generateSASUrl(containerName, blobNamePreview);
+                media[i].previews = blobUrlWithSAS;
+            } catch (error) {
+                throw new Error(`Error generating SAS URL for ${blobNamePreview}`);
+            }
+
+            try {
+                const blobUrlWithSAS = await generateSASUrl(containerName, blobNameThumbnail);
+                media[i].thumbnail = blobUrlWithSAS;
+            } catch (error) {
+                throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`);
             }
         }
 

@@ -15,7 +15,9 @@ async function addMedia(req: any, res: any) {
 
         const mediaData = {
             fields: req.fields,
-            file: req.files.media
+            fileMedia: req.files.media,
+            filePreview: req.files.previews,
+            fileThumbnail: req.files.thumbnail,
         }
 
         const media = await createMedia(mediaData);

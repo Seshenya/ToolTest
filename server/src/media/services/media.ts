@@ -7,7 +7,9 @@ import { generateSASUrl } from '../../middleware/fetch-media-blob-storage';
 
 interface MediaData {
     fields: any;
-    file: any;
+    fileMedia: any;
+    filePreview: any;
+    fileThumbnail: any;
 }
 
 async function getMedia(product_id: number) {
@@ -21,13 +23,29 @@ async function getMedia(product_id: number) {
     }
 
     const containerName = 'gdsdt4'
-    const blobName = media.media
+    const blobNameMedia = media.media
+    const blobNamePreview = media.previews
+    const blobNameThumbnail = media.thumbnail
 
     try {
-        const blobUrlWithSAS = await generateSASUrl(containerName, blobName);
+        const blobUrlWithSAS = await generateSASUrl(containerName, blobNameMedia);
         media.media = blobUrlWithSAS;
     } catch (error) {
-        throw new Error(`Error generating SAS URL for ${blobName}`);
+        throw new Error(`Error generating SAS URL for ${blobNameMedia}`);
+    }
+
+    try {
+        const blobUrlWithSAS = await generateSASUrl(containerName, blobNamePreview);
+        media.previews = blobUrlWithSAS;
+    } catch (error) {
+        throw new Error(`Error generating SAS URL for ${blobNamePreview}`);
+    }
+
+    try {
+        const blobUrlWithSAS = await generateSASUrl(containerName, blobNameThumbnail);
+        media.thumbnail = blobUrlWithSAS;
+    } catch (error) {
+        throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`);
     }
 
     return media;
@@ -37,7 +55,7 @@ async function createMedia(media: MediaData) {
     const newDigitalProduct = new DigitalProduct()
 
     newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
-    newDigitalProduct.size = media.file.size
+    newDigitalProduct.size = media.fileMedia.size
     newDigitalProduct.date = new Date()
     newDigitalProduct.owner = media.fields.owner
     newDigitalProduct.price = parseInt(media.fields.price, 10)
@@ -61,15 +79,40 @@ async function createMedia(media: MediaData) {
     const containerName = 'gdsdt4';
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    const blobName = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title}.${newDigitalProduct.file_format}`;
+    // Add Media to Azure Blob Storage
+    const blobNameMedia = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title}.${newDigitalProduct.file_format}`;
 
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    const blockBlobClientMedia = containerClient.getBlockBlobClient(blobNameMedia);
 
-    const data = await fsPromises.readFile(media.file.path);
+    const dataMedia = await fsPromises.readFile(media.fileMedia.path);
 
-    await blockBlobClient.upload(data, Buffer.byteLength(data));
+    await blockBlobClientMedia.upload(dataMedia, Buffer.byteLength(dataMedia));
 
-    newDigitalProduct.media = blobName;
+    newDigitalProduct.media = blobNameMedia;
+
+    
+    // Add Preview to Azure Blob Storage
+    const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${media.filePreview.name}`;
+
+    const blockBlobClientPreview = containerClient.getBlockBlobClient(blobNamePreview);
+
+    const dataPreview = await fsPromises.readFile(media.filePreview.path);
+
+    await blockBlobClientPreview.upload(dataPreview, Buffer.byteLength(dataPreview));
+
+
+    // Add Thumbnail to Azure Blob Storage
+    const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name}`;
+
+    const blockBlobClientThumbnail = containerClient.getBlockBlobClient(blobNameThumbnail);
+
+    const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path);
+
+    await blockBlobClientThumbnail.upload(dataThumbnail, Buffer.byteLength(dataThumbnail));
+
+    newDigitalProduct.media = blobNameMedia;
+    newDigitalProduct.previews = blobNamePreview;
+    newDigitalProduct.thumbnail = blobNameThumbnail;
 
     const createdMedia = await newDigitalProduct.save()
     return createdMedia
