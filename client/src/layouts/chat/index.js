@@ -79,7 +79,6 @@ function Chat() {
                                 <ChatList setReceiver={(user) => {
                                     if (user?.id != receiver?.id) {
                                         setReceiver(user)
-                                        setMessages([])
                                     }
                                 }} users={onlineUsers.filter((user) => user.id != auth.user_id)} shadow={false} />
                             </Grid>
