@@ -3,48 +3,75 @@ import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
 import React from "react";
 
-const dummyImages = [
-  {
-    img: "http://localhost:3000/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
-    isSelected: true,
-  },
-  {
-    img: "http://localhost:3000/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
-    isSelected: true,
-  },
-  {
-    img: "http://localhost:3000/static/media/home-decor-3.74d13fcbd3c631fc7908.jpg",
-    isSelected: true,
-  },
-  {
-    img: "http://localhost:3000/static/media/home-decor-4.5b448fd339a14695f6aa.jpeg",
-    isSelected: true,
-  },
-  {
-    img: "http://localhost:3000/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
-    isSelected: true,
-  },
-  {
-    img: "http://localhost:3000/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
-    isSelected: true,
-  },
-  {
-    img: "http://localhost:3000/static/media/home-decor-3.74d13fcbd3c631fc7908.jpg",
-    isSelected: true,
-  },
-  {
-    img: "http://localhost:3000/static/media/home-decor-4.5b448fd339a14695f6aa.jpeg",
-    isSelected: true,
-  },
-];
+import imageFallback from 'assets/images/fallback/image_fallback.jpg'
+import videoFallback from 'assets/images/fallback/video_fallback.jpg'
+import audioFallback from 'assets/images/fallback/audio_fallback.png'
 
-const PDMainImage = () => {
+const PDMainImage = ({ productDetails }) => {
+
+  const renderThumbnail = () => {
+    if (productDetails.thumbnail) {
+      return productDetails.thumbnail;
+    } else {
+      if (productDetails.media_type === 1) {
+        return imageFallback;
+      } else if (productDetails.media_type === 2) {
+        return audioFallback;
+      } else if (productDetails.media_type === 3) {
+        return videoFallback;
+      } else {
+        return imageFallback;
+      }
+    }
+  };
+
+  const handleThumbnailError = (e) => {
+    if(productDetails.media_type === 1) {
+      e.target.src = imageFallback;
+    } else if (productDetails.media_type === 2) {
+      e.target.src = audioFallback;
+    } else if (productDetails.media_type === 3) {
+      e.target.src = videoFallback;
+    } else {
+      e.target.src = imageFallback;
+    }
+  }
+
+  const renderPreviews = () => {
+    if (productDetails.previews) {
+      return productDetails.previews;
+    } else {
+      if (productDetails.media_type === 1) {
+        return imageFallback;
+      } else if (productDetails.media_type === 2) {
+        return audioFallback;
+      } else if (productDetails.media_type === 3) {
+        return videoFallback;
+      } else {
+        return imageFallback;
+      }
+    }
+  };
+
+  const handlePreviewError = (e) => {
+    if(productDetails.media_type === 1) {
+      e.target.src = imageFallback;
+    } else if (productDetails.media_type === 2) {
+      e.target.src = audioFallback;
+    } else if (productDetails.media_type === 3) {
+      e.target.src = videoFallback;
+    } else {
+      e.target.src = imageFallback;
+    }
+  }
+
   return (
     <MDBox>
       <MDBox position={"relative"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
         <MDBox
           component={"img"}
-          src={"http://localhost:3000/static/media/home-decor-1.05e218fd495ccc65c99d.jpg"}
+          src={renderThumbnail()}
+          onError={handleThumbnailError}
           borderRadius="xl"
           sx={{
             width: "100%",
@@ -80,7 +107,8 @@ const PDMainImage = () => {
           },
         }}
       >
-        {dummyImages.map(({ img, isSelected }, idx) => (
+        {/* {
+        productDetails.previews.map(({ img, isSelected }, idx) => (
           <MDBox
             key={idx}
             component={"img"}
@@ -92,7 +120,20 @@ const PDMainImage = () => {
             }}
             borderRadius="md"
           />
-        ))}
+        ))} */}
+        {
+          <MDBox
+          component={"img"}
+          src={renderPreviews()}
+          onError={handlePreviewError}
+          sx={{
+            width: "80px",
+            height: "80px",
+            objectFit: "cover",
+          }}
+          borderRadius="md"
+        />
+        }
       </MDBox>
     </MDBox>
   );

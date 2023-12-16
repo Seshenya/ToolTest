@@ -19,29 +19,38 @@ import DialogTitle from '@mui/material/DialogTitle'
 import MDBox from 'components/MDBox'
 import MDTypography from 'components/MDTypography'
 import MDButton from 'components/MDButton'
-import MDAvatar from 'components/MDAvatar'
 import { useState } from 'react'
 import MDInput from 'components/MDInput'
 import MDBadge from 'components/MDBadge'
 import { statusColors } from 'constants/DummyProducts'
 
+import imageFallback from 'assets/images/fallback/image_fallback.jpg'
+import videoFallback from 'assets/images/fallback/video_fallback.jpg'
+import audioFallback from 'assets/images/fallback/audio_fallback.png'
+
 function ProductCard({
     image,
-    label,
     title,
     description,
     action,
-    authors,
     deleteBtn,
     discountCode,
     editBtn,
     status,
     collabBtn,
     productId,
+    product,
 }) {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [discountOpen, setDiscountOpen] = useState(false)
     const navigate = useNavigate()
+
+    const fallbackImages = {
+        1: imageFallback,
+        2: audioFallback,
+        3: videoFallback,
+        4: imageFallback,
+    }
 
     // const renderAuthors = authors.map(({ image: media, name }) => (
     //   <Tooltip key={name} title={name} placement="bottom">
@@ -66,6 +75,11 @@ function ProductCard({
         navigate(`/shop/${productId}`)
     }
 
+    const handleImageLoadError = (e) => {
+        const mediaType = product.media_type || 4;
+        e.target.src = fallbackImages[mediaType];
+    }
+
     return (
         <Card
             sx={{
@@ -86,6 +100,7 @@ function ProductCard({
                 <CardMedia
                     src={image}
                     component="img"
+                    onError={handleImageLoadError}
                     title={title}
                     sx={{
                         width: '100%',
