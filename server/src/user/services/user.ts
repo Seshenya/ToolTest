@@ -3,15 +3,27 @@ import { User } from '../entities'
 import { UserType } from '../types'
 
 async function getUser(user_id: number) {
-    const user = await User.findOneBy({
-        user_id,
-    })
-    return user
-}
+    try {
+        const user = await User.findOneBy({
+            user_id,
+        })
+        return user
+    } catch (err: any) {
+        // eslint-disable-next-line no-console
+        console.log('Error :', err)
+        throw err
+    } 
+}  
 
 async function getUsers() {
-    const allUsers = await User.find()
-    return allUsers
+    try {
+        const allUsers = await User.find()
+        return allUsers
+    } catch (err: any) {
+        // eslint-disable-next-line no-console
+        console.log('Error :', err)
+        throw err
+    }   
 }
 
 async function createUser(user: UserType) {

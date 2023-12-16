@@ -2,8 +2,13 @@ import { getMedia, createMedia, alterMedia, searchMedia, getMediaCategories, cre
 import formidable from 'express-formidable';
 
 async function fetchMedia(req: any, res: any) {
-    const media = await getMedia(req.params.id)
-    res.send(media)
+    getMedia(req.params.id)
+        .then((media) => {
+            res.send(media)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
 }
 
 async function addMedia(req: any, res: any) {
