@@ -42,6 +42,7 @@ import MyCompetitions from 'layouts/competitions/myCompetitions'
 import Collaborations from 'layouts/collaborations'
 import MyCollaborations from 'layouts/collaborations/myCollaborations'
 import Chat from 'layouts/chat'
+import Categories from 'layouts/categories'
 
 //
 import ProductDetails from 'layouts/ProductDetails'
@@ -200,6 +201,14 @@ const routes = [
         icon: <Icon fontSize="small">group</Icon>,
         route: '/about-us',
         component: <Team />,
+    },
+    {
+        type: 'collapse',
+        name: 'Categories',
+        key: 'categories',
+        icon: <Icon fontSize="small">category</Icon>,
+        route: '/categories',
+        component: <Categories />,
     },
 ]
 
