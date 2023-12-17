@@ -123,7 +123,6 @@ function Sell() {
                             {products.map((product) => {
                                 return (
                                     <Grid item xs={12} md={6} xl={4}>
-                                        {console.log(product)}
                                         <ProductCard
                                             productId={product.id}
                                             {...product}
