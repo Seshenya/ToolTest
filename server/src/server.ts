@@ -4,6 +4,9 @@ import connectDb from './connections/type-orm'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import config from './config'
+import dotenv from 'dotenv';
+
+dotenv.config();
 import { Server } from 'socket.io'
 import http from 'http'
 import { setupSocketEvents } from './chat/socketEvents'
@@ -14,6 +17,8 @@ const corsOptions = {
     optionsSuccessStatus: 200,
 }
 app.use(cors(corsOptions))
+
+app.use(express.json({ limit: '50mb' }))
 
 connectDb()
 app.use(bodyParser.json())

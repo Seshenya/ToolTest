@@ -8,12 +8,18 @@ function hasToken(req: any, res: any, next: any) {
         return res.status(401).send({ message: 'Missing access token' })
     }
 
-    jwt.verify(token, config.ACCESS_TOKEN_SECRET, (err: any) => {
-        if (err) {
-            return res.status(401).send({ message: 'Token is invalid' })
+    jwt.verify(
+        token,
+        config.ACCESS_TOKEN_SECRET,
+        (err: any, decodedPayload: any) => {
+            if (err) {
+                return res.status(401).send({ reason: 'Token is invalid' })
+            }
+
+            req.userId = decodedPayload.userId
+            next()
         }
-        next()
-    })
+    )
 }
 
 export default hasToken
