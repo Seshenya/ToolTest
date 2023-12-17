@@ -159,7 +159,7 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
                         defaultValue={''}
                         label="Category"
                         onChange={(e) => {
-                          filtersRef.current.categoty = e.target.value
+                          filtersRef.current.category = e.target.value
                           reCallApi(filtersRef.current)
                         }}
                       >
