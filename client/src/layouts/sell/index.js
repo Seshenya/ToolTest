@@ -36,8 +36,31 @@ function Sell() {
   const { register, handleSubmit, reset, setValue } = useForm();
   const axiosPrivate = useAxiosPrivate()
 
+  const [categories, setCategories] = useState([]);
+  const [mediaTypes, setMediaTypes] = useState([]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosPrivate.get('/categories/');
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const fetchMediaTypes = async () => {
+    try {
+      const response = await axiosPrivate.get('/types/');
+      setMediaTypes(response.data);
+    } catch (error) {
+      console.error('Error fetching media types:', error);
+    }
+  };
+
   const handleModalOpen = () => {
     setOpenModal(true);
+    fetchCategories();
+    fetchMediaTypes();
   };
 
   const handleModalClose = () => {
@@ -207,9 +230,11 @@ function Sell() {
               }}
               sx={{ marginBottom: 2 }}
             >
-              <option value="1">Social Media</option>
-              <option value="2">Tech</option>
-              <option value="3">Flowers</option>
+              {mediaTypes.map((mediaType) => (
+                <option value={mediaType.id}>
+                 {mediaType.type}
+                </option>
+              ))}
             </TextField>
             {/* Drag and Drop for Files */}
             <MDBox
@@ -261,9 +286,11 @@ function Sell() {
               }}
               sx={{ marginBottom: 2 }}
             >
-              <option value="Image">Image</option>
-              <option value="Video">Video</option>
-              <option value="Audio">Audio</option>
+             {categories.map((category) => (
+                <option value={category.type}>
+                 {category.type}
+                </option>
+              ))}
             </TextField>
             <DialogActions>
               <MDButton type="submit" variant="contained" color="primary" sx={{ marginRight: 2 }}>
