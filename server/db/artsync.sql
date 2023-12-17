@@ -97,3 +97,24 @@ CREATE TABLE `competition` (
     FOREIGN KEY (`host_id`) REFERENCES user(`user_id`) ON DELETE CASCADE
 );
 
+--
+-- Table structure for table category
+--
+
+DROP TABLE IF EXISTS `category`;
+
+CREATE TABLE `category` (
+    `type` VARCHAR(255) NOT NULL,
+    UNIQUE INDEX `type_UNIQUE` (`type` ASC)
+);
+
+--
+-- Alter Table product for foreign key 
+--
+
+ALTER TABLE `product`
+ADD CONSTRAINT `fk_product_category`
+FOREIGN KEY (`category`)
+REFERENCES `category` (`type`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;

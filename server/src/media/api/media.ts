@@ -1,9 +1,14 @@
-import { getMedia, createMedia, alterMedia, searchMedia } from '../services'
+import { getMedia, createMedia, alterMedia, searchMedia, getMediaCategories, createCategory } from '../services'
 import formidable from 'express-formidable';
 
 async function fetchMedia(req: any, res: any) {
-    const media = await getMedia(req.params.id)
-    res.send(media)
+    getMedia(req.params.id)
+        .then((media) => {
+            res.send(media)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
 }
 
 async function addMedia(req: any, res: any) {
@@ -44,4 +49,24 @@ async function fetchSearchedMedia(req: any, res: any) {
         })
 }
 
-export { fetchMedia, addMedia, updateMedia, fetchSearchedMedia }
+async function fetchMediaCategories(req: any, res: any) {
+    getMediaCategories()
+        .then((mediaCategories) => {
+            res.send(mediaCategories)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+async function addMediaCategory(req: any, res: any) {
+    createCategory(req.body)
+        .then((category) => {
+            res.send(category)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+export { fetchMedia, addMedia, updateMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory }
