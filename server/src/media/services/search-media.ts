@@ -34,9 +34,9 @@ async function searchMedia(
                 { query }
             )
         }
-        const media = await baseQuery.getMany()
 
-        const totalCount = media.length
+        const [media, totalCount] = await baseQuery.getManyAndCount();
+        
         return {
             media,
             totalCount,

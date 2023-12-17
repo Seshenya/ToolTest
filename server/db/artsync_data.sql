@@ -25,3 +25,7 @@ VALUES (2, 'audio_track.mp3', 5120, '2023-02-20 15:45:00', 2, 9.99, 2, 'Relaxing
 INSERT INTO product (media_type, media, size, date, owner_id, price, status, title, description, tags, file_format, previews, thumbnail, category)
 VALUES (3, 'video_clip.mp4', 10240, '2023-03-10 18:00:00', 3, 35.50, 1, 'Adventure Documentary', 'Exciting documentary on travel and adventure', 'documentary, travel', 'MP4', 'preview_video1.mkv', 'thumbnail_video.jpg', 'Tech');
 
+-- Inserting categories
+INSERT INTO category (type) VALUES ('Flowers');
+INSERT INTO category (type) VALUES ('Social Media');
+INSERT INTO category (type) VALUES ('Tech');
