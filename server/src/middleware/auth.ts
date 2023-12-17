@@ -15,7 +15,7 @@ function logoutUser(req: any, res: any) {
 }
 
 async function loginUser(req: any, res: any) {
-    if (req.body && req.body.email && req.body.password) {
+    if (req.body?.email && req.body?.password) {
         const { email, password } = req.body
 
         getUserByEmail(email)

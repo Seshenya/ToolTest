@@ -7,6 +7,7 @@ import {
     fetchSearchedMedia,
     fetchMediaCategories,
     addMediaCategory,
+    fetchMediaTypes,
 } from './media/api'
 import { hasToken, refreshToken, logoutUser, loginUser } from './middleware'
 
@@ -27,6 +28,8 @@ router.put('/media/:id', hasToken, updateMedia)
 
 router.get('/categories', hasToken, fetchMediaCategories)
 router.post('/categories', hasToken, addMediaCategory)
+
+router.get('/types', hasToken, fetchMediaTypes)
 
 router.get('/', function (req, res) {
     res.send('GDSD Team 4')
