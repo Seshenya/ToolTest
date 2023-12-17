@@ -1,5 +1,5 @@
 import express from 'express'
-import { addUser, fetchUser, fetchUsers } from './user/api'
+import { addUser, fetchUser, fetchUsers, updateUser } from './user/api'
 import {
     addMedia,
     updateMedia,
@@ -17,6 +17,7 @@ router.delete('/logout', logoutUser)
 router.get('/users/:id', hasToken, fetchUser)
 router.get('/users', hasToken, fetchUsers)
 router.post('/users', addUser)
+router.put('/users/:id', hasToken, updateUser)
 
 router.get('/media/:id', hasToken, fetchMedia)
 router.get('/media', hasToken, fetchSearchedMedia)

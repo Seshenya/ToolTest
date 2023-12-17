@@ -49,4 +49,48 @@ async function createUser(user: UserType) {
     }
 }
 
-export { getUser, getUsers, createUser }
+async function alterUser(user_id: number, user: UserType) {
+    const {firstname, lastname, description, skills} = user
+
+    try {
+        const existingUser = await User.findOneBy({ user_id })
+
+        if (!existingUser) {
+            throw "User Not Found"
+        }
+
+        // Build the update object by excluding undefined values
+        const updateObject: Record<string, any> = {}
+        if (firstname !== undefined) {
+            updateObject.firstname = firstname
+        }
+
+        if (lastname !== undefined) {
+            updateObject.lastname = lastname
+        }
+
+        if (description !== undefined) {
+            updateObject.description = description
+        }
+
+        if (skills !== undefined) {
+            updateObject.skills = skills
+        }
+
+        // Update the User entity
+        await User.createQueryBuilder()
+            .update(User)
+            .set(updateObject)
+            .where('user_id = :user_id', { user_id: user_id })
+            .execute()
+
+        const updatedUser = await User.findOneBy({ user_id })
+        return updatedUser
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error updating user:', error)
+        throw error
+    }
+}
+
+export { getUser, getUsers, createUser, alterUser }
