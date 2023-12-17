@@ -1,5 +1,5 @@
 import { DigitalProduct } from '../entities'
-import { generateSASUrl } from '../../middleware/fetch-media-blob-storage';
+import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
 
 async function searchMedia(
     page: number,
@@ -8,11 +8,11 @@ async function searchMedia(
     media_type: number,
     query: string
 ) {
-    const skip = (page - 1) * size;
+    const skip = (page - 1) * size
 
     try {
-        let baseQuery =
-            DigitalProduct.createQueryBuilder('product').where('1 = 1')
+        let baseQuery = DigitalProduct.createQueryBuilder('product')
+            .where('1 = 1')
             .skip(skip)
             .take(size)
 
@@ -40,41 +40,54 @@ async function searchMedia(
         const containerName = 'gdsdt4'
 
         for (let i = 0; i < media.length; i++) {
-            const blobNameMedia = media[i].media;
-            const blobNamePreview = media[i].previews;
-            const blobNameThumbnail = media[i].thumbnail;
-    
+            const blobNameMedia = media[i].media
+            const blobNamePreview = media[i].previews
+            const blobNameThumbnail = media[i].thumbnail
+
             try {
-                const blobUrlWithSAS = await generateSASUrl(containerName, blobNameMedia);
-                media[i].media = blobUrlWithSAS;
+                const blobUrlWithSAS = await generateSASUrl(
+                    containerName,
+                    blobNameMedia
+                )
+                media[i].media = blobUrlWithSAS
             } catch (error) {
-                throw new Error(`Error generating SAS URL for ${blobNameMedia}`);
+                throw new Error(`Error generating SAS URL for ${blobNameMedia}`)
             }
 
             try {
-                if(blobNamePreview) {
-                    const previews: string[] = [];
+                if (blobNamePreview) {
+                    const previews: string[] = []
                     for (const preview of blobNamePreview) {
-                        const blobUrlWithSAS = await generateSASUrl(containerName, preview);
-                        previews.push(blobUrlWithSAS);
+                        const blobUrlWithSAS = await generateSASUrl(
+                            containerName,
+                            preview
+                        )
+                        previews.push(blobUrlWithSAS)
                     }
-                media[i].previews = previews;
+                    media[i].previews = previews
                 } else {
-                    media[i].previews = [];
+                    media[i].previews = []
                 }
             } catch (error) {
-                throw new Error(`Error generating SAS URL for ${blobNamePreview}`);
+                throw new Error(
+                    `Error generating SAS URL for ${blobNamePreview}`
+                )
             }
 
             try {
-                if(blobNameThumbnail) {
-                    const blobUrlWithSAS = await generateSASUrl(containerName, blobNameThumbnail);
-                    media[i].thumbnail = blobUrlWithSAS;
+                if (blobNameThumbnail) {
+                    const blobUrlWithSAS = await generateSASUrl(
+                        containerName,
+                        blobNameThumbnail
+                    )
+                    media[i].thumbnail = blobUrlWithSAS
                 } else {
-                    media[i].thumbnail = "";
+                    media[i].thumbnail = ''
                 }
             } catch (error) {
-                throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`);
+                throw new Error(
+                    `Error generating SAS URL for ${blobNameThumbnail}`
+                )
             }
         }
 

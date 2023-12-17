@@ -1,15 +1,15 @@
 import { User } from '../../user/entities'
 import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
-import { promises as fsPromises } from 'fs';
-import { generateSASUrl } from '../../middleware/fetch-media-blob-storage';
-import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage';
+import { promises as fsPromises } from 'fs'
+import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
+import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
 
 interface MediaData {
-    fields: any;
-    fileMedia: any;
-    filePreviews: any;
-    fileThumbnail: any;
+    fields: any
+    fileMedia: any
+    filePreviews: any
+    fileThumbnail: any
 }
 
 async function getMedia(product_id: number) {
@@ -28,31 +28,37 @@ async function getMedia(product_id: number) {
     const blobNameThumbnail = media.thumbnail
 
     try {
-        const blobUrlWithSAS = await generateSASUrl(containerName, blobNameMedia);
-        media.media = blobUrlWithSAS;
+        const blobUrlWithSAS = await generateSASUrl(
+            containerName,
+            blobNameMedia
+        )
+        media.media = blobUrlWithSAS
     } catch (error) {
-        throw new Error(`Error generating SAS URL for ${blobNameMedia}`);
+        throw new Error(`Error generating SAS URL for ${blobNameMedia}`)
     }
 
     try {
-        const previews: string[] = [];
+        const previews: string[] = []
         for (const preview of blobNamePreview) {
-            const blobUrlWithSAS = await generateSASUrl(containerName, preview);
-            previews.push(blobUrlWithSAS);
+            const blobUrlWithSAS = await generateSASUrl(containerName, preview)
+            previews.push(blobUrlWithSAS)
         }
-        media.previews = previews;
+        media.previews = previews
     } catch (error) {
-        throw new Error(`Error generating SAS URL for ${blobNamePreview}`);
+        throw new Error(`Error generating SAS URL for ${blobNamePreview}`)
     }
 
     try {
-        const blobUrlWithSAS = await generateSASUrl(containerName, blobNameThumbnail);
-        media.thumbnail = blobUrlWithSAS;
+        const blobUrlWithSAS = await generateSASUrl(
+            containerName,
+            blobNameThumbnail
+        )
+        media.thumbnail = blobUrlWithSAS
     } catch (error) {
-        throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`);
+        throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`)
     }
 
-    return media;
+    return media
 }
 
 async function createMedia(media: MediaData) {
@@ -70,34 +76,39 @@ async function createMedia(media: MediaData) {
     newDigitalProduct.file_format = media.fields.file_format
     newDigitalProduct.category = media.fields.category
 
-    const containerName = 'gdsdt4';
+    const containerName = 'gdsdt4'
 
     // Add Media to Azure Blob Storage
-    const blobNameMedia = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title}.${newDigitalProduct.file_format}`;
-    const dataMedia = await fsPromises.readFile(media.fileMedia.path);
+    const blobNameMedia = `media_${Date.now()}_${Math.random()}_${
+        newDigitalProduct.title
+    }.${newDigitalProduct.file_format}`
+    const dataMedia = await fsPromises.readFile(media.fileMedia.path)
 
-    storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia);
-
+    storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
 
     // Add Previews to Azure Blob Storage
-    const blobNamePreviews: string[] = [];
+    const blobNamePreviews: string[] = []
     for (const preview of media.filePreviews) {
-        const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${preview.name}`;
-        const dataPreview = await fsPromises.readFile(preview.path);
+        const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${
+            preview.name
+        }`
+        const dataPreview = await fsPromises.readFile(preview.path)
 
-        storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview);
-        blobNamePreviews.push(blobNamePreview);
+        storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview)
+        blobNamePreviews.push(blobNamePreview)
     }
 
     // Add Thumbnail to Azure Blob Storage
-    const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name}`;
-    const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path);
+    const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${
+        media.fileThumbnail.name
+    }`
+    const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path)
 
-    storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail);
+    storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
 
-    newDigitalProduct.media = blobNameMedia;
-    newDigitalProduct.previews = blobNamePreviews;
-    newDigitalProduct.thumbnail = blobNameThumbnail;
+    newDigitalProduct.media = blobNameMedia
+    newDigitalProduct.previews = blobNamePreviews
+    newDigitalProduct.thumbnail = blobNameThumbnail
 
     const createdMedia = await newDigitalProduct.save()
     return createdMedia
@@ -157,19 +168,6 @@ async function alterMedia(
         console.error('Error updating media:', error)
         throw error
     }
-}
-
-async function streamToBuffer(readableStream: NodeJS.ReadableStream) {
-    return new Promise<Buffer>((resolve, reject) => {
-        const chunks: Buffer[] = [];
-        readableStream.on('data', (data) => {
-            chunks.push(data instanceof Buffer ? data : Buffer.from(data));
-        });
-        readableStream.on('end', () => {
-            resolve(Buffer.concat(chunks));
-        });
-        readableStream.on('error', reject);
-    });
 }
 
 export { getMedia, createMedia, alterMedia }
