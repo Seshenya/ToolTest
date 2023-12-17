@@ -18,14 +18,9 @@ import Tooltip from '@mui/material/Tooltip'
 import MDBox from 'components/MDBox'
 import MDTypography from 'components/MDTypography'
 import MDButton from 'components/MDButton'
-import { useState } from 'react'
 import MDInput from 'components/MDInput'
 import { IconButton } from '@mui/material'
 import MDBadge from 'components/MDBadge'
-import MDBox from 'components/MDBox'
-import MDButton from 'components/MDButton'
-import MDInput from 'components/MDInput'
-import MDTypography from 'components/MDTypography'
 import { statusColors } from 'constants/DummyProducts'
 import AddEditProductModal from 'layouts/sell/components/AddEditProductModal'
 import { useEffect, useState } from 'react'
@@ -111,6 +106,8 @@ function ProductCard({
     const handleImageLoadError = (e) => {
         const mediaType = product.media_type || 4;
         e.target.src = fallbackImages[mediaType];
+    }
+
     const onSubmit = (data) => {}
 
     const handleFormReset = () => {
@@ -385,8 +382,6 @@ ProductCard.propTypes = {
         label: PropTypes.string.isRequired,
     }).isRequired,
     authors: PropTypes.arrayOf(PropTypes.object),
-}
-
 }
 
 export default ProductCard;

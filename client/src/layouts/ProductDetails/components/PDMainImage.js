@@ -37,22 +37,6 @@ const PDMainImage = ({ productDetails }) => {
     }
   }
 
-  const renderPreviews = () => {
-    if (productDetails.previews) {
-      return productDetails.previews;
-    } else {
-      if (productDetails.media_type === 1) {
-        return imageFallback;
-      } else if (productDetails.media_type === 2) {
-        return audioFallback;
-      } else if (productDetails.media_type === 3) {
-        return videoFallback;
-      } else {
-        return imageFallback;
-      }
-    }
-  };
-
   const handlePreviewError = (e) => {
     if(productDetails.media_type === 1) {
       e.target.src = imageFallback;
@@ -63,6 +47,20 @@ const PDMainImage = ({ productDetails }) => {
     } else {
       e.target.src = imageFallback;
     }
+  }
+
+  const getAllPreviews = () => {
+    const previews = []
+    const thumbnail = renderThumbnail();
+
+    if(thumbnail) {
+      previews.push(thumbnail);
+    }
+
+    if(productDetails.previews) {
+      productDetails.previews.map(preview => previews.push(preview));
+    }
+    return previews;
   }
 
   return (
@@ -107,33 +105,22 @@ const PDMainImage = ({ productDetails }) => {
           },
         }}
       >
-        {/* {
-        productDetails.previews.map(({ img, isSelected }, idx) => (
+        {console.log(productDetails)}
+        {
+         getAllPreviews().map((preview, idx) => (
           <MDBox
             key={idx}
             component={"img"}
-            src={img}
+            src={preview}
+            onError={handlePreviewError}
             sx={{
               width: "80px",
               height: "80px",
               objectFit: "cover",
+              borderRadius: "md",
             }}
-            borderRadius="md"
           />
-        ))} */}
-        {
-          <MDBox
-          component={"img"}
-          src={renderPreviews()}
-          onError={handlePreviewError}
-          sx={{
-            width: "80px",
-            height: "80px",
-            objectFit: "cover",
-          }}
-          borderRadius="md"
-        />
-        }
+        ))}
       </MDBox>
     </MDBox>
   );
