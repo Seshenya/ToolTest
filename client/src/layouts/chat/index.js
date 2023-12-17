@@ -19,16 +19,17 @@ import ChatBox from "./components/ChatBox";
 import { BASE_URL } from "api/axios";
 import io from 'socket.io-client';
 import useAuth from "hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 
 function Chat() {
 
+    const { state } = useLocation();
     const { auth } = useAuth();
-    const [onlineUsers, setOnlineUsers] = useState([])
+    const [pastChatUsers, setPastChatUsers] = useState([])
     const [socket, setSocket] = useState(null);
-    const [receiver, setReceiver] = useState(null);
+    const [receiver, setReceiver] = useState(state?.user?.userId ? state.user : null);
     const [messages, setMessages] = useState([]);
-
 
     useEffect(() => {
         if (!socket) {
@@ -36,12 +37,10 @@ function Chat() {
                 query: { user: JSON.stringify({ id: auth.user_id, name: `${auth.firstname} ${auth.lastname}` }) },
             });
 
-            const handleOnlineUsers = (updatedOnlineUsers) => {
-                setOnlineUsers(updatedOnlineUsers);
-                console.log(updatedOnlineUsers);
-            };
-
-            newSocket.on('onlineUsers', handleOnlineUsers);
+            newSocket.emit('getPastChats')
+            newSocket.on('pastChats', (res) => {
+                setPastChatUsers(res?.pastUsers || [])
+            })
 
             setSocket(newSocket);
         }
@@ -77,10 +76,10 @@ function Chat() {
                         <Grid container spacing={6}>
                             <Grid item xs={12} md={4}>
                                 <ChatList setReceiver={(user) => {
-                                    if (user?.id != receiver?.id) {
+                                    if (user?.userId != receiver?.userId) {
                                         setReceiver(user)
                                     }
-                                }} users={onlineUsers.filter((user) => user.id != auth.user_id)} shadow={false} />
+                                }} users={pastChatUsers.filter((user) => user.userId != auth.user_id)} shadow={false} />
                             </Grid>
                             <Grid item xs={12} md={8}>
                                 {socket && receiver && <ChatBox setMessages={setMessages} messages={messages} receiver={receiver} socket={socket} />}

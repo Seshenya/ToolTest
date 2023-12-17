@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import { getChatHistory, saveMessage } from './services/chat';
+import { getChatHistory, getPastChats, saveMessage } from './services/chat';
 
 interface MessageEvent {
     receiver_id: string;
@@ -12,7 +12,6 @@ interface User {
 }
 
 export const setupSocketEvents = (io: Server) => {
-    const onlineUsers = new Map<string, User>();
 
     io.on('connection', (socket: Socket) => {
         console.log('User connected');
@@ -20,11 +19,14 @@ export const setupSocketEvents = (io: Server) => {
         const user = JSON.parse(socket.handshake.query.user as string) as User;
 
         if (user && user.id) {
-
-            onlineUsers.set(user.id, user);
-            io.emit('onlineUsers', Array.from(onlineUsers.values()));
-
             socket.join(user.id!);
+
+            // Fetch and send the past chat users
+            socket.on('getPastChats', async () => {
+                const pastUsers = await getPastChats(user.id)
+                console.log(pastUsers)
+                io.to(user.id).emit('pastChats', { pastUsers })
+            })
 
             // Fetch and send chat history to the newly connected user
             socket.on('getChatHistory', async ({ targetUserId }) => {
@@ -43,8 +45,6 @@ export const setupSocketEvents = (io: Server) => {
 
             socket.on('disconnect', () => {
                 console.log('User disconnected');
-                onlineUsers.delete(user.id);
-                io.emit('onlineUsers', Array.from(onlineUsers));
             });
         }
     });

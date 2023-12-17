@@ -82,7 +82,7 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
     const handleSendMessage = () => {
         if (newMessage.trim() !== '') {
             setNewMessage('');
-            socket.emit('message', { receiver_id: receiver.id, content: newMessage });
+            socket.emit('message', { receiver_id: receiver.userId, content: newMessage });
         }
     };
     useEffect(() => {
@@ -102,7 +102,7 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
 
     useEffect(() => {
         // Get chat history
-        socket.emit('getChatHistory', { targetUserId: receiver.id })
+        socket.emit('getChatHistory', { targetUserId: receiver.userId })
         socket.on('chatHistory', (res) => {
             setMessages(res?.chatHistory?.length ? res.chatHistory : []);
         })
