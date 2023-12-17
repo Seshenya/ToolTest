@@ -160,11 +160,7 @@ function Shop() {
                                                         product.product_id - 1
                                                     ]
                                                 }
-                                                label={product.title}
-                                                title={product.title}
-                                                description={
-                                                    product.description
-                                                }
+                                                {...product}
                                                 action={{
                                                     type: 'internal',
                                                     route: '/shop',
