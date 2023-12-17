@@ -35,6 +35,7 @@ async function searchMedia(
                 { query }
             )
         }
+
         const media = await baseQuery.getMany()
 
         const containerName = 'gdsdt4'

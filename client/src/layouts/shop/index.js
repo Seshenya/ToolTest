@@ -21,18 +21,20 @@ import ProductCard from 'examples/Cards/ProductCard'
 
 import { useEffect, useRef } from 'react'
 
-import { CircularProgress } from '@mui/material'
+import { CircularProgress, Pagination } from '@mui/material'
 import MDSnackbar from 'components/MDSnackbar'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 
 function Shop() {
-    const [page, setPage] = useState(2)
+    const [page, setPage] = useState(1)
+    const [totalCount, setTotalCount] = useState(0)
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
     const axiosPrivate = useAxiosPrivate()
 
     const handleChange = (event, value) => {
+        getMedia(filtersRef.current, value)
         setPage(value)
     }
 
@@ -50,12 +52,12 @@ function Shop() {
         message: '',
     })
 
-    const getMedia = (filters = filtersRef.current) => {
+    const getMedia = (filters = filtersRef.current, pageNo) => {
         setLoading(true)
         axiosPrivate
             .get(`/media`, {
                 params: {
-                    page: 1,
+                    page: pageNo,
                     size: 10,
                     ...filters,
                 },
@@ -64,6 +66,10 @@ function Shop() {
                 setLoading(false)
                 setProducts(res.data.media)
                 console.log(res.data.media)
+
+                if (res.data.totalCount !== totalCount) {
+                    setTotalCount(res.data.totalCount)
+                }
             })
             .catch((error) => {
                 setLoading(false)
@@ -88,14 +94,17 @@ function Shop() {
     }
 
     useEffect(() => {
-        getMedia()
+        getMedia(filtersRef.current, 1)
     }, [])
 
     return (
         <DashboardLayout>
             <DashboardNavbar
                 filters
-                reCallApi={getMedia}
+                reCallApi={(filtersRef) => {
+                    getMedia(filtersRef, 1)
+                    setPage(1)
+                }}
                 filtersRef={filtersRef}
             />
             <MDBox py={3}>
@@ -153,7 +162,17 @@ function Shop() {
                             </Grid>
                         )}
                     </MDBox>
-                    {/* <Pagination sx={{ padding: 2, width: '100%' }} count={10} page={page} onChange={handleChange} /> */}
+                    <Pagination
+                        sx={{
+                            padding: 2,
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                        }}
+                        count={Math.ceil(totalCount / 10)}
+                        page={page}
+                        onChange={handleChange}
+                    />
                 </Card>
             </MDBox>
             <Footer />
