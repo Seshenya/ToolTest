@@ -1,9 +1,9 @@
-import { BlobSASPermissions, BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters } from '@azure/storage-blob'
 import { User } from '../../user/entities'
 import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
 import { promises as fsPromises } from 'fs';
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage';
+import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage';
 
 interface MediaData {
     fields: any;
@@ -68,47 +68,25 @@ async function createMedia(media: MediaData) {
     newDigitalProduct.thumbnail = media.fields.thumbnail
     newDigitalProduct.category = media.fields.category
 
-    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-
-    if (!connectionString) {
-        throw new Error('Azure Storage connection string is not defined');
-    }
-
-    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
-
     const containerName = 'gdsdt4';
-    const containerClient = blobServiceClient.getContainerClient(containerName);
 
     // Add Media to Azure Blob Storage
     const blobNameMedia = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title}.${newDigitalProduct.file_format}`;
-
-    const blockBlobClientMedia = containerClient.getBlockBlobClient(blobNameMedia);
-
     const dataMedia = await fsPromises.readFile(media.fileMedia.path);
 
-    await blockBlobClientMedia.upload(dataMedia, Buffer.byteLength(dataMedia));
+    storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia);
 
-    newDigitalProduct.media = blobNameMedia;
-
-    
     // Add Preview to Azure Blob Storage
     const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${media.filePreview.name}`;
-
-    const blockBlobClientPreview = containerClient.getBlockBlobClient(blobNamePreview);
-
     const dataPreview = await fsPromises.readFile(media.filePreview.path);
 
-    await blockBlobClientPreview.upload(dataPreview, Buffer.byteLength(dataPreview));
-
+    storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview);
 
     // Add Thumbnail to Azure Blob Storage
     const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name}`;
-
-    const blockBlobClientThumbnail = containerClient.getBlockBlobClient(blobNameThumbnail);
-
     const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path);
 
-    await blockBlobClientThumbnail.upload(dataThumbnail, Buffer.byteLength(dataThumbnail));
+    storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail);
 
     newDigitalProduct.media = blobNameMedia;
     newDigitalProduct.previews = blobNamePreview;
