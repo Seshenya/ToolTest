@@ -7,8 +7,7 @@ async function fetchMedia(req: any, res: any) {
 }
 
 async function addMedia(req: any, res: any) {
-
-    formidable()(req, res, async (err) => {
+    formidable({multiples: true})(req, res, async (err) => {
         if (err) {
           return res.status(500).json({ error: 'File upload failed.' });
         }
@@ -16,12 +15,16 @@ async function addMedia(req: any, res: any) {
         const mediaData = {
             fields: req.fields,
             fileMedia: req.files.media,
-            filePreview: req.files.previews,
+            filePreviews: Array.isArray(req.files.previews) ? req.files.previews : [req.files.previews],
             fileThumbnail: req.files.thumbnail,
         }
 
-        const media = await createMedia(mediaData);
-        res.send(media);
+        try {
+            const media = await createMedia(mediaData);
+            res.send(media);
+        } catch (error) {
+            res.status(500).send({ message: 'Error creating media.' });
+        }
       });
 }
 

@@ -8,7 +8,7 @@ import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storag
 interface MediaData {
     fields: any;
     fileMedia: any;
-    filePreview: any;
+    filePreviews: any;
     fileThumbnail: any;
 }
 
@@ -35,8 +35,12 @@ async function getMedia(product_id: number) {
     }
 
     try {
-        const blobUrlWithSAS = await generateSASUrl(containerName, blobNamePreview);
-        media.previews = blobUrlWithSAS;
+        const previews: string[] = [];
+        for (const preview of blobNamePreview) {
+            const blobUrlWithSAS = await generateSASUrl(containerName, preview);
+            previews.push(blobUrlWithSAS);
+        }
+        media.previews = previews;
     } catch (error) {
         throw new Error(`Error generating SAS URL for ${blobNamePreview}`);
     }
@@ -64,8 +68,6 @@ async function createMedia(media: MediaData) {
     newDigitalProduct.description = media.fields.description
     newDigitalProduct.tags = media.fields.tags
     newDigitalProduct.file_format = media.fields.file_format
-    newDigitalProduct.previews = media.fields.previews
-    newDigitalProduct.thumbnail = media.fields.thumbnail
     newDigitalProduct.category = media.fields.category
 
     const containerName = 'gdsdt4';
@@ -76,11 +78,16 @@ async function createMedia(media: MediaData) {
 
     storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia);
 
-    // Add Preview to Azure Blob Storage
-    const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${media.filePreview.name}`;
-    const dataPreview = await fsPromises.readFile(media.filePreview.path);
 
-    storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview);
+    // Add Previews to Azure Blob Storage
+    const blobNamePreviews: string[] = [];
+    for (const preview of media.filePreviews) {
+        const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${preview.name}`;
+        const dataPreview = await fsPromises.readFile(preview.path);
+
+        storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview);
+        blobNamePreviews.push(blobNamePreview);
+    }
 
     // Add Thumbnail to Azure Blob Storage
     const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name}`;
@@ -89,7 +96,7 @@ async function createMedia(media: MediaData) {
     storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail);
 
     newDigitalProduct.media = blobNameMedia;
-    newDigitalProduct.previews = blobNamePreview;
+    newDigitalProduct.previews = blobNamePreviews;
     newDigitalProduct.thumbnail = blobNameThumbnail;
 
     const createdMedia = await newDigitalProduct.save()

@@ -1,4 +1,3 @@
-import { BlobSASPermissions, BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters } from '@azure/storage-blob';
 import { DigitalProduct } from '../entities'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage';
 
@@ -53,15 +52,27 @@ async function searchMedia(
             }
 
             try {
-                const blobUrlWithSAS = await generateSASUrl(containerName, blobNamePreview);
-                media[i].previews = blobUrlWithSAS;
+                if(blobNamePreview) {
+                    const previews: string[] = [];
+                    for (const preview of blobNamePreview) {
+                        const blobUrlWithSAS = await generateSASUrl(containerName, preview);
+                        previews.push(blobUrlWithSAS);
+                    }
+                media[i].previews = previews;
+                } else {
+                    media[i].previews = [];
+                }
             } catch (error) {
                 throw new Error(`Error generating SAS URL for ${blobNamePreview}`);
             }
 
             try {
-                const blobUrlWithSAS = await generateSASUrl(containerName, blobNameThumbnail);
-                media[i].thumbnail = blobUrlWithSAS;
+                if(blobNameThumbnail) {
+                    const blobUrlWithSAS = await generateSASUrl(containerName, blobNameThumbnail);
+                    media[i].thumbnail = blobUrlWithSAS;
+                } else {
+                    media[i].thumbnail = "";
+                }
             } catch (error) {
                 throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`);
             }
