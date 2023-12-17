@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 // @mui material components
 import Grid from '@mui/material/Grid'
@@ -24,8 +22,6 @@ import AddEditProductModal from './components/AddEditProductModal'
 
 function Sell() {
     const [openModal, setOpenModal] = useState(false)
-    const { register, handleSubmit, reset, setValue } = useForm()
-    const axiosPrivate = useAxiosPrivate()
 
     const handleModalOpen = () => {
         setOpenModal(true)
@@ -33,59 +29,6 @@ function Sell() {
 
     const handleModalClose = () => {
         setOpenModal(false)
-    }
-
-    const handleMediaCreation = async (formData) => {
-        try {
-            const response = await axiosPrivate.post('/media/', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            })
-
-            if (response.status === 200) {
-                const data = response.data
-                console.log('New media created:', data)
-                setOpenModal(false)
-                reset()
-            } else {
-                console.error('Failed to create media')
-            }
-        } catch (error) {
-            console.error('Error creating media:', error)
-        }
-    }
-
-    const onSubmit = (data) => {
-        console.log('On Submit:', data)
-
-        const formData = new FormData()
-        formData.append('media_type', data.media_type)
-        formData.append('owner', '1') // TODO: Change this to the logged in user's ID
-        formData.append('price', data.price)
-        formData.append('status', '1')
-        formData.append('title', data.title)
-        formData.append('description', data.description)
-        formData.append('tags', data.tags)
-        formData.append(
-            'file_format',
-            data.file.name.split('.').pop().toLowerCase()
-        )
-        formData.append('previews', '/media/previews/') // TODO: Add previews
-        formData.append('thumbnail', '/media/thumbnail.jpg') // TODO: Add thumbnail
-        formData.append('category', data.category)
-        formData.append('media', data.file)
-
-        console.log('Form Data:', formData)
-
-        handleMediaCreation(formData)
-
-        setOpenModal(false)
-        reset()
-    }
-
-    const handleFormReset = () => {
-        reset()
     }
 
     return (
@@ -142,10 +85,7 @@ function Sell() {
             <AddEditProductModal
                 openModal={openModal}
                 onClose={handleModalClose}
-                onReset={handleFormReset}
-                onSubmit={handleSubmit(onSubmit)}
-                setValue={setValue}
-                register={register}
+                setOpenModal={setOpenModal}
             />
         </DashboardLayout>
     )
