@@ -86,9 +86,9 @@ const AddEditProductModal = ({
                         }}
                         sx={{ marginBottom: 2 }}
                     >
-                        <option value="1">Social Media</option>
-                        <option value="2">Tech</option>
-                        <option value="3">Flowers</option>
+                        <option value="Image">Image</option>
+                        <option value="Video">Video</option>
+                        <option value="Audio">Audio</option>
                     </TextField>
                     {/* Drag and Drop for Files */}
                     <MDBox
@@ -156,9 +156,9 @@ const AddEditProductModal = ({
                         }}
                         sx={{ marginBottom: 2 }}
                     >
-                        <option value="Image">Image</option>
-                        <option value="Video">Video</option>
-                        <option value="Audio">Audio</option>
+                        <option value="1">Social Media</option>
+                        <option value="2">Tech</option>
+                        <option value="3">Flowers</option>
                     </TextField>
                     <DialogActions>
                         <MDButton
