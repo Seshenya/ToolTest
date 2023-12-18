@@ -1,3 +1,4 @@
 import { MediaType } from './media'
+import { CategoryType } from './category'
 
-export type { MediaType }
+export type { MediaType, CategoryType }

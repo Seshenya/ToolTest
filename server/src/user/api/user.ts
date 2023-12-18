@@ -1,13 +1,23 @@
-import { getUser, getUsers, createUser } from '../services'
+import { getUser, getUsers, createUser, alterUser } from '../services'
 
 async function fetchUser(req: any, res: any) {
-    const user = await getUser(req.id)
-    res.send(user)
+    getUser(req.params.id)
+    .then((user) => {
+        res.send(user)
+    })
+    .catch((error) => {
+        res.status(400).send({ message: error })
+    })
 }
 
 async function fetchUsers(req: any, res: any) {
-    const users = await getUsers()
-    res.send(users)
+    getUsers()
+    .then((users) => {
+        res.send(users)
+    })
+    .catch((error) => {
+        res.status(400).send({ message: error })
+    })
 }
 
 async function addUser(req: any, res: any) {
@@ -20,4 +30,14 @@ async function addUser(req: any, res: any) {
         })
 }
 
-export { fetchUser, fetchUsers, addUser }
+async function updateUser(req: any, res: any) {
+    alterUser(req.params.id, req.body)
+        .then((user) => {
+            res.send(user)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+export { fetchUser, fetchUsers, addUser, updateUser }

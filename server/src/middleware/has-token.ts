@@ -10,7 +10,7 @@ function hasToken(req: any, res: any, next: any) {
 
     jwt.verify(
         token,
-        config.ACCESS_TOKEN_SECRET,
+        process.env.ACCESS_TOKEN_SECRET as string,
         (err: any, decodedPayload: any) => {
             if (err) {
                 return res.status(401).send({ reason: 'Token is invalid' })
