@@ -29,3 +29,8 @@ VALUES (3, 'video_clip.mp4', 10240, '2023-03-10 18:00:00', 3, 35.50, 1, 'Adventu
 INSERT INTO category (type) VALUES ('Flowers');
 INSERT INTO category (type) VALUES ('Social Media');
 INSERT INTO category (type) VALUES ('Tech');
+
+-- Inserting media types
+INSERT INTO media_type (type) VALUES ('Image');
+INSERT INTO media_type (type) VALUES ('Audio');
+INSERT INTO media_type (type) VALUES ('Video');

@@ -62,56 +62,62 @@ async function getMedia(product_id: number) {
 }
 
 async function createMedia(media: MediaData) {
-    const newDigitalProduct = new DigitalProduct()
+    try {
+        const newDigitalProduct = new DigitalProduct()
 
-    newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
-    newDigitalProduct.size = media.fileMedia.size
-    newDigitalProduct.date = new Date()
-    newDigitalProduct.owner = media.fields.owner
-    newDigitalProduct.price = parseInt(media.fields.price, 10)
-    newDigitalProduct.status = parseInt(media.fields.status, 10)
-    newDigitalProduct.title = media.fields.title
-    newDigitalProduct.description = media.fields.description
-    newDigitalProduct.tags = media.fields.tags
-    newDigitalProduct.file_format = media.fields.file_format
-    newDigitalProduct.category = media.fields.category
-
-    const containerName = 'gdsdt4'
-
-    // Add Media to Azure Blob Storage
-    const blobNameMedia = `media_${Date.now()}_${Math.random()}_${
-        newDigitalProduct.title
-    }.${newDigitalProduct.file_format}`
-    const dataMedia = await fsPromises.readFile(media.fileMedia.path)
-
-    storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
-
-    // Add Previews to Azure Blob Storage
-    const blobNamePreviews: string[] = []
-    for (const preview of media.filePreviews) {
-        const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${
-            preview.name
+        newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
+        newDigitalProduct.size = media.fileMedia.size
+        newDigitalProduct.date = new Date()
+        newDigitalProduct.owner = media.fields.owner
+        newDigitalProduct.price = parseInt(media.fields.price, 10)
+        newDigitalProduct.status = parseInt(media.fields.status, 10)
+        newDigitalProduct.title = media.fields.title
+        newDigitalProduct.description = media.fields.description
+        newDigitalProduct.tags = media.fields.tags
+        newDigitalProduct.file_format = media.fields.file_format
+        newDigitalProduct.category = media.fields.category
+    
+        const containerName = 'gdsdt4'
+    
+        // Add Media to Azure Blob Storage
+        const blobNameMedia = `media_${Date.now()}_${Math.random()}_${
+            newDigitalProduct.title
+        }.${newDigitalProduct.file_format}`
+        const dataMedia = await fsPromises.readFile(media.fileMedia.path)
+    
+        storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
+    
+        // Add Previews to Azure Blob Storage
+        const blobNamePreviews: string[] = []
+        for (const preview of media.filePreviews) {
+            const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${
+                preview.name
+            }`
+            const dataPreview = await fsPromises.readFile(preview.path)
+    
+            storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview)
+            blobNamePreviews.push(blobNamePreview)
+        }
+    
+        // Add Thumbnail to Azure Blob Storage
+        const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${
+            media.fileThumbnail.name
         }`
-        const dataPreview = await fsPromises.readFile(preview.path)
-
-        storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview)
-        blobNamePreviews.push(blobNamePreview)
-    }
-
-    // Add Thumbnail to Azure Blob Storage
-    const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${
-        media.fileThumbnail.name
-    }`
-    const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path)
-
-    storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
-
-    newDigitalProduct.media = blobNameMedia
-    newDigitalProduct.previews = blobNamePreviews
-    newDigitalProduct.thumbnail = blobNameThumbnail
-
-    const createdMedia = await newDigitalProduct.save()
-    return createdMedia
+        const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path)
+    
+        storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
+    
+        newDigitalProduct.media = blobNameMedia
+        newDigitalProduct.previews = blobNamePreviews
+        newDigitalProduct.thumbnail = blobNameThumbnail
+    
+        const createdMedia = await newDigitalProduct.save()
+        return createdMedia
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error creating media:', error)
+        throw error
+    }   
 }
 
 async function alterMedia(

@@ -9,6 +9,7 @@ import {
 } from 'typeorm'
 import { User } from '../../user/entities'
 import { Category } from './category'
+import { MediaType } from './media-type'
 
 @Entity('product')
 @Index('idx_title_fulltext', ['title', 'tags'], { fulltext: true })
@@ -20,6 +21,9 @@ export class DigitalProduct extends BaseEntity {
 
     @PrimaryGeneratedColumn()
     product_id: number
+
+    @ManyToOne(() => MediaType)
+    @JoinColumn({ name: 'media_type', referencedColumnName: 'id' })
 
     @Column({ type: 'tinyint' })
     media_type: number
