@@ -1,5 +1,5 @@
 import { getMedia, createMedia, alterMedia, searchMedia } from '../services'
-import formidable from 'express-formidable';
+import formidable from 'express-formidable'
 
 async function fetchMedia(req: any, res: any) {
     const media = await getMedia(req.params.id)
@@ -7,20 +7,27 @@ async function fetchMedia(req: any, res: any) {
 }
 
 async function addMedia(req: any, res: any) {
-
-    formidable()(req, res, async (err) => {
+    formidable({ multiples: true })(req, res, async (err) => {
         if (err) {
-          return res.status(500).json({ error: 'File upload failed.' });
+            return res.status(500).json({ error: 'File upload failed.' })
         }
 
         const mediaData = {
             fields: req.fields,
-            file: req.files.media
+            fileMedia: req.files.media,
+            filePreviews: Array.isArray(req.files.previews)
+                ? req.files.previews
+                : [req.files.previews],
+            fileThumbnail: req.files.thumbnail,
         }
 
-        const media = await createMedia(mediaData);
-        res.send(media);
-      });
+        try {
+            const media = await createMedia(mediaData)
+            res.send(media)
+        } catch (error) {
+            res.status(500).send({ message: 'Error creating media.' })
+        }
+    })
 }
 
 async function updateMedia(req: any, res: any) {
