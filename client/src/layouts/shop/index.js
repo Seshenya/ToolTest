@@ -51,7 +51,7 @@ function Shop() {
     }
 
     const filtersRef = useRef({
-        categoty: '',
+        category: '',
         mediatype: '',
         query: '',
     })
