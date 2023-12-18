@@ -56,8 +56,8 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'text' })
     file_format: string
 
-    @Column({ type: 'text', nullable: true })
-    previews: string
+    @Column({ type: 'simple-array', nullable: true })
+    previews: string[]
 
     @Column({ type: 'text', nullable: true })
     thumbnail: string
