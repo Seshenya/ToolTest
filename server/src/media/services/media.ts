@@ -1,12 +1,15 @@
-import { BlobSASPermissions, BlobServiceClient, StorageSharedKeyCredential, generateBlobSASQueryParameters } from '@azure/storage-blob'
 import { User } from '../../user/entities'
 import { DigitalProduct } from '../entities'
 import { MediaType } from '../types'
-import { promises as fsPromises } from 'fs';
+import { promises as fsPromises } from 'fs'
+import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
+import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
 
 interface MediaData {
-    fields: any;
-    file: any;
+    fields: any
+    fileMedia: any
+    filePreviews: any
+    fileThumbnail: any
 }
 
 async function getMedia(product_id: number) {
@@ -19,93 +22,102 @@ async function getMedia(product_id: number) {
         throw new Error('Media not found')
     }
 
-    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    const containerName = 'gdsdt4'
+    const blobNameMedia = media.media
+    const blobNamePreview = media.previews
+    const blobNameThumbnail = media.thumbnail
 
-    if (!connectionString) {
-        throw new Error('Azure Storage connection string is not defined');
+    try {
+        const blobUrlWithSAS = await generateSASUrl(
+            containerName,
+            blobNameMedia
+        )
+        media.media = blobUrlWithSAS
+    } catch (error) {
+        throw new Error(`Error generating SAS URL for ${blobNameMedia}`)
     }
 
-    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
-    blobServiceClient.generateAccountSasUrl
-    const containerName = 'gdsdt4';
-    const blobName = media.media;
-
-    if(!blobName) {
-        throw new Error('Blob name not found');
+    try {
+        const previews: string[] = []
+        for (const preview of blobNamePreview) {
+            const blobUrlWithSAS = await generateSASUrl(containerName, preview)
+            previews.push(blobUrlWithSAS)
+        }
+        media.previews = previews
+    } catch (error) {
+        throw new Error(`Error generating SAS URL for ${blobNamePreview}`)
     }
 
-    let startDate = new Date();
-    let expiryDate = new Date(startDate);
-    expiryDate.setMinutes(startDate.getMinutes() + 60);
-
-    let sharedAccessPolicy = {
-        startsOn: startDate,
-        expiresOn: expiryDate,
-        permissions: BlobSASPermissions.parse("r")
-    };
-
-    const storageAccountName = "artsync";
-    const storageAccountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY;
-
-    if(!storageAccountKey) {
-        throw new Error('Azure Storage account key is not defined');
+    try {
+        const blobUrlWithSAS = await generateSASUrl(
+            containerName,
+            blobNameThumbnail
+        )
+        media.thumbnail = blobUrlWithSAS
+    } catch (error) {
+        throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`)
     }
 
-    const sharedKeyCredential = new StorageSharedKeyCredential(storageAccountName, storageAccountKey);
-
-    const sasToken = generateBlobSASQueryParameters({
-        containerName: containerName,
-        blobName: blobName,
-        ...sharedAccessPolicy
-    }, sharedKeyCredential).toString();
-
-    const blobUrlWithSAS = `https://${storageAccountName}.blob.core.windows.net/${containerName}/${blobName}?${sasToken}`;
-
-    media.media = blobUrlWithSAS;
-
-    return media;
+    return media
 }
 
 async function createMedia(media: MediaData) {
-    const newDigitalProduct = new DigitalProduct()
+    try {
+        const newDigitalProduct = new DigitalProduct()
 
-    newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
-    newDigitalProduct.size = media.file.size
-    newDigitalProduct.date = new Date()
-    newDigitalProduct.owner = media.fields.owner
-    newDigitalProduct.price = parseInt(media.fields.price, 10)
-    newDigitalProduct.status = parseInt(media.fields.status, 10)
-    newDigitalProduct.title = media.fields.title
-    newDigitalProduct.description = media.fields.description
-    newDigitalProduct.tags = media.fields.tags
-    newDigitalProduct.file_format = media.fields.file_format
-    newDigitalProduct.previews = media.fields.previews
-    newDigitalProduct.thumbnail = media.fields.thumbnail
-    newDigitalProduct.category = media.fields.category
-
-    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-
-    if (!connectionString) {
-        throw new Error('Azure Storage connection string is not defined');
-    }
-
-    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
-
-    const containerName = 'gdsdt4';
-    const containerClient = blobServiceClient.getContainerClient(containerName);
-
-    const blobName = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title}.${newDigitalProduct.file_format}`;
-
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-    const data = await fsPromises.readFile(media.file.path);
-
-    await blockBlobClient.upload(data, Buffer.byteLength(data));
-
-    newDigitalProduct.media = blobName;
-
-    const createdMedia = await newDigitalProduct.save()
-    return createdMedia
+        newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
+        newDigitalProduct.size = media.fileMedia.size
+        newDigitalProduct.date = new Date()
+        newDigitalProduct.owner = media.fields.owner
+        newDigitalProduct.price = parseInt(media.fields.price, 10)
+        newDigitalProduct.status = parseInt(media.fields.status, 10)
+        newDigitalProduct.title = media.fields.title
+        newDigitalProduct.description = media.fields.description
+        newDigitalProduct.tags = media.fields.tags
+        newDigitalProduct.file_format = media.fields.file_format
+        newDigitalProduct.category = media.fields.category
+    
+        const containerName = 'gdsdt4'
+    
+        // Add Media to Azure Blob Storage
+        const blobNameMedia = `media_${Date.now()}_${Math.random()}_${
+            newDigitalProduct.title
+        }.${newDigitalProduct.file_format}`
+        const dataMedia = await fsPromises.readFile(media.fileMedia.path)
+    
+        storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
+    
+        // Add Previews to Azure Blob Storage
+        const blobNamePreviews: string[] = []
+        for (const preview of media.filePreviews) {
+            const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${
+                preview.name
+            }`
+            const dataPreview = await fsPromises.readFile(preview.path)
+    
+            storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview)
+            blobNamePreviews.push(blobNamePreview)
+        }
+    
+        // Add Thumbnail to Azure Blob Storage
+        const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${
+            media.fileThumbnail.name
+        }`
+        const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path)
+    
+        storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
+    
+        newDigitalProduct.media = blobNameMedia
+        newDigitalProduct.previews = blobNamePreviews
+        newDigitalProduct.thumbnail = blobNameThumbnail
+    
+        const createdMedia = await newDigitalProduct.save()
+        return createdMedia
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Error creating media:', error)
+        throw error
+    }   
 }
 
 async function alterMedia(
@@ -162,19 +174,6 @@ async function alterMedia(
         console.error('Error updating media:', error)
         throw error
     }
-}
-
-async function streamToBuffer(readableStream: NodeJS.ReadableStream) {
-    return new Promise<Buffer>((resolve, reject) => {
-        const chunks: Buffer[] = [];
-        readableStream.on('data', (data) => {
-            chunks.push(data instanceof Buffer ? data : Buffer.from(data));
-        });
-        readableStream.on('end', () => {
-            resolve(Buffer.concat(chunks));
-        });
-        readableStream.on('error', reject);
-    });
 }
 
 export { getMedia, createMedia, alterMedia }

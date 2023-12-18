@@ -1,37 +1,28 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import useAxiosPrivate from 'hooks/useAxiosPrivate';
+import React, { useState } from 'react'
 
 // @mui material components
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
-
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid'
+import Card from '@mui/material/Card'
+import Icon from '@mui/material/Icon'
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
+import MDBox from 'components/MDBox'
+import MDTypography from 'components/MDTypography'
+import MDButton from 'components/MDButton'
 
 // Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
+import Footer from 'examples/Footer'
 
+import ProductCard from 'examples/Cards/ProductCard'
 
-import ProductCard from "examples/Cards/ProductCard";
-
-import { products } from "constants/DummyProducts";
-
+import { products } from 'constants/DummyProducts'
+import AddEditProductModal from './components/AddEditProductModal'
 
 function Sell() {
+  const [openModal, setOpenModal] = useState(false)
 
-  const [openModal, setOpenModal] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const { register, handleSubmit, reset, setValue } = useForm();
   const axiosPrivate = useAxiosPrivate()
@@ -86,10 +77,10 @@ function Sell() {
     } catch (error) {
       console.error('Error creating media:', error);
     }
-  };
 
-  const onSubmit = (data) => {
-    console.log("On Submit:", data);
+    const handleModalClose = () => {
+      setOpenModal(false)
+    }
 
     const formData = new FormData();
     formData.append('media_type', data.media_type);
@@ -108,7 +99,7 @@ function Sell() {
     console.log("Form Data:", formData);
 
     handleMediaCreation(formData);
-    
+
     setOpenModal(false);
     reset();
   };
@@ -232,7 +223,7 @@ function Sell() {
             >
               {mediaTypes.map((mediaType) => (
                 <option value={mediaType.id}>
-                 {mediaType.type}
+                  {mediaType.type}
                 </option>
               ))}
             </TextField>
@@ -266,13 +257,11 @@ function Sell() {
                 />
               </MDButton>
             </MDBox>
-            <TextField
-              {...register('tags')}
-              label="Tags"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              sx={{ marginBottom: 2 }}
+            <Footer />
+            <AddEditProductModal
+              openModal={openModal}
+              onClose={handleModalClose}
+              setOpenModal={setOpenModal}
             />
             <TextField
               {...register('category')}
@@ -286,9 +275,9 @@ function Sell() {
               }}
               sx={{ marginBottom: 2 }}
             >
-             {categories.map((category) => (
+              {categories.map((category) => (
                 <option value={category.type}>
-                 {category.type}
+                  {category.type}
                 </option>
               ))}
             </TextField>
@@ -306,4 +295,4 @@ function Sell() {
   );
 }
 
-export default Sell;
+export default Sell
