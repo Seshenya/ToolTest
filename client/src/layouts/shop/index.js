@@ -25,25 +25,11 @@ import { CircularProgress, Pagination } from '@mui/material'
 import MDSnackbar from 'components/MDSnackbar'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
-import product1 from 'assets/images/trending/product1.png'
-import product2 from 'assets/images/trending/product2.png'
-import product3 from 'assets/images/trending/product3.png'
-import product4 from 'assets/images/trending/product4.png'
-import product5 from 'assets/images/trending/product5.png'
-import product6 from 'assets/images/trending/product6.png'
 
 function Shop() {
     const [page, setPage] = useState(1)
     const [totalCount, setTotalCount] = useState(0)
     const [products, setProducts] = useState([])
-    const dummyImages = [
-        product1,
-        product2,
-        product3,
-        product4,
-        product5,
-        product6,
-    ]
     const [loading, setLoading] = useState(false)
     const axiosPrivate = useAxiosPrivate()
 
@@ -155,12 +141,13 @@ function Shop() {
                                         >
                                             <ProductCard
                                                 productId={product.product_id}
-                                                image={
-                                                    dummyImages[
-                                                        product.product_id - 1
-                                                    ]
+                                                product={product}
+                                                image={product.thumbnail}
+                                                label={product.title}
+                                                title={product.title}
+                                                description={
+                                                    product.description
                                                 }
-                                                {...product}
                                                 action={{
                                                     type: 'internal',
                                                     route: '/shop',

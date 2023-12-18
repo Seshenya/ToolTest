@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import useAxiosPrivate from 'hooks/useAxiosPrivate';
 
 // react-router components
 import { useLocation, Link, useNavigate } from "react-router-dom";
@@ -55,6 +56,33 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
   const { auth, updateAuth } = useAuth()
+  const axiosPrivate = useAxiosPrivate()
+
+  const [categories, setCategories] = useState([]);
+  const [mediaTypes, setMediaTypes] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axiosPrivate.get('/categories/');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    const fetchMediaTypes = async () => {
+      try {
+        const response = await axiosPrivate.get('/types/');
+        setMediaTypes(response.data);
+      } catch (error) {
+        console.error('Error fetching media types:', error);
+      }
+    };
+
+    fetchCategories();
+    fetchMediaTypes();
+  }, []);
 
 
   useEffect(() => {
@@ -164,9 +192,11 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
                         }}
                       >
                         <MenuItem value={''}>All</MenuItem>
-                        <MenuItem value={'Social Media'}>Social Media</MenuItem>
-                        <MenuItem value={'Tech'}>Tech</MenuItem>
-                        <MenuItem value={'Flowers'}>Flowes</MenuItem>
+                        {categories.map((category) => (
+                          <MenuItem value={category.type}>
+                            {category.type}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </MDBox>
@@ -213,9 +243,11 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
                         }}
                       >
                         <MenuItem value={''}>All</MenuItem>
-                        <MenuItem value={'1'}>Image</MenuItem>
-                        <MenuItem value={'2'}>Audio</MenuItem>
-                        <MenuItem value={'3'}>Video</MenuItem>
+                        {mediaTypes.map((mediaType) => (
+                          <MenuItem value={mediaType.id}>
+                            {mediaType.type}
+                          </MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </MDBox>

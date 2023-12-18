@@ -1,7 +1,7 @@
-import { getUser, getUsers, createUser } from '../services'
+import { getUser, getUsers, createUser, alterUser } from '../services'
 
 async function fetchUser(req: any, res: any) {
-    getUser(req.id)
+    getUser(req.params.id)
     .then((user) => {
         res.send(user)
     })
@@ -30,4 +30,14 @@ async function addUser(req: any, res: any) {
         })
 }
 
-export { fetchUser, fetchUsers, addUser }
+async function updateUser(req: any, res: any) {
+    alterUser(req.params.id, req.body)
+        .then((user) => {
+            res.send(user)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+export { fetchUser, fetchUsers, addUser, updateUser }

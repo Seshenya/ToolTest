@@ -15,20 +15,23 @@ import Icon from '@mui/material/Icon'
 import Tooltip from '@mui/material/Tooltip'
 
 // Material Dashboard 2 React components
-import { IconButton } from '@mui/material'
-import MDBadge from 'components/MDBadge'
 import MDBox from 'components/MDBox'
+import MDTypography from 'components/MDTypography'
 import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
-import MDTypography from 'components/MDTypography'
+import { IconButton } from '@mui/material'
+import MDBadge from 'components/MDBadge'
 import { statusColors } from 'constants/DummyProducts'
 import AddEditProductModal from 'layouts/sell/components/AddEditProductModal'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+import imageFallback from 'assets/images/fallback/image_fallback.jpg'
+import videoFallback from 'assets/images/fallback/video_fallback.jpg'
+import audioFallback from 'assets/images/fallback/audio_fallback.png'
+
 function ProductCard({
     image,
-    label,
     title,
     description,
     price,
@@ -36,17 +39,24 @@ function ProductCard({
     tags,
     category,
     action,
-    authors,
     deleteBtn,
     discountCode,
     editBtn,
     status,
     collabBtn,
     productId,
+    product,
 }) {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [discountOpen, setDiscountOpen] = useState(false)
     const navigate = useNavigate()
+
+    const fallbackImages = {
+        1: imageFallback,
+        2: audioFallback,
+        3: videoFallback,
+        4: imageFallback,
+    }
 
     const [openModal, setOpenModal] = useState(false)
     const { register, handleSubmit, reset, setValue } = useForm()
@@ -93,6 +103,11 @@ function ProductCard({
         navigate(`/shop/${productId}`)
     }
 
+    const handleImageLoadError = (e) => {
+        const mediaType = product.media_type || 4;
+        e.target.src = fallbackImages[mediaType];
+    }
+
     const onSubmit = (data) => {}
 
     const handleFormReset = () => {
@@ -119,6 +134,7 @@ function ProductCard({
                 <CardMedia
                     src={image}
                     component="img"
+                    onError={handleImageLoadError}
                     title={title}
                     sx={{
                         width: '100%',
@@ -368,4 +384,4 @@ ProductCard.propTypes = {
     authors: PropTypes.arrayOf(PropTypes.object),
 }
 
-export default ProductCard
+export default ProductCard;
