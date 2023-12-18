@@ -7,41 +7,78 @@ import PropTypes from 'prop-types'
 // @mui material components
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
-import Tooltip from '@mui/material/Tooltip'
-import Icon from '@mui/material/Icon'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
+import Icon from '@mui/material/Icon'
+import Tooltip from '@mui/material/Tooltip'
 
 // Material Dashboard 2 React components
 import MDBox from 'components/MDBox'
 import MDTypography from 'components/MDTypography'
 import MDButton from 'components/MDButton'
-import MDAvatar from 'components/MDAvatar'
-import { useState } from 'react'
 import MDInput from 'components/MDInput'
+import { IconButton } from '@mui/material'
 import MDBadge from 'components/MDBadge'
 import { statusColors } from 'constants/DummyProducts'
+import AddEditProductModal from 'layouts/sell/components/AddEditProductModal'
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+
+import imageFallback from 'assets/images/fallback/image_fallback.jpg'
+import videoFallback from 'assets/images/fallback/video_fallback.jpg'
+import audioFallback from 'assets/images/fallback/audio_fallback.png'
 
 function ProductCard({
     image,
-    label,
     title,
     description,
+    price,
+    media_type,
+    tags,
+    category,
     action,
-    authors,
     deleteBtn,
     discountCode,
     editBtn,
     status,
     collabBtn,
     productId,
+    product,
 }) {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [discountOpen, setDiscountOpen] = useState(false)
     const navigate = useNavigate()
+
+    const fallbackImages = {
+        1: imageFallback,
+        2: audioFallback,
+        3: videoFallback,
+        4: imageFallback,
+    }
+
+    const [openModal, setOpenModal] = useState(false)
+    const { register, handleSubmit, reset, setValue } = useForm()
+
+    const handleModalOpen = () => {
+        setOpenModal(true)
+    }
+
+    const handleModalClose = () => {
+        setOpenModal(false)
+    }
+
+    useEffect(() => {
+        reset({
+            title,
+            price,
+            description,
+            media_type,
+            tags,
+            category,
+        })
+    }, [])
 
     // const renderAuthors = authors.map(({ image: media, name }) => (
     //   <Tooltip key={name} title={name} placement="bottom">
@@ -66,6 +103,17 @@ function ProductCard({
         navigate(`/shop/${productId}`)
     }
 
+    const handleImageLoadError = (e) => {
+        const mediaType = product.media_type || 4;
+        e.target.src = fallbackImages[mediaType];
+    }
+
+    const onSubmit = (data) => {}
+
+    const handleFormReset = () => {
+        reset()
+    }
+
     return (
         <Card
             sx={{
@@ -86,6 +134,7 @@ function ProductCard({
                 <CardMedia
                     src={image}
                     component="img"
+                    onError={handleImageLoadError}
                     title={title}
                     sx={{
                         width: '100%',
@@ -173,33 +222,42 @@ function ProductCard({
                         )
                     ) : null}
                     {/* <MDBox display="flex">{renderAuthors}</MDBox> */}
-                    <MDBox display="flex" justifyContent="space-evenly" mr={3}>
+                    <MDBox display="flex" justifyContent="space-evenly" gap={2}>
                         {editBtn ? (
-                            <MDBox display="flex" mr={3}>
-                                <Tooltip
-                                    key={'edit'}
-                                    title={'Edit'}
-                                    placement="bottom"
+                            <Tooltip
+                                key={'edit'}
+                                title={'Edit'}
+                                placement="bottom"
+                            >
+                                <IconButton
+                                    size={'small'}
+                                    color={'info'}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        handleModalOpen()
+                                    }}
                                 >
                                     <Icon>edit</Icon>
-                                </Tooltip>
-                            </MDBox>
+                                </IconButton>
+                            </Tooltip>
                         ) : null}
                         {deleteBtn ? (
-                            <MDBox display="flex" mr={3}>
-                                <Tooltip
-                                    key={'delete'}
-                                    title={'Delete'}
-                                    placement="bottom"
+                            <Tooltip
+                                key={'delete'}
+                                title={'Delete'}
+                                placement="bottom"
+                            >
+                                <IconButton
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setDeleteOpen(true)
+                                    }}
+                                    size={'small'}
+                                    color={'error'}
                                 >
-                                    <Icon
-                                        sx={{ color: 'red' }}
-                                        onClick={() => setDeleteOpen(true)}
-                                    >
-                                        delete
-                                    </Icon>
-                                </Tooltip>
-                            </MDBox>
+                                    <Icon>delete</Icon>
+                                </IconButton>
+                            </Tooltip>
                         ) : null}
                         <Dialog
                             open={deleteOpen}
@@ -225,9 +283,13 @@ function ProductCard({
                                 title={'Generate Discount Code'}
                                 placement="bottom"
                             >
-                                <Icon onClick={() => setDiscountOpen(true)}>
-                                    discount
-                                </Icon>
+                                <IconButton
+                                    onClick={() => setDiscountOpen(true)}
+                                    size={'small'}
+                                    color={'info'}
+                                >
+                                    <Icon>discount</Icon>
+                                </IconButton>
                             </Tooltip>
                         ) : null}
                         {collabBtn ? (
@@ -280,6 +342,14 @@ function ProductCard({
                     </MDBox>
                 </MDBox>
             </MDBox>
+            <AddEditProductModal
+                openModal={openModal}
+                onClose={handleModalClose}
+                onReset={handleFormReset}
+                onSubmit={handleSubmit(onSubmit)}
+                setValue={setValue}
+                register={register}
+            />
         </Card>
     )
 }
@@ -314,4 +384,4 @@ ProductCard.propTypes = {
     authors: PropTypes.arrayOf(PropTypes.object),
 }
 
-export default ProductCard
+export default ProductCard;

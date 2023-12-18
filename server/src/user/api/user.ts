@@ -1,7 +1,7 @@
 import { getUser, getUsers, createUser, alterUser } from '../services'
 
 async function fetchUser(req: any, res: any) {
-    getUser(req.id)
+    getUser(req.params.id)
     .then((user) => {
         res.send(user)
     })
