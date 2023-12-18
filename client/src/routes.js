@@ -46,6 +46,7 @@ import Categories from 'layouts/categories'
 
 //
 import ProductDetails from 'layouts/ProductDetails'
+import OrderHistory from 'layouts/orderHistory'
 
 const routes = [
     {
@@ -209,6 +210,13 @@ const routes = [
         icon: <Icon fontSize="small">category</Icon>,
         route: '/categories',
         component: <Categories />,
+    },
+    {
+        type: 'title',
+        route: '/order-history',
+        // name: 'Order history',
+        // key: 'Order history',
+        component: <OrderHistory />,
     },
 ]
 
