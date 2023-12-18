@@ -8,6 +8,7 @@ import {
     JoinColumn,
 } from 'typeorm'
 import { User } from '../../user/entities'
+import { Category } from './category'
 
 @Entity('product')
 @Index('idx_title_fulltext', ['title', 'tags'], { fulltext: true })
@@ -61,6 +62,9 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     thumbnail: string
 
+    @ManyToOne(() => Category)
+    @JoinColumn({ name: 'category', referencedColumnName: 'type' })
+    
     @Column({ type: 'text' })
     category: string
 }
