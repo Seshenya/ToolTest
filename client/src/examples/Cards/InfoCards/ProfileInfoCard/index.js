@@ -19,7 +19,7 @@ import MDTypography from 'components/MDTypography';
 import colors from 'assets/theme/base/colors';
 import typography from 'assets/theme/base/typography';
 
-function ProfileInfoCard({ title, description, info, social, action, shadow, skills }) {
+function ProfileInfoCard({ title, description, info, shadow }) {
   const labels = [];
   const values = [];
   const { socialMediaColors } = colors;
@@ -53,22 +53,22 @@ function ProfileInfoCard({ title, description, info, social, action, shadow, ski
   ));
 
   // Render the card social media icons
-  const renderSocial = social.map(({ link, icon, color }) => (
-    <MDBox
-      key={color}
-      component='a'
-      href={link}
-      target='_blank'
-      rel='noreferrer'
-      fontSize={size.lg}
-      color={socialMediaColors[color].main}
-      pr={1}
-      pl={0.5}
-      lineHeight={1}
-    >
-      {icon}
-    </MDBox>
-  ));
+  // const renderSocial = social.map(({ link, icon, color }) => (
+  //   <MDBox
+  //     key={color}
+  //     component='a'
+  //     href={link}
+  //     target='_blank'
+  //     rel='noreferrer'
+  //     fontSize={size.lg}
+  //     color={socialMediaColors[color].main}
+  //     pr={1}
+  //     pl={0.5}
+  //     lineHeight={1}
+  //   >
+  //     {icon}
+  //   </MDBox>
+  // ));
 
   return (
     <Card sx={{ height: '100%', boxShadow: !shadow && 'none' }}>
@@ -76,11 +76,11 @@ function ProfileInfoCard({ title, description, info, social, action, shadow, ski
         <MDTypography variant='h6' fontWeight='medium' textTransform='capitalize'>
           {title}
         </MDTypography>
-        <MDTypography component={Link} to={action.route} variant='body2' color='secondary'>
+        {/* <MDTypography component={Link} to={action.route} variant='body2' color='secondary'>
           <Tooltip title={action.tooltip} placement='top'>
             <Icon>edit</Icon>
           </Tooltip>
-        </MDTypography>
+        </MDTypography> */}
       </MDBox>
       <MDBox p={2}>
         <MDBox mb={2} lineHeight={1}>
@@ -93,20 +93,20 @@ function ProfileInfoCard({ title, description, info, social, action, shadow, ski
         </MDBox>
         <MDBox>
           {renderItems}
-          <MDBox display='flex' py={1} pr={2}>
+          {/* <MDBox display='flex' py={1} pr={2}>
             <MDTypography variant='button' fontWeight='bold' textTransform='capitalize'>
               social: &nbsp;
             </MDTypography>
             {renderSocial}
-          </MDBox>
-          <MDBox display='flex' py={1} pr={2}>
+          </MDBox> */}
+          {/* <MDBox display='flex' py={1} pr={2}>
             <MDTypography variant='button' fontWeight='bold' textTransform='capitalize' mt={0.5}>
               Skills: &nbsp;
             </MDTypography>
             {skills.map((skill, idx) => {
               return <Chip key={idx} label={skill} variant='outlined' sx={{ marginRight: 1 }} />;
             })}
-          </MDBox>
+          </MDBox> */}
         </MDBox>
       </MDBox>
     </Card>
@@ -123,11 +123,11 @@ ProfileInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   info: PropTypes.objectOf(PropTypes.string).isRequired,
-  social: PropTypes.arrayOf(PropTypes.object).isRequired,
-  action: PropTypes.shape({
-    route: PropTypes.string.isRequired,
-    tooltip: PropTypes.string.isRequired,
-  }).isRequired,
+  // social: PropTypes.arrayOf(PropTypes.object).isRequired,
+  // action: PropTypes.shape({
+  //   route: PropTypes.string.isRequired,
+  //   tooltip: PropTypes.string.isRequired,
+  // }).isRequired,
   shadow: PropTypes.bool,
 };
 

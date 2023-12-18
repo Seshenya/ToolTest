@@ -111,3 +111,47 @@ CREATE TABLE IF NOT EXISTS message (
     FOREIGN KEY (receiver_id) REFERENCES user(user_id)
 ) ENGINE=InnoDB;
 
+--
+-- Table structure for table category
+--
+
+DROP TABLE IF EXISTS `category`;
+
+CREATE TABLE `category` (
+    `type` VARCHAR(255) NOT NULL,
+    UNIQUE INDEX `type_UNIQUE` (`type` ASC)
+);
+
+--
+-- Alter Table product for foreign key category
+--
+
+ALTER TABLE `product`
+ADD CONSTRAINT `fk_product_category`
+FOREIGN KEY (`category`)
+REFERENCES `category` (`type`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+--
+-- Table structure for table media_type
+--
+
+DROP TABLE IF EXISTS `media_type`;
+
+CREATE TABLE `artsync`.`media_type` (
+    `id` TINYINT AUTO_INCREMENT PRIMARY KEY,
+    `type` VARCHAR(25) NOT NULL,
+     UNIQUE INDEX `type_UNIQUE` (`type` ASC)
+);
+
+--
+-- Alter Table product for foreign key media_type
+--
+
+ALTER TABLE `artsync`.`product`
+ADD CONSTRAINT `fk_product_type`
+FOREIGN KEY (`media_type`)
+REFERENCES `media_type` (`id`)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;

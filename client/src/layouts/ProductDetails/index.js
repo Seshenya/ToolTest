@@ -40,7 +40,7 @@ const ProductDetails = () => {
             }}
           >
             <MDBox sx={{ position: 'sticky', top: '24px' }}>
-              <PDMainImage />
+              <PDMainImage productDetails={productDetails} />
               <br />
               <PDActionButtons productDetails={productDetails} />
               <br />

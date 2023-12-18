@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import 'reflect-metadata'
 import { User } from '../user/entities'
-import { DigitalProduct } from '../media/entities'
+import { Category, DigitalProduct, MediaType } from '../media/entities'
 import config from '../config'
 import { Message } from '../chat/entities/message'
 
@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
     database,
     synchronize: false, // will not create/update the db schema to match the defined entities
     logging: false,
-    entities: [User, DigitalProduct, Message],
+    entities: [User, DigitalProduct, Category, MediaType, Message],
     subscribers: [],
     migrations: [],
 })
