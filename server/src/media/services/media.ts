@@ -67,45 +67,51 @@ async function getMedia(product_id: number) {
 }
 
 async function createMedia(media: MediaData) {
-    const newDigitalProduct = new DigitalProduct()
-
-    newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
-    newDigitalProduct.size = media.file.size
-    newDigitalProduct.date = new Date()
-    newDigitalProduct.owner = media.fields.owner
-    newDigitalProduct.price = parseInt(media.fields.price, 10)
-    newDigitalProduct.status = parseInt(media.fields.status, 10)
-    newDigitalProduct.title = media.fields.title
-    newDigitalProduct.description = media.fields.description
-    newDigitalProduct.tags = media.fields.tags
-    newDigitalProduct.file_format = media.fields.file_format
-    newDigitalProduct.previews = media.fields.previews
-    newDigitalProduct.thumbnail = media.fields.thumbnail
-    newDigitalProduct.category = media.fields.category
-
-    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-
-    if (!connectionString) {
-        throw new Error('Azure Storage connection string is not defined');
+    try {
+        const newDigitalProduct = new DigitalProduct()
+    
+        newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
+        newDigitalProduct.size = media.file.size
+        newDigitalProduct.date = new Date()
+        newDigitalProduct.owner = media.fields.owner
+        newDigitalProduct.price = parseInt(media.fields.price, 10)
+        newDigitalProduct.status = parseInt(media.fields.status, 10)
+        newDigitalProduct.title = media.fields.title
+        newDigitalProduct.description = media.fields.description
+        newDigitalProduct.tags = media.fields.tags
+        newDigitalProduct.file_format = media.fields.file_format
+        newDigitalProduct.previews = media.fields.previews
+        newDigitalProduct.thumbnail = media.fields.thumbnail
+        newDigitalProduct.category = media.fields.category
+    
+        const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    
+        if (!connectionString) {
+            throw new Error('Azure Storage connection string is not defined');
+        }
+    
+        const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
+    
+        const containerName = 'gdsdt4';
+        const containerClient = blobServiceClient.getContainerClient(containerName);
+    
+        const blobName = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title}.${newDigitalProduct.file_format}`;
+    
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+    
+        const data = await fsPromises.readFile(media.file.path);
+    
+        await blockBlobClient.upload(data, Buffer.byteLength(data));
+    
+        newDigitalProduct.media = blobName;
+    
+        const createdMedia = await newDigitalProduct.save()
+        return createdMedia
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log('Error :', error)
+        throw error
     }
-
-    const blobServiceClient = BlobServiceClient.fromConnectionString(connectionString);
-
-    const containerName = 'gdsdt4';
-    const containerClient = blobServiceClient.getContainerClient(containerName);
-
-    const blobName = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title}.${newDigitalProduct.file_format}`;
-
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-    const data = await fsPromises.readFile(media.file.path);
-
-    await blockBlobClient.upload(data, Buffer.byteLength(data));
-
-    newDigitalProduct.media = blobName;
-
-    const createdMedia = await newDigitalProduct.save()
-    return createdMedia
 }
 
 async function alterMedia(

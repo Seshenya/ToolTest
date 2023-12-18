@@ -15,7 +15,7 @@ function logoutUser(req: any, res: any) {
 }
 
 async function loginUser(req: any, res: any) {
-    if (req.body && req.body.email && req.body.password) {
+    if (req.body?.email && req.body?.password) {
         const { email, password } = req.body
 
         getUserByEmail(email)
@@ -28,16 +28,16 @@ async function loginUser(req: any, res: any) {
                     if (passwordMatch) {
                         const accessToken = jwt.sign(
                             { userId: user.user_id, email: user.email },
-                            config.ACCESS_TOKEN_SECRET,
+                            process.env.ACCESS_TOKEN_SECRET as string,
                             {
-                                expiresIn: config.ACCESS_TOKEN_EXPIRE,
+                                expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
                             }
                         )
                         const refreshToken = jwt.sign(
                             { userId: user.user_id, email: user.email },
-                            config.REFRESH_TOKEN_SECRET,
+                            process.env.REFRESH_TOKEN_SECRET as string,
                             {
-                                expiresIn: config.REFRESH_TOKEN_EXPIRE,
+                                expiresIn: process.env.REFRESH_TOKEN_EXPIRE,
                             }
                         )
                         refreshTokens.push(refreshToken)
@@ -76,16 +76,16 @@ function refreshToken(req: any, res: any) {
 
     jwt.verify(
         refreshToken,
-        config.REFRESH_TOKEN_SECRET,
+        process.env.REFRESH_TOKEN_SECRET as string,
         (err: any, user: any) => {
             if (err) {
                 return res.status(401).send({ message: 'Token is invalid' })
             }
             const accessToken = jwt.sign(
                 { userId: user.user_id, email: user.email },
-                config.ACCESS_TOKEN_SECRET,
+                process.env.ACCESS_TOKEN_SECRET as string,
                 {
-                    expiresIn: config.ACCESS_TOKEN_EXPIRE,
+                    expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
                 }
             )
             return res.status(200).send({ accessToken })

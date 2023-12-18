@@ -1,3 +1,3 @@
-import { addMedia, updateMedia, fetchMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory } from './media'
+import { addMedia, updateMedia, fetchMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory, fetchMediaTypes } from './media'
 
-export { addMedia, updateMedia, fetchMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory }
+export { addMedia, updateMedia, fetchMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory, fetchMediaTypes }
