@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // @mui material components
 import Grid from '@mui/material/Grid'
@@ -19,9 +19,15 @@ import ProductCard from 'examples/Cards/ProductCard'
 
 import { products } from 'constants/DummyProducts'
 import AddEditProductModal from './components/AddEditProductModal'
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 
 function Sell() {
   const [openModal, setOpenModal] = useState(false)
+  const [categories, setCategories] = useState([]);
+  const [mediaTypes, setMediaTypes] = useState([]);
+  const axiosPrivate = useAxiosPrivate()
+
 
   const handleModalOpen = () => {
     setOpenModal(true)
@@ -30,6 +36,29 @@ function Sell() {
   const handleModalClose = () => {
     setOpenModal(false)
   }
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axiosPrivate.get('/categories/');
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const fetchMediaTypes = async () => {
+    try {
+      const response = await axiosPrivate.get('/types/');
+      setMediaTypes(response.data);
+    } catch (error) {
+      console.error('Error fetching media types:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+    fetchMediaTypes();
+  }, [])
 
   return (
     <DashboardLayout>
@@ -86,6 +115,8 @@ function Sell() {
         openModal={openModal}
         onClose={handleModalClose}
         setOpenModal={setOpenModal}
+        categories={categories}
+        mediaTypes={mediaTypes}
       />
     </DashboardLayout>
   )
