@@ -5,9 +5,9 @@ export const getChatHistory = async (senderId: string, receiverId: string) => {
     try {
         const messages = await Message
             .createQueryBuilder()
-            .where('(message.sender_id = :senderId AND message.receiver_id = :receiverId) OR (message.sender_id = :receiverId AND message.receiver_id = :senderId)')
+            .where('(sender_id = :senderId AND receiver_id = :receiverId) OR (sender_id = :receiverId AND receiver_id = :senderId)')
             .setParameters({ senderId, receiverId })
-            .orderBy('message.timestamp', 'ASC')
+            .orderBy('timestamp', 'ASC')
             .getMany();
 
         return messages
@@ -41,7 +41,7 @@ export const getPastChats = async (userId: string) => {
             .getRawMany();
 
         const distinctReceiverIds = await Message
-            .createQueryBuilder('message')
+            .createQueryBuilder()
             .select('DISTINCT user.user_id as userId, CONCAT(user.firstname, " ", user.lastname) as name')
             .innerJoin(User, 'user', 'sender_id = user.user_id OR receiver_id = user.user_id')
             .where('sender_id = :userId')
