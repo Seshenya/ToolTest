@@ -34,7 +34,7 @@ export const getPastChats = async (userId: string) => {
     try {
         const distinctSenderIds = await Message
             .createQueryBuilder()
-            .select('DISTINCT user.user_id as userId, user.firstname, user.lastname')
+            .select('DISTINCT user.user_id as userId, CONCAT(user.firstname, " ", user.lastname) as name')
             .innerJoin(User, 'user', 'sender_id = user.user_id OR receiver_id = user.user_id')
             .where('receiver_id = :userId')
             .setParameters({ userId })
