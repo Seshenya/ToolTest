@@ -15,6 +15,7 @@ import Select from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
+import useAuth from 'hooks/useAuth'
 
 
 
@@ -33,9 +34,7 @@ const AddEditProductModal = ({
     const [isDragging3, setIsDragging3] = useState(false);
     const { register, handleSubmit, reset, setValue } = useForm()
     const axiosPrivate = useAxiosPrivate()
-
-
-
+    const { auth } = useAuth()
 
     const handleDrop1 = (e) => {
         e.preventDefault();
@@ -151,7 +150,7 @@ const AddEditProductModal = ({
 
         const formData = new FormData()
         formData.append('media_type', data?.media_type)
-        formData.append('owner', '1') // TODO: Change this to the logged in user's ID
+        formData.append('owner', auth.user_id || '1')
         formData.append('price', data.price)
         formData.append('status', '1')
         formData.append('title', data.title)
