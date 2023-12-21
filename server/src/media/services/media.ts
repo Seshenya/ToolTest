@@ -68,10 +68,14 @@ async function createMedia(media: MediaData) {
 
         newDigitalProduct.media_type = parseInt(media.fields.media_type, 10)
         let mediaSizeNumber = 0
-        for (const mediaSize of media.fileMedia) {
-            mediaSizeNumber += mediaSize.size
+        if (media.fileMedia && typeof media.fileMedia[Symbol.iterator] === 'function') {
+            for (const mediaSize of media.fileMedia) {
+                mediaSizeNumber += mediaSize.size
+            }
+            newDigitalProduct.size = mediaSizeNumber
+        } else {
+            newDigitalProduct.size = media.fileMedia.size
         }
-        newDigitalProduct.size = mediaSizeNumber
         newDigitalProduct.date = new Date()
         newDigitalProduct.owner = media.fields.owner
         newDigitalProduct.price = parseInt(media.fields.price, 10)
@@ -87,11 +91,21 @@ async function createMedia(media: MediaData) {
         // Add Medias to Azure Blob Storage
 
         const blobNameMedias: string[] = []
-        for (const mediaFile of media.fileMedia) {
+        if (media.fileMedia && typeof media.fileMedia[Symbol.iterator] === 'function') {
+            for (const mediaFile of media.fileMedia) {
+                const blobNameMedia = `media_${Date.now()}_${Math.random()}_${
+                    mediaFile.name
+                }`
+                const dataMedia = await fsPromises.readFile(mediaFile.path)
+    
+                storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
+                blobNameMedias.push(blobNameMedia)
+            }
+        } else {
             const blobNameMedia = `media_${Date.now()}_${Math.random()}_${
-                mediaFile.name
+                media.fileMedia.name
             }`
-            const dataMedia = await fsPromises.readFile(mediaFile.path)
+            const dataMedia = await fsPromises.readFile(media.fileMedia.path)
 
             storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
             blobNameMedias.push(blobNameMedia)
