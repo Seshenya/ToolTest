@@ -46,11 +46,15 @@ async function searchMedia(
             const blobNameThumbnail = media[i].thumbnail
 
             try {
-                const blobUrlWithSAS = await generateSASUrl(
-                    containerName,
-                    blobNameMedia
-                )
-                media[i].media = blobUrlWithSAS
+                const medias: string[] = []
+                for (const media of blobNameMedia) {
+                    const blobUrlWithSAS = await generateSASUrl(
+                        containerName,
+                        media
+                    )
+                    medias.push(blobUrlWithSAS)
+                }
+                media[i].media = medias
             } catch (error) {
                 throw new Error(`Error generating SAS URL for ${blobNameMedia}`)
             }

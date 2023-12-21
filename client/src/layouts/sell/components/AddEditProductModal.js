@@ -120,9 +120,12 @@ const AddEditProductModal = ({
 
     const handleFileInputChange1 = (e) => {
         console.log('File Input Change:', e.target.files)
-        const files = Array.from(e.target.files);
-        setUploadedMedia([...uploadedMedia, ...files]);
-        setValue('media', files);
+        const currentMedia = uploadedMedia
+        for(const file of e.target.files) {
+            currentMedia.push(file)
+        }
+        setUploadedMedia([...currentMedia]);
+        setValue('media', currentMedia);
     }
 
     const handleFileInputChange2 = (e) => {
@@ -134,9 +137,12 @@ const AddEditProductModal = ({
 
     const handleFileInputChange3 = (e) => {
         console.log('File Input Change:', e.target.files)
-        const files = Array.from(e.target.files);
-        setUploadedPreviews([...uploadedPreviews, ...files]);
-        setValue('previews', files);
+        const currentPreviews = uploadedPreviews
+        for(const file of e.target.files) {
+            currentPreviews.push(file)
+        }
+        setUploadedPreviews([...currentPreviews]);
+        setValue('previews', currentPreviews);
     }
 
     const handleMediaCreation = async (formData) => {
@@ -144,6 +150,7 @@ const AddEditProductModal = ({
             const response = await axiosPrivate.post('/media/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'maxcontentlength': 'Infinity',
                 },
             })
 
@@ -227,10 +234,18 @@ const AddEditProductModal = ({
             'file_format',
             data.media[0]?.name.split('.').pop().toLowerCase()
         )
-        formData.append('previews', data.previews[0]) // TODO: Change this to an array of files
-        formData.append('thumbnail', data.thumbnail[0])
+
+        for( const media of data.media) {
+            console.log(1)
+            formData.append('media', media)
+        }
+
+        for( const preview of data.previews) {
+            formData.append('previews', preview)
+        }
+
+        formData.append('thumbnail', data.thumbnail[0]) // TODO only one allowed
         formData.append('category', data.category)
-        formData.append('media', data.media[0])
 
         formData.forEach((value, key) => {
             console.log(key + ' ' + value)
