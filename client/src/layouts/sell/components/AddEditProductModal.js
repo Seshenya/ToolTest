@@ -16,6 +16,7 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import useAuth from 'hooks/useAuth'
+import MDSnackbar from 'components/MDSnackbar'
 
 
 
@@ -35,9 +36,17 @@ const AddEditProductModal = ({
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedMediaType, setSelectedMediaType] = useState('1');
     const [selectedCategory, setSelectedCategory] = useState('1');
-    const { register, handleSubmit, reset, setValue } = useForm()
+    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm()
     const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth()
+
+    const [sb, setSb] = useState({
+        open: false,
+        color: '',
+        icon: '',
+        title: '',
+        message: '',
+    });
 
     const handleDrop1 = (e) => {
         e.preventDefault();
@@ -156,7 +165,54 @@ const AddEditProductModal = ({
         }
     }
 
+    const closeSb = () => {
+        setSb({
+            open: false,
+            color: '',
+            icon: '',
+            title: '',
+            message: '',
+        })
+    }
+
     const onSubmit = (data) => {
+
+        if (!data.media) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add atleast one media file',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
+        if (!data.thumbnail) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add one thumbnail file',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
+        if (!data.previews) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add atleast one preview file',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
         console.log('On Submit:', data)
 
         const formData = new FormData()
@@ -197,22 +253,38 @@ const AddEditProductModal = ({
             <DialogTitle id="update-status-title">Add New Item</DialogTitle>
             <DialogContent>
                 <form onSubmit={handleSubmit(handleFormSubmit)}>
+                    {errors.title && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                            {errors.title.message}
+                        </span>
+                    )}
                     <TextField
-                        {...register('title')}
+                        {...register('title', { required: 'Title is required' })}
                         label="Title"
                         fullWidth
                         margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
+                    {errors.price && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block'}} >
+                            {errors.price.message}
+                        </span>
+                    )}
                     <TextField
-                        {...register('price')}
+                        {...register('price', { required: 'Price is required' })}
                         label="Price"
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
+                    {errors.description && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block'}} >
+                            {errors.description.message}
+                        </span>
+                    )}
                     <TextField
+                        {...register('description', { required: 'Description is required' })}
                         {...register('description')}
                         label="Description"
                         multiline
@@ -245,7 +317,7 @@ const AddEditProductModal = ({
 
                     {/* Drag and Drop for Media */}
                     <MDBox
-                        border={isDragging1 ? '2px dashed #aaa' : '2px dashed #ccc'}
+                        border={(isDragging1 || uploadedMedia.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
                         padding="20px"
                         marginBottom="20px"
@@ -274,6 +346,11 @@ const AddEditProductModal = ({
                                 hidden
                             />
                         </MDButton>
+                        {(uploadedMedia.length === 0) && (
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                                Please add atleast one file
+                            </span>
+                        )}
                         {uploadedMedia.map((file, index) => (
                             <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
                                 <MDTypography variant="body1" color="secondary">
@@ -286,7 +363,7 @@ const AddEditProductModal = ({
 
                     {/* Drag and Drop for Thumbnail */}
                     <MDBox
-                        border={isDragging2 ? '2px dashed #aaa' : '2px dashed #ccc'}
+                        border={(isDragging2 || uploadedThumbnail.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
                         padding="20px"
                         marginBottom="20px"
@@ -315,6 +392,11 @@ const AddEditProductModal = ({
                                 hidden
                             />
                         </MDButton>
+                        {(uploadedThumbnail.length === 0) && (
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                                Please add one file
+                            </span>
+                        )}
                         {uploadedThumbnail.map((file, index) => (
                             <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
                                 <MDTypography variant="body1" color="secondary">
@@ -327,7 +409,7 @@ const AddEditProductModal = ({
 
                     {/* Drag and Drop for Previews */}
                     <MDBox
-                        border={isDragging3 ? '2px dashed #aaa' : '2px dashed #ccc'}
+                        border={(isDragging3 || uploadedPreviews.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
                         padding="20px"
                         marginBottom="20px"
@@ -357,6 +439,11 @@ const AddEditProductModal = ({
                                 hidden
                             />
                         </MDButton>
+                        {(uploadedPreviews.length === 0) && (
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                                Please add atleast one file
+                            </span>
+                        )}
                         {uploadedPreviews.map((file, index) => (
                             <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
                                 <MDTypography variant="body1" color="secondary">
@@ -365,8 +452,13 @@ const AddEditProductModal = ({
                             </MDBox>
                         ))}
                     </MDBox>
+                    {errors.tags && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block'}} >
+                            {errors.tags.message}
+                        </span>
+                    )}
                     <TextField
-                        {...register('tags')}
+                        {...register('tags', { required: 'Tags are required' })}
                         label="Tags"
                         fullWidth
                         variant="outlined"
@@ -424,6 +516,16 @@ const AddEditProductModal = ({
                     </DialogActions>
                 </form>
             </DialogContent>
+            <MDSnackbar
+                color={sb.color}
+                icon={sb.icon}
+                title={sb.title}
+                content={sb.message}
+                open={sb.open}
+                onClose={closeSb}
+                close={closeSb}
+                bgWhite
+            />
         </Dialog>
     )
 }
