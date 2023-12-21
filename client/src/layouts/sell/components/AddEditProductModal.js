@@ -216,16 +216,18 @@ const AddEditProductModal = ({
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
-                    <FormControl sx={{ width: 120 }}>
+                    <FormControl fullWidth>
                         <InputLabel id="media_type">Media Type</InputLabel>
                         <Select
                             {...register('media_type')}
-                            sx={{ padding: 1.5 }}
-                            fullWidth
+                            sx={{ padding: 1.5, marginBottom: 2 }}
+                            margin="normal"
+                            variant="outlined"
                             labelId="media_type"
                             id="media_type"
                             label="Media Type"
                             required
+                            value={mediaTypes && mediaTypes.length > 0 ? mediaTypes[0].id : ''}
                         >
                             {mediaTypes?.map((mediaType) => (
                                 <MenuItem value={mediaType.id}>
@@ -366,16 +368,17 @@ const AddEditProductModal = ({
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
-                    <FormControl sx={{ width: 120 }}>
+                    <FormControl fullWidth>
                         <InputLabel id="category">Category</InputLabel>
                         <Select
                             {...register('category')}
                             sx={{ padding: 1.5 }}
-                            fullWidth
+                            
                             labelId="category"
                             id="category"
                             label="Category"
                             required
+                            value={categories && categories.length > 0 ? categories[0].id : ''}
                         >
                             {categories?.map((category) => (
                                 <MenuItem value={category.id}>
