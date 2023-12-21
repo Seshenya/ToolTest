@@ -131,8 +131,9 @@ const AddEditProductModal = ({
     const handleFileInputChange2 = (e) => {
         console.log('File Input Change:', e.target.files)
         const files = Array.from(e.target.files);
-        setUploadedThumbnail([...uploadedThumbnail, ...files]);
-        setValue('thumbnail', files);
+        console.log(uploadedThumbnail)
+        setUploadedThumbnail([...files.slice(0, 1)]);
+        setValue('thumbnail', files.slice(0, 1));
     }
 
     const handleFileInputChange3 = (e) => {
