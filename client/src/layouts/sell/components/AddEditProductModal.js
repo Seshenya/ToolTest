@@ -29,9 +29,12 @@ const AddEditProductModal = ({
     const [uploadedMedia, setUploadedMedia] = useState([])
     const [uploadedThumbnail, setUploadedThumbnail] = useState([])
     const [uploadedPreviews, setUploadedPreviews] = useState([])
-    const [isDragging1, setIsDragging1] = useState(false);
-    const [isDragging2, setIsDragging2] = useState(false);
-    const [isDragging3, setIsDragging3] = useState(false);
+    const [isDragging1, setIsDragging1] = useState(false)
+    const [isDragging2, setIsDragging2] = useState(false)
+    const [isDragging3, setIsDragging3] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [selectedMediaType, setSelectedMediaType] = useState('1');
+    const [selectedCategory, setSelectedCategory] = useState('1');
     const { register, handleSubmit, reset, setValue } = useForm()
     const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth()
@@ -70,7 +73,10 @@ const AddEditProductModal = ({
     }
 
     const handleFormSubmit = (data) => {
-        onSubmit(data)
+        if(!isSubmitting) {
+            setIsSubmitting(true)
+            onSubmit(data)
+        }
     }
 
     const handleDragEnter1 = (e) => {
@@ -142,6 +148,11 @@ const AddEditProductModal = ({
             }
         } catch (error) {
             console.error('Error creating media:', error)
+        } finally {
+            setIsSubmitting(false)
+            setOpenModal(false)
+            handleResetFiles()
+            reset()
         }
     }
 
@@ -170,10 +181,6 @@ const AddEditProductModal = ({
         });
 
         handleMediaCreation(formData)
-
-        // setOpenModal(false)
-        // handleResetFiles()
-        // reset()
     }
 
     const onReset = () => {
@@ -202,7 +209,6 @@ const AddEditProductModal = ({
                         {...register('price')}
                         label="Price"
                         fullWidth
-                        margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
@@ -212,7 +218,6 @@ const AddEditProductModal = ({
                         multiline
                         fullWidth
                         rows={6}
-                        margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
@@ -221,16 +226,16 @@ const AddEditProductModal = ({
                         <Select
                             {...register('media_type')}
                             sx={{ padding: 1.5, marginBottom: 2 }}
-                            margin="normal"
                             variant="outlined"
                             labelId="media_type"
                             id="media_type"
                             label="Media Type"
                             required
-                            value={mediaTypes && mediaTypes.length > 0 ? mediaTypes[0].id : ''}
+                            value={selectedMediaType}
+                            onChange={(e) => setSelectedMediaType(e.target.value)}
                         >
                             {mediaTypes?.map((mediaType) => (
-                                <MenuItem value={mediaType.id}>
+                                <MenuItem value={mediaType.id} key={mediaType.id}>
                                     {mediaType.type}
                                 </MenuItem>
                             ))}
@@ -364,7 +369,6 @@ const AddEditProductModal = ({
                         {...register('tags')}
                         label="Tags"
                         fullWidth
-                        margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
@@ -373,15 +377,15 @@ const AddEditProductModal = ({
                         <Select
                             {...register('category')}
                             sx={{ padding: 1.5 }}
-                            
                             labelId="category"
                             id="category"
                             label="Category"
                             required
-                            value={categories && categories.length > 0 ? categories[0].id : ''}
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
                         >
                             {categories?.map((category) => (
-                                <MenuItem value={category.id}>
+                                <MenuItem value={category.id} key={category.id}>
                                     {category.type}
                                 </MenuItem>
                             ))}
@@ -393,8 +397,9 @@ const AddEditProductModal = ({
                             variant="contained"
                             color="primary"
                             sx={{ marginRight: 2 }}
+                            disabled={isSubmitting}
                         >
-                            Send for Approval
+                            {isSubmitting ? 'Submitting...' : 'Send for Approval'}
                         </MDButton>
                         <MDButton
                             onClick={(e) => {
