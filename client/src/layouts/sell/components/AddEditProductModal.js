@@ -17,8 +17,9 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import useAuth from 'hooks/useAuth'
 import MDSnackbar from 'components/MDSnackbar'
-
-
+import DeleteIcon from '@mui/icons-material/Delete'
+import IconButton from '@mui/material/IconButton'
+import { useEffect } from 'react'
 
 const AddEditProductModal = ({
     openModal,
@@ -185,7 +186,7 @@ const AddEditProductModal = ({
 
     const onSubmit = (data) => {
 
-        if (!data.media) {
+        if (!data.media || data.media.length === 0) {
             setSb({
                 open: true,
                 color: 'error',
@@ -197,19 +198,19 @@ const AddEditProductModal = ({
             return;
         }
 
-        if (!data.thumbnail) {
+        if (!data.thumbnail || data.thumbnail.length === 0 || data.thumbnail.length > 1) {
             setSb({
                 open: true,
                 color: 'error',
                 icon: 'error',
-                title: 'Error: Please add one thumbnail file',
+                title: 'Error: Please add exactly one thumbnail file',
                 message: '',
             });
             setIsSubmitting(false)
             return;
         }
 
-        if (!data.previews) {
+        if (!data.previews || data.previews.length === 0) {
             setSb({
                 open: true,
                 color: 'error',
@@ -258,6 +259,27 @@ const AddEditProductModal = ({
     const onReset = () => {
         reset()
     }
+
+    const handleDeleteFileMedia = (index, fileType) => {
+        let updatedFiles = [];
+        if (fileType === 'media') {
+            updatedFiles = uploadedMedia.filter((_, idx) => idx !== index);
+            setUploadedMedia([...updatedFiles]);
+            setValue('media', [...updatedFiles]);
+        } else if (fileType === 'thumbnail') {
+            updatedFiles = uploadedThumbnail.filter((_, idx) => idx !== index);
+            setUploadedThumbnail([...updatedFiles]);
+            setValue('thumbnail', [...updatedFiles]);
+        } else if (fileType === 'previews') {
+            updatedFiles = uploadedPreviews.filter((_, idx) => idx !== index);
+            setUploadedPreviews([...updatedFiles]);
+            setValue('previews', [...updatedFiles]);
+        }
+    };
+
+    useEffect(() => {
+        console.log('Uploaded Media:', uploadedMedia);
+    }, [uploadedMedia]);
 
     return (
         <Dialog
@@ -368,10 +390,16 @@ const AddEditProductModal = ({
                             </span>
                         )}
                         {uploadedMedia.map((file, index) => (
-                            <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
-                                <MDTypography variant="body1" color="secondary">
+                            <MDBox key={index} display="flex" alignItems="center" marginTop="10px" padding="5px" border="1px solid #ccc">
+                                <MDTypography variant="body1" color="secondary" sx={{ flex: '1 1 auto' }}>
                                     {file.name}
                                 </MDTypography>
+                                <IconButton
+                                    color="error"
+                                    onClick={() => handleDeleteFileMedia(index, 'media')}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </MDBox>
                         ))}
                     </MDBox>
@@ -414,10 +442,16 @@ const AddEditProductModal = ({
                             </span>
                         )}
                         {uploadedThumbnail.map((file, index) => (
-                            <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
-                                <MDTypography variant="body1" color="secondary">
+                            <MDBox key={index} display="flex" alignItems="center" marginTop="10px" padding="5px" border="1px solid #ccc">
+                                <MDTypography variant="body1" color="secondary" sx={{ flex: '1 1 auto' }}>
                                     {file.name}
                                 </MDTypography>
+                                <IconButton
+                                    color="error"
+                                    onClick={() => handleDeleteFileMedia(index, 'thumbnail')}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </MDBox>
                         ))}
                     </MDBox>
@@ -461,10 +495,16 @@ const AddEditProductModal = ({
                             </span>
                         )}
                         {uploadedPreviews.map((file, index) => (
-                            <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
-                                <MDTypography variant="body1" color="secondary">
+                            <MDBox key={index} display="flex" alignItems="center" marginTop="10px" padding="5px" border="1px solid #ccc">
+                                <MDTypography variant="body1" color="secondary" sx={{ flex: '1 1 auto' }}>
                                     {file.name}
                                 </MDTypography>
+                                <IconButton
+                                    color="error"
+                                    onClick={() => handleDeleteFileMedia(index, 'previews')}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </MDBox>
                         ))}
                     </MDBox>
