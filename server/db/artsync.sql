@@ -118,6 +118,7 @@ CREATE TABLE IF NOT EXISTS message (
 DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY,
     `type` VARCHAR(255) NOT NULL,
     UNIQUE INDEX `type_UNIQUE` (`type` ASC)
 );
