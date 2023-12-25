@@ -7,6 +7,7 @@ import {
     fetchSearchedMedia,
     fetchMediaCategories,
     addMediaCategory,
+    updateMediaCategory,
     fetchMediaTypes,
 } from './media/api'
 import { hasToken, refreshToken, logoutUser, loginUser } from './middleware'
@@ -29,6 +30,7 @@ router.put('/media/:id', hasToken, updateMedia)
 
 router.get('/categories', hasToken, fetchMediaCategories)
 router.post('/categories', hasToken, addMediaCategory)
+router.put('/categories/:id', hasToken, updateMediaCategory)
 
 router.get('/types', hasToken, fetchMediaTypes)
 
