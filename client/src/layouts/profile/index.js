@@ -132,26 +132,6 @@ const UserDetails = () => {
             message: '',
         })
     })
-    // try {
-    //   const response = await axiosPrivate.put(`/users/${auth.user_id}`, formData, {
-    //     headers: {
-    //       'Content-Type': 'multipart/form-data',
-    //     },
-    //   });
-
-    //   if (response.status === 200) {
-    //     const data = response.data;
-    //     console.log('User updated:', data);
-    //     setUserData(data);
-
-    //     setOpenModal(false);
-    //     reset();
-    //   } else {
-    //     console.error('Failed to update user');
-    //   }
-    // } catch (error) {
-    //   console.error('Error updating user:', error);
-    // }
   };
 
   const onSubmit = (data) => {
