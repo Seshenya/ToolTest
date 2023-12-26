@@ -4,7 +4,6 @@ import { UserType } from '../types'
 import { promises as fsPromises } from 'fs'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
 import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
-import { error } from 'console'
 
 interface UserData {
     fields: any

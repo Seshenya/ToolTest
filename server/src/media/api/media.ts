@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
     getMedia,
     createMedia,
@@ -8,6 +9,10 @@ import {
     getMediaTypes,
 } from '../services'
 import formidable from 'express-formidable'
+=======
+import { getMedia, createMedia, alterMedia, searchMedia, getMediaCategories, createCategory, alterCategory, getMediaTypes } from '../services'
+import formidable from 'express-formidable';
+>>>>>>> dd505cde6de30f9823cae707b3b1caffa3830028
 
 async function fetchMedia(req: any, res: any) {
     getMedia(req.params.id)
@@ -101,6 +106,16 @@ async function addMediaCategory(req: any, res: any) {
         })
 }
 
+async function updateMediaCategory(req: any, res: any) {
+    alterCategory(req.params.id, req.body.type)
+        .then((category) => {
+            res.send(category)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
 async function fetchMediaTypes(req: any, res: any) {
     getMediaTypes()
         .then((mediaTypes) => {
@@ -111,12 +126,4 @@ async function fetchMediaTypes(req: any, res: any) {
         })
 }
 
-export {
-    fetchMedia,
-    addMedia,
-    updateMedia,
-    fetchSearchedMedia,
-    fetchMediaCategories,
-    addMediaCategory,
-    fetchMediaTypes,
-}
+export { fetchMedia, addMedia, updateMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory, updateMediaCategory, fetchMediaTypes }

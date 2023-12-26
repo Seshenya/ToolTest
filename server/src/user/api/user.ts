@@ -46,7 +46,7 @@ async function updateUser(req: any, res: any) {
             .then((user) => {
                 res.send(user)
             })
-            .catch((error) => {
+            .catch(() => {
                 res.status(500).send({ message: 'Error updating user' })
             })
     })
