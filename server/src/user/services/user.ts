@@ -31,10 +31,10 @@ async function getUser(user_id: number) {
     } catch (error) {
         throw new Error(`Error generating SAS URL for ${blobNameUserProfile}`)
     }
-    
-    user.password = ""
+
+    user.password = ''
     return user
-}  
+}
 
 async function getUsers() {
     try {
@@ -44,7 +44,7 @@ async function getUsers() {
         // eslint-disable-next-line no-console
         console.log('Error :', err)
         throw err
-    }   
+    }
 }
 
 async function createUser(user: UserType) {
@@ -83,13 +83,13 @@ async function createUser(user: UserType) {
 }
 
 async function alterUser(user_id: number, user: UserData) {
-    const {firstname, lastname, description, skills} = user.fields
+    const { firstname, lastname, description, skills } = user.fields
 
     try {
         const existingUser = await User.findOneBy({ user_id })
 
         if (!existingUser) {
-            throw "User Not Found"
+            throw 'User Not Found'
         }
 
         // Build the update object by excluding undefined values
@@ -114,8 +114,12 @@ async function alterUser(user_id: number, user: UserData) {
             const containerName = 'gdsdt4'
 
             // Add Media to Azure Blob Storage
-            const blobNameProfilePic = `user_${firstname}_${lastname}_${Date.now()}_${Math.random()}_${user.fileProfilePicture.name}`
-            const dataMedia = await fsPromises.readFile(user.fileProfilePicture.path)
+            const blobNameProfilePic = `user_${firstname}_${lastname}_${Date.now()}_${Math.random()}_${
+                user.fileProfilePicture.name
+            }`
+            const dataMedia = await fsPromises.readFile(
+                user.fileProfilePicture.path
+            )
 
             storeBlobToBlobStorage(containerName, blobNameProfilePic, dataMedia)
 
@@ -131,7 +135,6 @@ async function alterUser(user_id: number, user: UserData) {
 
         const updatedUsers = await getUser(user_id)
         return updatedUsers
-
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error updating user:', error)
