@@ -1,24 +1,24 @@
 import { getUser, getUsers, createUser, alterUser } from '../services'
-import formidable from 'express-formidable';
+import formidable from 'express-formidable'
 
 async function fetchUser(req: any, res: any) {
     getUser(req.params.id)
-    .then((user) => {
-        res.send(user)
-    })
-    .catch((error) => {
-        res.status(400).send({ message: error })
-    })
+        .then((user) => {
+            res.send(user)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
 }
 
 async function fetchUsers(req: any, res: any) {
     getUsers()
-    .then((users) => {
-        res.send(users)
-    })
-    .catch((error) => {
-        res.status(400).send({ message: error })
-    })
+        .then((users) => {
+            res.send(users)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
 }
 
 async function addUser(req: any, res: any) {

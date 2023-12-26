@@ -80,8 +80,9 @@ async function createMedia(media: MediaData) {
         const containerName = 'gdsdt4'
 
         // Add Media to Azure Blob Storage
-        const blobNameMedia = `media_${Date.now()}_${Math.random()}_${newDigitalProduct.title
-            }.${newDigitalProduct.file_format}`
+        const blobNameMedia = `media_${Date.now()}_${Math.random()}_${
+            newDigitalProduct.title
+        }.${newDigitalProduct.file_format}`
         const dataMedia = await fsPromises.readFile(media.fileMedia.path)
 
         storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
@@ -89,8 +90,9 @@ async function createMedia(media: MediaData) {
         // Add Previews to Azure Blob Storage
         const blobNamePreviews: string[] = []
         for (const preview of media.filePreviews) {
-            const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${preview.name
-                }`
+            const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${
+                preview.name
+            }`
             const dataPreview = await fsPromises.readFile(preview.path)
 
             storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview)
@@ -98,9 +100,12 @@ async function createMedia(media: MediaData) {
         }
 
         // Add Thumbnail to Azure Blob Storage
-        const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name
-            }`
-        const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path)
+        const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${
+            media.fileThumbnail.name
+        }`
+        const dataThumbnail = await fsPromises.readFile(
+            media.fileThumbnail.path
+        )
 
         storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
 
@@ -122,7 +127,16 @@ async function alterMedia(
     user_id: number,
     media: MediaData
 ) {
-    const { price, status, title, description, tags, category, media_type, file_format } = media.fields
+    const {
+        price,
+        status,
+        title,
+        description,
+        tags,
+        category,
+        media_type,
+        file_format,
+    } = media.fields
     const containerName = 'gdsdt4'
 
     try {
@@ -176,10 +190,16 @@ async function alterMedia(
             // Add Previews to Azure Blob Storage
             const blobNamePreviews: string[] = []
             for (const preview of media.filePreviews) {
-                const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${preview.name}`
+                const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${
+                    preview.name
+                }`
                 const dataPreview = await fsPromises.readFile(preview.path)
 
-                storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview)
+                storeBlobToBlobStorage(
+                    containerName,
+                    blobNamePreview,
+                    dataPreview
+                )
                 blobNamePreviews.push(blobNamePreview)
             }
 
@@ -187,10 +207,18 @@ async function alterMedia(
         }
         if (media.fileThumbnail !== undefined) {
             // Add Thumbnail to Azure Blob Storage
-            const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name}`
-            const dataThumbnail = await fsPromises.readFile(media.fileThumbnail.path)
+            const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${
+                media.fileThumbnail.name
+            }`
+            const dataThumbnail = await fsPromises.readFile(
+                media.fileThumbnail.path
+            )
 
-            storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
+            storeBlobToBlobStorage(
+                containerName,
+                blobNameThumbnail,
+                dataThumbnail
+            )
 
             updateObject.thumbnail = blobNameThumbnail
         }
