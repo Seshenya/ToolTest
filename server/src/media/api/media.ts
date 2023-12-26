@@ -36,13 +36,28 @@ async function addMedia(req: any, res: any) {
 }
 
 async function updateMedia(req: any, res: any) {
-    alterMedia(req.params.id, req.userId, req.body)
-        .then((media) => {
-            res.send(media)
-        })
-        .catch((error) => {
-            res.status(400).send({ message: error })
-        })
+    formidable({ multiples: true })(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'File upload failed.' })
+        }
+
+        const mediaData = {
+            fields: req.fields,
+            fileMedia: req.files.media,
+            filePreviews: Array.isArray(req.files.previews)
+                ? req.files.previews
+                : req.files.previews ? [req.files.previews] : undefined,
+            fileThumbnail: req.files.thumbnail,
+        }
+
+        await alterMedia(req.params.id, req.userId, mediaData)
+            .then((media) => {
+                res.send(media)
+            })
+            .catch((error) => {
+                res.status(400).send({ message: error })
+            })
+    })
 }
 
 async function fetchSearchedMedia(req: any, res: any) {

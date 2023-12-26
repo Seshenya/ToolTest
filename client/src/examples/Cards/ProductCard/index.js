@@ -21,7 +21,6 @@ import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
 import { IconButton } from '@mui/material'
 import MDBadge from 'components/MDBadge'
-import { statusColors } from 'constants/DummyProducts'
 import AddEditProductModal from 'layouts/sell/components/AddEditProductModal'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -46,6 +45,9 @@ function ProductCard({
     collabBtn,
     productId,
     product,
+    categories,
+    mediaTypes,
+    refreshSellPage
 }) {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [discountOpen, setDiscountOpen] = useState(false)
@@ -56,6 +58,22 @@ function ProductCard({
         2: audioFallback,
         3: videoFallback,
         4: imageFallback,
+    }
+
+    const statusColors = {
+        1: "warning",
+        2: "info",
+        3: "success",
+        4: "error",
+        5: "warning"
+    }
+
+    const statusText = {
+        1: "Pending",
+        2: "Modification Required",
+        3: "Approved",
+        4: "Rejected",
+        5: "Banned"
     }
 
     const [openModal, setOpenModal] = useState(false)
@@ -190,7 +208,7 @@ function ProductCard({
                 >
                     {status ? (
                         <MDBadge
-                            badgeContent={status}
+                            badgeContent={statusText[status]}
                             color={statusColors[status]}
                             variant="gradient"
                             size="sm"
@@ -347,8 +365,14 @@ function ProductCard({
                 onClose={handleModalClose}
                 onReset={handleFormReset}
                 onSubmit={handleSubmit(onSubmit)}
+                setOpenModal={setOpenModal}
                 setValue={setValue}
                 register={register}
+                editProduct={true}
+                categories={categories}
+                mediaTypes={mediaTypes}
+                product={product}
+                refreshSellPage={refreshSellPage}
             />
         </Card>
     )

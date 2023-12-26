@@ -24,7 +24,10 @@ const AddEditProductModal = ({
     onClose,
     setOpenModal,
     categories,
-    mediaTypes
+    mediaTypes,
+    editProduct,
+    product,
+    refreshSellPage
 }) => {
     const [uploadedMedia, setUploadedMedia] = useState([])
     const [uploadedThumbnail, setUploadedThumbnail] = useState([])
@@ -70,7 +73,7 @@ const AddEditProductModal = ({
     }
 
     const handleFormSubmit = (data) => {
-        onSubmit(data)
+        (editProduct ? onSubmitEdit : onSubmit)(data)
     }
 
     const handleDragEnter1 = (e) => {
@@ -145,6 +148,29 @@ const AddEditProductModal = ({
         }
     }
 
+    const handleMediaEdit = async (formData) => {
+        axiosPrivate.put(`/media/${product.product_id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+        .then(response => {
+            if (response.status === 200) {
+                const data = response.data
+                console.log('Media updated:', data)
+                refreshSellPage()
+                setOpenModal(false)
+                reset()
+            } else {
+                console.error('Failed to update media')
+            }
+        })
+      
+        .catch((error) => {
+            console.error('Error updating media:', error)
+        }) 
+    }
+
     const onSubmit = (data) => {
         console.log('On Submit:', data)
 
@@ -176,6 +202,41 @@ const AddEditProductModal = ({
         // reset()
     }
 
+    const onSubmitEdit = (data) => {
+        console.log('On Submit Edit:', data)
+
+        const formData = new FormData()
+        formData.append('media_type', data?.media_type)
+        formData.append('price', data.price)
+        formData.append('title', data.title)
+        formData.append('description', data.description)
+        formData.append('tags', data.tags)
+        formData.append('category', data.category)
+        if (data.media && data.media[0]) {
+            formData.append('media', data.media[0])
+            formData.append(
+                'file_format',
+                data.media[0]?.name.split('.').pop().toLowerCase()
+            )
+        }
+        if (data.thumbnail && data.thumbnail[0]) {
+            formData.append('thumbnail', data.thumbnail[0])
+        }
+        if (data.previews && data.previews[0]) {
+            formData.append('previews', data.previews[0]) // TODO: Change this to an array of files
+        }
+
+        formData.forEach((value, key) => {
+            console.log(key + ' ' + value)
+        });
+
+        handleMediaEdit(formData)
+
+        // setOpenModal(false)
+        // handleResetFiles()
+        // reset()
+    }
+
     const onReset = () => {
         reset()
     }
@@ -187,12 +248,15 @@ const AddEditProductModal = ({
             fullScreen
             onClick={(e) => e.stopPropagation()}
         >
-            <DialogTitle id="update-status-title">Add New Item</DialogTitle>
+            <DialogTitle id="update-status-title">
+                {editProduct ? "Edit Product" : "Add New Item"}
+            </DialogTitle>
             <DialogContent>
                 <form onSubmit={handleSubmit(handleFormSubmit)}>
                     <TextField
                         {...register('title')}
                         label="Title"
+                        defaultValue={product?.title}
                         fullWidth
                         margin="normal"
                         variant="outlined"
@@ -201,6 +265,7 @@ const AddEditProductModal = ({
                     <TextField
                         {...register('price')}
                         label="Price"
+                        defaultValue={product?.price}
                         fullWidth
                         margin="normal"
                         variant="outlined"
@@ -209,6 +274,7 @@ const AddEditProductModal = ({
                     <TextField
                         {...register('description')}
                         label="Description"
+                        defaultValue={product?.description}
                         multiline
                         fullWidth
                         rows={6}
@@ -222,6 +288,7 @@ const AddEditProductModal = ({
                             {...register('media_type')}
                             sx={{ padding: 1.5 }}
                             fullWidth
+                            defaultValue={product?.media_type}
                             labelId="media_type"
                             id="media_type"
                             label="Media Type"
@@ -361,6 +428,7 @@ const AddEditProductModal = ({
                     <TextField
                         {...register('tags')}
                         label="Tags"
+                        defaultValue={product?.tags}
                         fullWidth
                         margin="normal"
                         variant="outlined"
@@ -375,6 +443,7 @@ const AddEditProductModal = ({
                             labelId="category"
                             id="category"
                             label="Category"
+                            defaultValue={product?.category}
                             required
                         >
                             {categories?.map((category) => (
