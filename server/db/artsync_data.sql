@@ -34,3 +34,7 @@ INSERT INTO category (type) VALUES ('Tech');
 INSERT INTO media_type (type) VALUES ('Image');
 INSERT INTO media_type (type) VALUES ('Audio');
 INSERT INTO media_type (type) VALUES ('Video');
+
+-- Inserting reviews
+INSERT INTO review (product_id, rating, description, reviewed_by) VALUES (1, 4.5, "Absolutely stunning image! The clarity and colors are amazing. It's exactly what I was looking for to enhance my project. The download process was quick and easy. Will definitely be coming back for more.", 1);
+INSERT INTO review (product_id, rating, description, reviewed_by) VALUES (1, 0.5, "Disappointed with the image quality. The colors looked different from what was advertised.", 2);

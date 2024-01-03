@@ -9,15 +9,17 @@ import PDInfoSection from './components/PDInfoSection';
 import PDActionButtons from './components/PDActionButtons';
 import { useParams } from 'react-router-dom';
 import useProductDetails from './hooks/useProductDetails';
+import useProductReviewDetails from './hooks/useProductReviewDetails';
 import MDSnackbar from 'components/MDSnackbar';
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const { productDetails, sb, closeSb } = useProductDetails(productId);
+  const { productReviewDetails, sbar, closeSbar } = useProductReviewDetails(productId);
 
   return (
     <DashboardLayout>
-      {productDetails ? (
+      {productDetails && productReviewDetails ? (
         <Grid
           container
           flexWrap={'nowrap'}
@@ -50,7 +52,7 @@ const ProductDetails = () => {
           </Grid>
           <Grid item width={'100%'}>
             <NewArrivalIcon />
-            <PDInfoSection productDetails={productDetails} />
+            <PDInfoSection productReviewDetails={productReviewDetails} productDetails={productDetails} />
           </Grid>
         </Grid>
       ) : (
@@ -74,6 +76,16 @@ const ProductDetails = () => {
         open={sb.open}
         onClose={closeSb}
         close={closeSb}
+        bgWhite
+      />
+      <MDSnackbar
+        color={sbar.color}
+        icon={sbar.icon}
+        title={sbar.title}
+        content={sbar.message}
+        open={sbar.open}
+        onClose={closeSbar}
+        close={closeSbar}
         bgWhite
       />
     </DashboardLayout>
