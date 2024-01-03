@@ -154,21 +154,21 @@ const AddEditProductModal = ({
                 'Content-Type': 'multipart/form-data',
             },
         })
-        .then(response => {
-            if (response.status === 200) {
-                const data = response.data
-                console.log('Media updated:', data)
-                refreshSellPage()
-                setOpenModal(false)
-                reset()
-            } else {
-                console.error('Failed to update media')
-            }
-        })
-      
-        .catch((error) => {
-            console.error('Error updating media:', error)
-        }) 
+            .then(response => {
+                if (response.status === 200) {
+                    const data = response.data
+                    console.log('Media updated:', data)
+                    refreshSellPage()
+                    setOpenModal(false)
+                    reset()
+                } else {
+                    console.error('Failed to update media')
+                }
+            })
+
+            .catch((error) => {
+                console.error('Error updating media:', error)
+            })
     }
 
     const onSubmit = (data) => {
@@ -211,6 +211,7 @@ const AddEditProductModal = ({
         formData.append('title', data.title)
         formData.append('description', data.description)
         formData.append('tags', data.tags)
+        formData.append('status', '1')
         formData.append('category', data.category)
         if (data.media && data.media[0]) {
             formData.append('media', data.media[0])
