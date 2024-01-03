@@ -28,6 +28,7 @@ import { useForm } from 'react-hook-form'
 import imageFallback from 'assets/images/fallback/image_fallback.jpg'
 import videoFallback from 'assets/images/fallback/video_fallback.jpg'
 import audioFallback from 'assets/images/fallback/audio_fallback.png'
+import { statusTypes } from 'helpers'
 
 function ProductCard({
     image,
@@ -47,7 +48,8 @@ function ProductCard({
     product,
     categories,
     mediaTypes,
-    refreshSellPage
+    refreshSellPage,
+    comment
 }) {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [discountOpen, setDiscountOpen] = useState(false)
@@ -58,22 +60,6 @@ function ProductCard({
         2: audioFallback,
         3: videoFallback,
         4: imageFallback,
-    }
-
-    const statusColors = {
-        1: "warning",
-        2: "info",
-        3: "success",
-        4: "error",
-        5: "warning"
-    }
-
-    const statusText = {
-        1: "Pending",
-        2: "Modification Required",
-        3: "Approved",
-        4: "Rejected",
-        5: "Banned"
     }
 
     const [openModal, setOpenModal] = useState(false)
@@ -126,7 +112,7 @@ function ProductCard({
         e.target.src = fallbackImages[mediaType];
     }
 
-    const onSubmit = (data) => {}
+    const onSubmit = (data) => { }
 
     const handleFormReset = () => {
         reset()
@@ -207,12 +193,14 @@ function ProductCard({
                     alignItems="center"
                 >
                     {status ? (
-                        <MDBadge
-                            badgeContent={statusText[status]}
-                            color={statusColors[status]}
-                            variant="gradient"
-                            size="sm"
-                        />
+                        <Tooltip title={comment || statusTypes[status].label}>
+                            <MDBadge
+                                badgeContent={statusTypes[status].label}
+                                color={statusTypes[status].color}
+                                variant="gradient"
+                                size="sm"
+                            />
+                        </Tooltip>
                     ) : null}
                     {action ? (
                         action.type === 'internal' ? (

@@ -8,12 +8,12 @@ import MDBadge from "components/MDBadge";
 
 import Icon from '@mui/material/Icon';
 
-// Images
-import { products } from "constants/DummyProducts";
-
 import { statusColors } from "constants/DummyProducts";
+import { getFormattedDate } from "helpers";
+import { getStatus } from "helpers";
 
-export default function productsTableData(setUpdateStatusOpen) {
+export default function productsTableData(products, openUpdateStatus) {
+
     return {
         columns: [
             { Header: "Product", accessor: "product", align: "left" },
@@ -24,24 +24,28 @@ export default function productsTableData(setUpdateStatusOpen) {
         ],
 
         rows: products.map((product) => {
+
+            const formattedDate = getFormattedDate(product?.date)
+            const status = getStatus(product?.status)
+
             return (
                 {
-                    product: product.title,
-                    creator: product.creator.name,
+                    product: product?.title,
+                    creator: `${product?.owner?.firstname} ${product?.owner?.lastname}`,
                     status: (
                         <MDBox ml={-1}>
-                            <MDBadge badgeContent={product.status} color={statusColors[product.status]} variant="gradient" size="sm" />
+                            <MDBadge badgeContent={status.label} color={status.color} variant="gradient" size="sm" />
                         </MDBox>
                     ),
                     date: (
                         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                            {product.date}
+                            {formattedDate}
                         </MDTypography>
                     ),
                     action: (
                         <MDBox display='flex'>
                             <MDBox>
-                                <Icon fontSize='small' onClick={() => setUpdateStatusOpen(true)}>edit</Icon>
+                                <Icon fontSize='small' onClick={() => openUpdateStatus(product)}>edit</Icon>
                             </MDBox>
                             <MDBox ml={1}>
                                 <Icon fontSize='small'>download</Icon>
