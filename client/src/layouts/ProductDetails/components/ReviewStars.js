@@ -3,7 +3,7 @@ import { Rating } from '@mui/material';
 import MDBox from 'components/MDBox';
 import React from 'react';
 
-const ReviewStars = () => {
+const ReviewStars = ({ productReviewDetails }) => {
   return (
     <MDBox
       sx={{
@@ -12,8 +12,8 @@ const ReviewStars = () => {
         gap: 1,
       }}
     >
-      <MDBox>3.5</MDBox>
-      <Rating value={3.5} precision={0.5} readOnly />
+      <MDBox>{productReviewDetails.averageRating.toFixed(1)}</MDBox>
+      <Rating value={productReviewDetails.averageRating} precision={0.5} readOnly />
     </MDBox>
   );
 };
