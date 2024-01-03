@@ -97,6 +97,20 @@ CREATE TABLE `competition` (
     FOREIGN KEY (`host_id`) REFERENCES user(`user_id`) ON DELETE CASCADE
 );
 
+
+-- Table structure for messages
+
+CREATE TABLE IF NOT EXISTS message (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    content TEXT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX sender_receiver_idx (sender_id, receiver_id),
+    FOREIGN KEY (sender_id) REFERENCES user(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES user(user_id)
+) ENGINE=InnoDB;
+
 --
 -- Table structure for table category
 --

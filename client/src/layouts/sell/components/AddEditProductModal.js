@@ -6,16 +6,25 @@ import {
     TextField,
 } from '@mui/material'
 import MDButton from 'components/MDButton'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import MDBox from 'components/MDBox'
 import MDTypography from 'components/MDTypography'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
+import Select from '@mui/material/Select'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import useAuth from 'hooks/useAuth'
+
+
 
 const AddEditProductModal = ({
     openModal,
     onClose,
-    setOpenModal
+    setOpenModal,
+    categories,
+    mediaTypes
 }) => {
     const [uploadedMedia, setUploadedMedia] = useState([])
     const [uploadedThumbnail, setUploadedThumbnail] = useState([])
@@ -25,6 +34,7 @@ const AddEditProductModal = ({
     const [isDragging3, setIsDragging3] = useState(false);
     const { register, handleSubmit, reset, setValue } = useForm()
     const axiosPrivate = useAxiosPrivate()
+    const { auth } = useAuth()
 
     const handleDrop1 = (e) => {
         e.preventDefault();
@@ -139,8 +149,8 @@ const AddEditProductModal = ({
         console.log('On Submit:', data)
 
         const formData = new FormData()
-        formData.append('media_type', data.media_type)
-        formData.append('owner', '1') // TODO: Change this to the logged in user's ID
+        formData.append('media_type', data?.media_type)
+        formData.append('owner', auth.user_id || '1')
         formData.append('price', data.price)
         formData.append('status', '1')
         formData.append('title', data.title)
@@ -161,9 +171,9 @@ const AddEditProductModal = ({
 
         handleMediaCreation(formData)
 
-        setOpenModal(false)
-        handleResetFiles()
-        reset()
+        // setOpenModal(false)
+        // handleResetFiles()
+        // reset()
     }
 
     const onReset = () => {
@@ -206,22 +216,24 @@ const AddEditProductModal = ({
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
-                    <TextField
-                        {...register('media_type')}
-                        select
-                        label="Media Type"
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                        SelectProps={{
-                            native: true,
-                        }}
-                        sx={{ marginBottom: 2 }}
-                    >
-                        <option value="1" selected>Image</option>
-                        <option value="3">Video</option>
-                        <option value="2">Audio</option>
-                    </TextField>
+                    <FormControl sx={{ width: 120 }}>
+                        <InputLabel id="media_type">Media Type</InputLabel>
+                        <Select
+                            {...register('media_type')}
+                            sx={{ padding: 1.5 }}
+                            fullWidth
+                            labelId="media_type"
+                            id="media_type"
+                            label="Media Type"
+                            required
+                        >
+                            {mediaTypes?.map((mediaType) => (
+                                <MenuItem value={mediaType.id}>
+                                    {mediaType.type}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     {/* Drag and Drop for Files */}
 
                     {/* Drag and Drop for Media */}
@@ -249,11 +261,11 @@ const AddEditProductModal = ({
                         </MDTypography>
                         <MDButton variant="outlined" component="label" color="primary">
                             Upload File
-                                <input
-                                    type="file"
-                                    onChange={handleFileInputChange1}
-                                    hidden
-                                />
+                            <input
+                                type="file"
+                                onChange={handleFileInputChange1}
+                                hidden
+                            />
                         </MDButton>
                         {uploadedMedia.map((file, index) => (
                             <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
@@ -354,22 +366,24 @@ const AddEditProductModal = ({
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
-                    <TextField
-                        {...register('category')}
-                        select
-                        label="Category"
-                        fullWidth
-                        margin="normal"
-                        variant="outlined"
-                        SelectProps={{
-                            native: true,
-                        }}
-                        sx={{ marginBottom: 2 }}
-                    >
-                        <option value="1">Social Media</option>
-                        <option value="2">Tech</option>
-                        <option value="3">Flowers</option>
-                    </TextField>
+                    <FormControl sx={{ width: 120 }}>
+                        <InputLabel id="category">Category</InputLabel>
+                        <Select
+                            {...register('category')}
+                            sx={{ padding: 1.5 }}
+                            fullWidth
+                            labelId="category"
+                            id="category"
+                            label="Category"
+                            required
+                        >
+                            {categories?.map((category) => (
+                                <MenuItem value={category.id}>
+                                    {category.type}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <DialogActions>
                         <MDButton
                             type="submit"

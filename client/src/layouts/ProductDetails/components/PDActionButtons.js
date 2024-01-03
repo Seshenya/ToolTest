@@ -1,14 +1,16 @@
 import { StoreRounded, SwapHorizRounded } from '@mui/icons-material'
 import MDBox from 'components/MDBox'
 import MDButton from 'components/MDButton'
-import { useMaterialUIController } from 'context'
+import { useNavigate } from 'react-router-dom'
 import ConfirmationModal from './ConfirmationModal'
-import { useState } from 'react'
+import { useState } from "react"
 
-const PDActionButtons = ({ productDetails }) => {
-    const [controller] = useMaterialUIController()
-    const { sidenavColor } = controller
-    const [ showConfirmationModal, setShowConfirmationModal ] = useState(false)
+const PDActionButtons = (productDetails) => {
+
+
+
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+    const navigate = useNavigate()
 
     const handleBuyClick = () => {
         setShowConfirmationModal(true)
@@ -38,7 +40,7 @@ const PDActionButtons = ({ productDetails }) => {
         <>
             <MDButton
                 variant="gradient"
-                color={sidenavColor}
+                color={'primary'}
                 fullWidth
                 sx={{ marginBottom: 1 }}
                 onClick={handleBuyClick}
@@ -47,11 +49,19 @@ const PDActionButtons = ({ productDetails }) => {
                 <StoreRounded />
             </MDButton>
             <MDBox sx={{ display: 'flex', gap: 1 }}>
-                <MDButton
-                    color={'warning'}
-                    fullWidth
-                    onClick={handleDownload}>
-                    Negotiate &nbsp;
+                <MDButton color={'secondary'} fullWidth onClick={() => {
+                    if (productDetails?.productDetails?.owner?.user_id) {
+                        navigate(`/chat`, {
+                            state: {
+                                user: {
+                                    userId: productDetails?.productDetails?.owner?.user_id,
+                                    name: `${productDetails?.productDetails?.owner?.firstname} ${productDetails?.productDetails?.owner?.lastname}`
+                                }
+                            }
+                        })
+                    }
+                }}>
+                    Contact Seller &nbsp;
                     <SwapHorizRounded />
                 </MDButton>
                 {/* <MDButton variant='gradient' color={'secondary'} fullWidth>

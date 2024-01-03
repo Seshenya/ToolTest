@@ -61,7 +61,7 @@ function Basic() {
           open: true,
           color: 'error',
           icon: 'error',
-          title: error?.response?.data?.message || error?.message,
+          title: error?.response?.data?.message || error?.message || '',
           message: ""
         })
       })

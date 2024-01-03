@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 // @mui material components
 import Grid from '@mui/material/Grid'
@@ -19,16 +19,23 @@ import ProductCard from 'examples/Cards/ProductCard'
 
 import { products } from 'constants/DummyProducts'
 import AddEditProductModal from './components/AddEditProductModal'
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
+
 
 function Sell() {
   const [openModal, setOpenModal] = useState(false)
-
-  const [isDragging, setIsDragging] = useState(false);
-  const { register, handleSubmit, reset, setValue } = useForm();
-  const axiosPrivate = useAxiosPrivate()
-
   const [categories, setCategories] = useState([]);
   const [mediaTypes, setMediaTypes] = useState([]);
+  const axiosPrivate = useAxiosPrivate()
+
+
+  const handleModalOpen = () => {
+    setOpenModal(true)
+  }
+
+  const handleModalClose = () => {
+    setOpenModal(false)
+  }
 
   const fetchCategories = async () => {
     try {
@@ -48,83 +55,10 @@ function Sell() {
     }
   };
 
-  const handleModalOpen = () => {
-    setOpenModal(true);
+  useEffect(() => {
     fetchCategories();
     fetchMediaTypes();
-  };
-
-  const handleModalClose = () => {
-    setOpenModal(false);
-  };
-
-  const handleMediaCreation = async (formData) => {
-    try {
-      const response = await axiosPrivate.post('/media/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      if (response.status === 200) {
-        const data = response.data;
-        console.log('New media created:', data);
-        setOpenModal(false);
-        reset();
-      } else {
-        console.error('Failed to create media');
-      }
-    } catch (error) {
-      console.error('Error creating media:', error);
-    }
-
-    const handleModalClose = () => {
-      setOpenModal(false)
-    }
-
-    const formData = new FormData();
-    formData.append('media_type', data.media_type);
-    formData.append('owner', '1'); // TODO: Change this to the logged in user's ID
-    formData.append('price', data.price);
-    formData.append('status', '1');
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    formData.append('tags', data.tags);
-    formData.append('file_format', data.file.name.split('.').pop().toLowerCase());
-    formData.append('previews', '/media/previews/'); // TODO: Add previews
-    formData.append('thumbnail', '/media/thumbnail.jpg'); // TODO: Add thumbnail
-    formData.append('category', data.category);
-    formData.append('media', data.file);
-
-    console.log("Form Data:", formData);
-
-    handleMediaCreation(formData);
-
-    setOpenModal(false);
-    reset();
-  };
-
-  const handleFormReset = () => {
-    reset();
-  };
-
-  const handleDragEnter = (e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-
-    const files = e.dataTransfer.files;
-    console.log('Dropped files:', files);
-  };
+  }, [])
 
   return (
     <DashboardLayout>
@@ -140,7 +74,7 @@ function Sell() {
             bgColor="info"
             borderRadius="lg"
             coloredShadow="info"
-            display='flex'
+            display="flex"
             justifyContent="space-between"
           >
             <MDTypography variant="h6" color="white">
@@ -161,15 +95,13 @@ function Sell() {
               {products.map((product) => {
                 return (
                   <Grid item xs={12} md={6} xl={4}>
+                    {console.log(product)}
                     <ProductCard
-                      image={product.image}
-                      label={product.title}
-                      title={product.title}
-                      description={product.description}
+                      productId={product.id}
+                      {...product}
                       deleteBtn
                       discountCode
                       editBtn
-                      status={product.status}
                     />
                   </Grid>
                 )
@@ -179,120 +111,15 @@ function Sell() {
         </Card>
       </MDBox>
       <Footer />
-      <Dialog open={openModal} onClose={handleModalClose} fullScreen>
-        <DialogTitle id="update-status-title">Add New Item</DialogTitle>
-        <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <TextField
-              {...register('title')}
-              label="Title"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              {...register('price')}
-              label="Price"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              {...register('description')}
-              label="Description"
-              multiline
-              fullWidth
-              rows={6}
-              margin="normal"
-              variant="outlined"
-              sx={{ marginBottom: 2 }}
-            />
-            <TextField
-              {...register('media_type')}
-              select
-              label="Media Type"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              SelectProps={{
-                native: true,
-              }}
-              sx={{ marginBottom: 2 }}
-            >
-              {mediaTypes.map((mediaType) => (
-                <option value={mediaType.id}>
-                  {mediaType.type}
-                </option>
-              ))}
-            </TextField>
-            {/* Drag and Drop for Files */}
-            <MDBox
-              border={isDragging ? '2px dashed #aaa' : '2px dashed #ccc'}
-              borderRadius="5px"
-              padding="20px"
-              marginBottom="20px"
-              textAlign="center"
-              onDragOver={(e) => handleDragEnter(e)}
-              onDragEnter={(e) => handleDragEnter(e)}
-              onDragLeave={(e) => handleDragLeave(e)}
-              onDrop={(e) => handleDrop(e)}
-            >
-              <MDTypography variant="body1" color="textSecondary" gutterBottom>
-                {isDragging ? 'Drop your file here' : 'Drag and drop your file here'}
-              </MDTypography>
-              <MDTypography variant="body1" color="textSecondary" gutterBottom>
-                OR
-              </MDTypography>
-              <MDButton variant="outlined" component="label" color="primary">
-                Upload File
-                <input
-                  type="file"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    setValue('file', file);
-                  }}
-                  hidden
-                />
-              </MDButton>
-            </MDBox>
-            <Footer />
-            <AddEditProductModal
-              openModal={openModal}
-              onClose={handleModalClose}
-              setOpenModal={setOpenModal}
-            />
-            <TextField
-              {...register('category')}
-              select
-              label="Category"
-              fullWidth
-              margin="normal"
-              variant="outlined"
-              SelectProps={{
-                native: true,
-              }}
-              sx={{ marginBottom: 2 }}
-            >
-              {categories.map((category) => (
-                <option value={category.type}>
-                  {category.type}
-                </option>
-              ))}
-            </TextField>
-            <DialogActions>
-              <MDButton type="submit" variant="contained" color="primary" sx={{ marginRight: 2 }}>
-                Send for Approval
-              </MDButton>
-              <MDButton onClick={handleFormReset} color="secondary">Reset</MDButton>
-              <MDButton onClick={handleModalClose}>Cancel</MDButton>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
+      <AddEditProductModal
+        openModal={openModal}
+        onClose={handleModalClose}
+        setOpenModal={setOpenModal}
+        categories={categories}
+        mediaTypes={mediaTypes}
+      />
     </DashboardLayout>
-  );
+  )
 }
 
 export default Sell

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
     Paper,
     List,
@@ -76,20 +76,22 @@ const StyledTextField = styled(TextField)({
 const ChatBox = ({ socket, receiver, messages, setMessages }) => {
     const { auth } = useAuth();
 
-
     const [newMessage, setNewMessage] = useState('');
+    const messagesContainerRef = useRef(null);
 
     const handleSendMessage = () => {
         if (newMessage.trim() !== '') {
             setNewMessage('');
-            socket.emit('message', { targetUserId: receiver.id, message: newMessage });
+            socket.emit('message', { receiver_id: receiver.userId, content: newMessage });
         }
     };
     useEffect(() => {
+
+
+
         // Listen for incoming chat messages
         socket.on('message', (res) => {
-            console.log(res, auth)
-            setMessages((prevMessages) => [...prevMessages, { text: res.message, isSender: res.user.id == auth.user_id }]);
+            setMessages((prevMessages) => [...prevMessages, { ...res }]);
         });
 
         // Clean up socket connection when the component unmounts
@@ -98,7 +100,19 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
         };
     }, []);
 
-    console.log(messages)
+    useEffect(() => {
+        // Get chat history
+        socket.emit('getChatHistory', { targetUserId: receiver.userId })
+        socket.on('chatHistory', (res) => {
+            setMessages(res?.chatHistory?.length ? res.chatHistory : []);
+        })
+    }, [receiver])
+
+    useEffect(() => {
+        if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     return (
         <ChatBoxContainer elevation={3}>
@@ -108,10 +122,10 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
                     <Typography variant="h6">{receiver.name}</Typography>
                 </UserInfoContainer>
             </HeaderContainer>
-            <MessagesContainer>
+            <MessagesContainer ref={messagesContainerRef}>
                 {messages.map((message, index) => (
-                    <MessageItem key={index} isSender={message.isSender}>
-                        {message.text}
+                    <MessageItem key={index} isSender={message.sender_id === auth.user_id}>
+                        {message.content}
                     </MessageItem>
                 ))}
             </MessagesContainer>
@@ -122,13 +136,18 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
                         variant="outlined"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyDown={(e) => {
+                            console.log(e.key)
+                            if (e.key == 'Enter') {
+                                handleSendMessage()
+                            }
+                        }}
                     />
                     <IconButton
                         variant="gradient"
                         color="primary"
                         style={{ marginLeft: 4 }}
                         onClick={handleSendMessage}
-
                     >
                         <Send />
                     </IconButton>

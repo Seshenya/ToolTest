@@ -3,6 +3,7 @@ import 'reflect-metadata'
 import { User } from '../user/entities'
 import { Category, DigitalProduct, MediaType } from '../media/entities'
 import config from '../config'
+import { Message } from '../chat/entities/message'
 
 const { host, port, username, password, database } = config
 
@@ -15,7 +16,7 @@ export const AppDataSource = new DataSource({
     database,
     synchronize: false, // will not create/update the db schema to match the defined entities
     logging: false,
-    entities: [User, DigitalProduct, Category, MediaType],
+    entities: [User, DigitalProduct, Category, MediaType, Message],
     subscribers: [],
     migrations: [],
 })

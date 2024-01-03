@@ -216,7 +216,7 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
                       >
                         <MenuItem value={''}>All</MenuItem>
                         {categories.map((category) => (
-                          <MenuItem value={category.type}>
+                          <MenuItem value={category.id}>
                             {category.type}
                           </MenuItem>
                         ))}
