@@ -1,14 +1,13 @@
 import { ArrowBackIosNewRounded, ArrowForwardIosRounded } from "@mui/icons-material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-import React, { Suspense } from "react";
 
-import imageFallback from 'assets/images/fallback/image_fallback.jpg'
-import videoFallback from 'assets/images/fallback/video_fallback.jpg'
-import audioFallback from 'assets/images/fallback/audio_fallback.png'
-import { Canvas, useLoader } from '@react-three/fiber'
+import imageFallback from 'assets/images/fallback/image_fallback.jpg';
+import videoFallback from 'assets/images/fallback/video_fallback.jpg';
+import audioFallback from 'assets/images/fallback/audio_fallback.png';
+import { Canvas, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
-import { Stats, OrbitControls, Circle } from '@react-three/drei'
+import { OrbitControls, Circle } from '@react-three/drei';
 
 const PDMainImage = ({ productDetails }) => {
 
@@ -69,12 +68,11 @@ const PDMainImage = ({ productDetails }) => {
   const GlTFModel = () => {
     try {
       const gltf = useLoader(GLTFLoader, productDetails.thumbnail);
-      return <primitive key={"ASDSAD"} object={gltf.scene} />;
+      return <primitive object={gltf.scene} />;
     } catch (error) {
-      console.log(error, "ERROR")
+      return null
     }
   };
-
   return (
     <MDBox>
       <MDBox position={"relative"} display={"flex"} alignItems={"center"} justifyContent={"center"} style={{ width: 500, height: 500 }}>
