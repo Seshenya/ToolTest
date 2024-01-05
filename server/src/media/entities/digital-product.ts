@@ -66,7 +66,8 @@ export class DigitalProduct extends BaseEntity {
     thumbnail: string
 
     @ManyToOne(() => Category)
-    @JoinColumn({ name: 'category', referencedColumnName: 'type' })
-    @Column({ type: 'int' })
+    @JoinColumn({ name: 'category', referencedColumnName: 'id' })
+    @Column({ type: 'tinyint' })
+
     category: number
 }

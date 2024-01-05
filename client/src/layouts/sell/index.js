@@ -1,33 +1,54 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 // @mui material components
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Icon from '@mui/material/Icon'
+import { CircularProgress, Pagination } from '@mui/material'
 
 // Material Dashboard 2 React components
 import MDBox from 'components/MDBox'
 import MDTypography from 'components/MDTypography'
 import MDButton from 'components/MDButton'
+import MDSnackbar from 'components/MDSnackbar'
+import AddEditProductModal from './components/AddEditProductModal'
 
 // Material Dashboard 2 React example components
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
 import Footer from 'examples/Footer'
-
 import ProductCard from 'examples/Cards/ProductCard'
 
-import { products } from 'constants/DummyProducts'
-import AddEditProductModal from './components/AddEditProductModal'
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 
 function Sell() {
+  const [page, setPage] = useState(1)
   const [openModal, setOpenModal] = useState(false)
   const [categories, setCategories] = useState([]);
   const [mediaTypes, setMediaTypes] = useState([]);
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [totalCount, setTotalCount] = useState(0)
   const axiosPrivate = useAxiosPrivate()
 
+  const filtersRef = useRef({
+    category: '',
+    mediatype: '',
+    query: '',
+  })
+
+  const [sb, setSb] = useState({
+    open: false,
+    color: '',
+    icon: '',
+    title: '',
+    message: '',
+  })
+
+  const refreshSellPage = () => {
+    getMedia(filtersRef.current, 1);
+  }
 
   const handleModalOpen = () => {
     setOpenModal(true)
@@ -35,6 +56,11 @@ function Sell() {
 
   const handleModalClose = () => {
     setOpenModal(false)
+  }
+
+  const handleChange = (event, value) => {
+    getMedia(filtersRef.current, value)
+    setPage(value)
   }
 
   const fetchCategories = async () => {
@@ -55,14 +81,63 @@ function Sell() {
     }
   };
 
+  const getMedia = (filters = filtersRef.current, pageNo) => {
+    setLoading(true)
+    axiosPrivate
+      .get(`/media`, {
+          params: {
+              page: pageNo,
+              size: 10,
+              ...filters,
+          },
+      })
+      .then((res) => {
+          setLoading(false)
+          setProducts(res.data.media)
+          console.log(res.data.media)
+
+          if (res.data.totalCount !== totalCount) {
+              setTotalCount(res.data.totalCount)
+          }
+      })
+      .catch((error) => {
+          setLoading(false)
+          setSb({
+              open: true,
+              color: 'error',
+              icon: 'error',
+              title: error.message,
+              message: '',
+          })
+      })
+  }
+
+  const closeSb = () => {
+    setSb({
+        open: false,
+        color: '',
+        icon: '',
+        title: '',
+        message: '',
+    })
+  }
+
   useEffect(() => {
     fetchCategories();
     fetchMediaTypes();
+    getMedia(filtersRef.current, 1);
   }, [])
 
   return (
     <DashboardLayout>
-      <DashboardNavbar filters />
+      <DashboardNavbar 
+        filters 
+        reCallApi={(filtersRef) => {
+          getMedia(filtersRef, 1)
+          setPage(1)
+        }}
+        filtersRef={filtersRef}
+      />
       <MDBox py={3}>
         <Card sx={{ margin: 3 }}>
           <MDBox
@@ -91,23 +166,60 @@ function Sell() {
             </MDButton>
           </MDBox>
           <MDBox p={3}>
-            <Grid container spacing={6}>
-              {products.map((product) => {
-                return (
-                  <Grid item xs={12} md={6} xl={4}>
-                    {console.log(product)}
-                    <ProductCard
-                      productId={product.id}
-                      {...product}
-                      deleteBtn
-                      discountCode
-                      editBtn
-                    />
-                  </Grid>
-                )
-              })}
-            </Grid>
+            {loading ? (
+              <MDBox style={{ textAlign: 'center' }}>
+                  <CircularProgress />
+              </MDBox>
+            ) : (
+              <Grid container spacing={6}>
+                {products.map((product, index) => {
+                    return (
+                      <Grid
+                        item
+                        xs={12}
+                        md={6}
+                        xl={4}
+                        key={index}
+                      >
+                        <ProductCard
+                            productId={product.product_id}
+                            product={product}
+                            image={product.thumbnail}
+                            label={product.title}
+                            title={product.title}
+                            status={product.status}
+                            description={
+                                product.description
+                            }
+                            action={{
+                              type: 'internal',
+                              route: '/sell',
+                          }}
+                            authors={[product.owner_id]}
+                            categories={categories}
+                            mediaTypes={mediaTypes}
+                            deleteBtn
+                            discountCode
+                            editBtn
+                            refreshSellPage={refreshSellPage}
+                        />
+                      </Grid>
+                    )
+                })}
+              </Grid>
+            )}
           </MDBox>
+          <Pagination
+            sx={{
+                padding: 2,
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'flex-end',
+            }}
+            count={Math.ceil(totalCount / 10)}
+            page={page}
+            onChange={handleChange}
+          />
         </Card>
       </MDBox>
       <Footer />
@@ -117,6 +229,16 @@ function Sell() {
         setOpenModal={setOpenModal}
         categories={categories}
         mediaTypes={mediaTypes}
+      />
+      <MDSnackbar
+        color={sb.color}
+        icon={sb.icon}
+        title={sb.title}
+        content={sb.message}
+        open={sb.open}
+        onClose={closeSb}
+        close={closeSb}
+        bgWhite
       />
     </DashboardLayout>
   )

@@ -1,4 +1,4 @@
-import { StarRateRounded } from "@mui/icons-material";
+// import { StarRateRounded } from "@mui/icons-material";
 import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -35,7 +35,8 @@ const PDSellerInfo = () => {
             </MDTypography>
           </MDBox>
         </MDBox>
-        <MDBox display={"flex"} alignItems={"center"}>
+        {/* Seller ratings or reviews will not be implemented */}
+        {/* <MDBox display={"flex"} alignItems={"center"}>
           <StarRateRounded color={"warning"} />
           <MDTypography variant="h6" fontWeight="medium">
             (4.5)
@@ -50,7 +51,7 @@ const PDSellerInfo = () => {
           >
             14.5k reviews
           </MDTypography>
-        </MDBox>
+        </MDBox> */}
       </MDBox>
     </MDBox>
   );

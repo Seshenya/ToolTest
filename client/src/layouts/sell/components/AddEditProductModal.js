@@ -26,7 +26,10 @@ const AddEditProductModal = ({
     onClose,
     setOpenModal,
     categories,
-    mediaTypes
+    mediaTypes,
+    editProduct,
+    product,
+    refreshSellPage
 }) => {
     const [uploadedMedia, setUploadedMedia] = useState([])
     const [uploadedThumbnail, setUploadedThumbnail] = useState([])
@@ -83,9 +86,9 @@ const AddEditProductModal = ({
     }
 
     const handleFormSubmit = (data) => {
-        if(!isSubmitting) {
+        if (!isSubmitting) {
             setIsSubmitting(true)
-            onSubmit(data)
+                (editProduct ? onSubmitEdit : onSubmit)(data)
         }
     }
 
@@ -122,7 +125,7 @@ const AddEditProductModal = ({
     const handleFileInputChange1 = (e) => {
         console.log('File Input Change:', e.target.files)
         const currentMedia = uploadedMedia
-        for(const file of e.target.files) {
+        for (const file of e.target.files) {
             currentMedia.push(file)
         }
         setUploadedMedia([...currentMedia]);
@@ -140,7 +143,7 @@ const AddEditProductModal = ({
     const handleFileInputChange3 = (e) => {
         console.log('File Input Change:', e.target.files)
         const currentPreviews = uploadedPreviews
-        for(const file of e.target.files) {
+        for (const file of e.target.files) {
             currentPreviews.push(file)
         }
         setUploadedPreviews([...currentPreviews]);
@@ -183,6 +186,28 @@ const AddEditProductModal = ({
             message: '',
         })
     }
+    const handleMediaEdit = async (formData) => {
+        axiosPrivate.put(`/media/${product.product_id}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    const data = response.data
+                    console.log('Media updated:', data)
+                    refreshSellPage()
+                    setOpenModal(false)
+                    reset()
+                } else {
+                    console.error('Failed to update media')
+                }
+            })
+
+            .catch((error) => {
+                console.error('Error updating media:', error)
+            })
+    }
 
     const onSubmit = (data) => {
 
@@ -222,7 +247,7 @@ const AddEditProductModal = ({
             return;
         }
 
-        if(!data.thumbnail[0].type.startsWith('image/')) {
+        if (!data.thumbnail[0].type.startsWith('image/')) {
             setSb({
                 open: true,
                 color: 'error',
@@ -234,7 +259,7 @@ const AddEditProductModal = ({
             return;
         }
 
-        for(const preview of data.previews) {
+        for (const preview of data.previews) {
             if (!preview.type.startsWith('image/')) {
                 setSb({
                     open: true,
@@ -263,12 +288,12 @@ const AddEditProductModal = ({
             data.media[0]?.name.split('.').pop().toLowerCase()
         )
 
-        for( const media of data.media) {
+        for (const media of data.media) {
             console.log(1)
             formData.append('media', media)
         }
 
-        for( const preview of data.previews) {
+        for (const preview of data.previews) {
             formData.append('previews', preview)
         }
 
@@ -280,6 +305,41 @@ const AddEditProductModal = ({
         });
 
         handleMediaCreation(formData)
+    }
+
+    const onSubmitEdit = (data) => {
+        console.log('On Submit Edit:', data)
+
+        const formData = new FormData()
+        formData.append('media_type', data?.media_type)
+        formData.append('price', data.price)
+        formData.append('title', data.title)
+        formData.append('description', data.description)
+        formData.append('tags', data.tags)
+        formData.append('category', data.category)
+        if (data.media && data.media[0]) {
+            formData.append('media', data.media[0])
+            formData.append(
+                'file_format',
+                data.media[0]?.name.split('.').pop().toLowerCase()
+            )
+        }
+        if (data.thumbnail && data.thumbnail[0]) {
+            formData.append('thumbnail', data.thumbnail[0])
+        }
+        if (data.previews && data.previews[0]) {
+            formData.append('previews', data.previews[0]) // TODO: Change this to an array of files
+        }
+
+        formData.forEach((value, key) => {
+            console.log(key + ' ' + value)
+        });
+
+        handleMediaEdit(formData)
+
+        // setOpenModal(false)
+        // handleResetFiles()
+        // reset()
     }
 
     const onReset = () => {
@@ -314,36 +374,40 @@ const AddEditProductModal = ({
             fullScreen
             onClick={(e) => e.stopPropagation()}
         >
-            <DialogTitle id="update-status-title">Add New Item</DialogTitle>
+            <DialogTitle id="update-status-title">
+                {editProduct ? "Edit Product" : "Add New Item"}
+            </DialogTitle>
             <DialogContent>
                 <form onSubmit={handleSubmit(handleFormSubmit)}>
                     {errors.title && (
-                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
                             {errors.title.message}
                         </span>
                     )}
                     <TextField
                         {...register('title', { required: 'Title is required' })}
                         label="Title"
+                        defaultValue={product?.title}
                         fullWidth
                         margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
                     {errors.price && (
-                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block'}} >
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block' }} >
                             {errors.price.message}
                         </span>
                     )}
                     <TextField
                         {...register('price', { required: 'Price is required' })}
                         label="Price"
+                        defaultValue={product?.price}
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
                     {errors.description && (
-                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block'}} >
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block' }} >
                             {errors.description.message}
                         </span>
                     )}
@@ -351,6 +415,7 @@ const AddEditProductModal = ({
                         {...register('description', { required: 'Description is required' })}
                         {...register('description')}
                         label="Description"
+                        defaultValue={product?.description}
                         multiline
                         fullWidth
                         rows={6}
@@ -411,7 +476,7 @@ const AddEditProductModal = ({
                             />
                         </MDButton>
                         {(uploadedMedia.length === 0) && (
-                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
                                 Please add atleast one file
                             </span>
                         )}
@@ -463,7 +528,7 @@ const AddEditProductModal = ({
                             />
                         </MDButton>
                         {(uploadedThumbnail.length === 0) && (
-                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
                                 Please add one file
                             </span>
                         )}
@@ -516,7 +581,7 @@ const AddEditProductModal = ({
                             />
                         </MDButton>
                         {(uploadedPreviews.length === 0) && (
-                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block'}} >
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
                                 Please add atleast one file
                             </span>
                         )}
@@ -535,13 +600,14 @@ const AddEditProductModal = ({
                         ))}
                     </MDBox>
                     {errors.tags && (
-                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block'}} >
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block' }} >
                             {errors.tags.message}
                         </span>
                     )}
                     <TextField
                         {...register('tags', { required: 'Tags are required' })}
                         label="Tags"
+                        defaultValue={product?.tags}
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
@@ -554,6 +620,7 @@ const AddEditProductModal = ({
                             labelId="category"
                             id="category"
                             label="Category"
+                            defaultValue={product?.category}
                             required
                             value={selectedCategory}
                             onChange={(e) => setSelectedCategory(e.target.value)}

@@ -7,9 +7,11 @@ import {
     fetchSearchedMedia,
     fetchMediaCategories,
     addMediaCategory,
+    updateMediaCategory,
     fetchMediaTypes,
 } from './media/api'
 import { hasToken, refreshToken, logoutUser, loginUser } from './middleware'
+import { fetchProductReviews } from './review/api'
 
 const router = express.Router()
 
@@ -29,8 +31,11 @@ router.put('/media/:id', hasToken, updateMedia)
 
 router.get('/categories', hasToken, fetchMediaCategories)
 router.post('/categories', hasToken, addMediaCategory)
+router.put('/categories/:id', hasToken, updateMediaCategory)
 
 router.get('/types', hasToken, fetchMediaTypes)
+
+router.get('/reviews/:productId', hasToken, fetchProductReviews)
 
 router.get('/', function (req, res) {
     res.send('GDSD Team 4')
