@@ -1,5 +1,13 @@
-import { getMedia, createMedia, alterMedia, searchMedia, getMediaCategories, createCategory, alterCategory, getMediaTypes } from '../services'
-import formidable from 'express-formidable';
+import {
+    getMedia,
+    createMedia,
+    alterMedia,
+    searchMedia,
+    getMediaCategories,
+    createCategory,
+    getMediaTypes,
+} from '../services'
+import formidable from 'express-formidable'
 
 async function fetchMedia(req: any, res: any) {
     getMedia(req.params.id)
@@ -47,8 +55,8 @@ async function updateMedia(req: any, res: any) {
             filePreviews: Array.isArray(req.files.previews)
                 ? req.files.previews
                 : req.files.previews
-                ? [req.files.previews]
-                : undefined,
+                    ? [req.files.previews]
+                    : undefined,
             fileThumbnail: req.files.thumbnail,
         }
 
@@ -113,4 +121,12 @@ async function fetchMediaTypes(req: any, res: any) {
         })
 }
 
-export { fetchMedia, addMedia, updateMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory, updateMediaCategory, fetchMediaTypes }
+export {
+    fetchMedia,
+    addMedia,
+    updateMedia,
+    fetchSearchedMedia,
+    fetchMediaCategories,
+    addMediaCategory,
+    fetchMediaTypes,
+}

@@ -16,8 +16,10 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import useAuth from 'hooks/useAuth'
-
-
+import MDSnackbar from 'components/MDSnackbar'
+import DeleteIcon from '@mui/icons-material/Delete'
+import IconButton from '@mui/material/IconButton'
+import { useEffect } from 'react'
 
 const AddEditProductModal = ({
     openModal,
@@ -32,12 +34,23 @@ const AddEditProductModal = ({
     const [uploadedMedia, setUploadedMedia] = useState([])
     const [uploadedThumbnail, setUploadedThumbnail] = useState([])
     const [uploadedPreviews, setUploadedPreviews] = useState([])
-    const [isDragging1, setIsDragging1] = useState(false);
-    const [isDragging2, setIsDragging2] = useState(false);
-    const [isDragging3, setIsDragging3] = useState(false);
-    const { register, handleSubmit, reset, setValue } = useForm()
+    const [isDragging1, setIsDragging1] = useState(false)
+    const [isDragging2, setIsDragging2] = useState(false)
+    const [isDragging3, setIsDragging3] = useState(false)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [selectedMediaType, setSelectedMediaType] = useState('1');
+    const [selectedCategory, setSelectedCategory] = useState('1');
+    const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm()
     const axiosPrivate = useAxiosPrivate()
     const { auth } = useAuth()
+
+    const [sb, setSb] = useState({
+        open: false,
+        color: '',
+        icon: '',
+        title: '',
+        message: '',
+    });
 
     const handleDrop1 = (e) => {
         e.preventDefault();
@@ -73,7 +86,10 @@ const AddEditProductModal = ({
     }
 
     const handleFormSubmit = (data) => {
-        (editProduct ? onSubmitEdit : onSubmit)(data)
+        if (!isSubmitting) {
+            setIsSubmitting(true)
+                (editProduct ? onSubmitEdit : onSubmit)(data)
+        }
     }
 
     const handleDragEnter1 = (e) => {
@@ -108,23 +124,30 @@ const AddEditProductModal = ({
 
     const handleFileInputChange1 = (e) => {
         console.log('File Input Change:', e.target.files)
-        const files = Array.from(e.target.files);
-        setUploadedMedia([...uploadedMedia, ...files]);
-        setValue('media', files);
+        const currentMedia = uploadedMedia
+        for (const file of e.target.files) {
+            currentMedia.push(file)
+        }
+        setUploadedMedia([...currentMedia]);
+        setValue('media', currentMedia);
     }
 
     const handleFileInputChange2 = (e) => {
         console.log('File Input Change:', e.target.files)
         const files = Array.from(e.target.files);
-        setUploadedThumbnail([...uploadedThumbnail, ...files]);
-        setValue('thumbnail', files);
+        console.log(uploadedThumbnail)
+        setUploadedThumbnail([...files.slice(0, 1)]);
+        setValue('thumbnail', files.slice(0, 1));
     }
 
     const handleFileInputChange3 = (e) => {
         console.log('File Input Change:', e.target.files)
-        const files = Array.from(e.target.files);
-        setUploadedPreviews([...uploadedPreviews, ...files]);
-        setValue('previews', files);
+        const currentPreviews = uploadedPreviews
+        for (const file of e.target.files) {
+            currentPreviews.push(file)
+        }
+        setUploadedPreviews([...currentPreviews]);
+        setValue('previews', currentPreviews);
     }
 
     const handleMediaCreation = async (formData) => {
@@ -132,6 +155,7 @@ const AddEditProductModal = ({
             const response = await axiosPrivate.post('/media/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'maxcontentlength': 'Infinity',
                 },
             })
 
@@ -145,33 +169,110 @@ const AddEditProductModal = ({
             }
         } catch (error) {
             console.error('Error creating media:', error)
+        } finally {
+            setIsSubmitting(false)
+            setOpenModal(false)
+            handleResetFiles()
+            reset()
         }
     }
 
+    const closeSb = () => {
+        setSb({
+            open: false,
+            color: '',
+            icon: '',
+            title: '',
+            message: '',
+        })
+    }
     const handleMediaEdit = async (formData) => {
         axiosPrivate.put(`/media/${product.product_id}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
         })
-        .then(response => {
-            if (response.status === 200) {
-                const data = response.data
-                console.log('Media updated:', data)
-                refreshSellPage()
-                setOpenModal(false)
-                reset()
-            } else {
-                console.error('Failed to update media')
-            }
-        })
-      
-        .catch((error) => {
-            console.error('Error updating media:', error)
-        }) 
+            .then(response => {
+                if (response.status === 200) {
+                    const data = response.data
+                    console.log('Media updated:', data)
+                    refreshSellPage()
+                    setOpenModal(false)
+                    reset()
+                } else {
+                    console.error('Failed to update media')
+                }
+            })
+
+            .catch((error) => {
+                console.error('Error updating media:', error)
+            })
     }
 
     const onSubmit = (data) => {
+
+        if (!data.media || data.media.length === 0) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add atleast one media file',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
+        if (!data.thumbnail || data.thumbnail.length === 0 || data.thumbnail.length > 1) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add exactly one thumbnail file',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
+        if (!data.previews || data.previews.length === 0) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add atleast one preview file',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
+        if (!data.thumbnail[0].type.startsWith('image/')) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add only image files in thumbnail',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
+        for (const preview of data.previews) {
+            if (!preview.type.startsWith('image/')) {
+                setSb({
+                    open: true,
+                    color: 'error',
+                    icon: 'error',
+                    title: 'Error: Please add only image files in previews',
+                    message: '',
+                });
+                setIsSubmitting(false)
+                return;
+            }
+        }
+
         console.log('On Submit:', data)
 
         const formData = new FormData()
@@ -186,20 +287,24 @@ const AddEditProductModal = ({
             'file_format',
             data.media[0]?.name.split('.').pop().toLowerCase()
         )
-        formData.append('previews', data.previews[0]) // TODO: Change this to an array of files
-        formData.append('thumbnail', data.thumbnail[0])
+
+        for (const media of data.media) {
+            console.log(1)
+            formData.append('media', media)
+        }
+
+        for (const preview of data.previews) {
+            formData.append('previews', preview)
+        }
+
+        formData.append('thumbnail', data.thumbnail[0]) // TODO only one allowed
         formData.append('category', data.category)
-        formData.append('media', data.media[0])
 
         formData.forEach((value, key) => {
             console.log(key + ' ' + value)
         });
 
         handleMediaCreation(formData)
-
-        // setOpenModal(false)
-        // handleResetFiles()
-        // reset()
     }
 
     const onSubmitEdit = (data) => {
@@ -241,6 +346,27 @@ const AddEditProductModal = ({
         reset()
     }
 
+    const handleDeleteFileMedia = (index, fileType) => {
+        let updatedFiles = [];
+        if (fileType === 'media') {
+            updatedFiles = uploadedMedia.filter((_, idx) => idx !== index);
+            setUploadedMedia([...updatedFiles]);
+            setValue('media', [...updatedFiles]);
+        } else if (fileType === 'thumbnail') {
+            updatedFiles = uploadedThumbnail.filter((_, idx) => idx !== index);
+            setUploadedThumbnail([...updatedFiles]);
+            setValue('thumbnail', [...updatedFiles]);
+        } else if (fileType === 'previews') {
+            updatedFiles = uploadedPreviews.filter((_, idx) => idx !== index);
+            setUploadedPreviews([...updatedFiles]);
+            setValue('previews', [...updatedFiles]);
+        }
+    };
+
+    useEffect(() => {
+        console.log('Uploaded Media:', uploadedMedia);
+    }, [uploadedMedia]);
+
     return (
         <Dialog
             open={openModal}
@@ -253,8 +379,13 @@ const AddEditProductModal = ({
             </DialogTitle>
             <DialogContent>
                 <form onSubmit={handleSubmit(handleFormSubmit)}>
+                    {errors.title && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
+                            {errors.title.message}
+                        </span>
+                    )}
                     <TextField
-                        {...register('title')}
+                        {...register('title', { required: 'Title is required' })}
                         label="Title"
                         defaultValue={product?.title}
                         fullWidth
@@ -262,40 +393,50 @@ const AddEditProductModal = ({
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
+                    {errors.price && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block' }} >
+                            {errors.price.message}
+                        </span>
+                    )}
                     <TextField
-                        {...register('price')}
+                        {...register('price', { required: 'Price is required' })}
                         label="Price"
                         defaultValue={product?.price}
                         fullWidth
-                        margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
+                    {errors.description && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block' }} >
+                            {errors.description.message}
+                        </span>
+                    )}
                     <TextField
+                        {...register('description', { required: 'Description is required' })}
                         {...register('description')}
                         label="Description"
                         defaultValue={product?.description}
                         multiline
                         fullWidth
                         rows={6}
-                        margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
-                    <FormControl sx={{ width: 120 }}>
+                    <FormControl fullWidth>
                         <InputLabel id="media_type">Media Type</InputLabel>
                         <Select
                             {...register('media_type')}
-                            sx={{ padding: 1.5 }}
-                            fullWidth
-                            defaultValue={product?.media_type}
+                            sx={{ padding: 1.5, marginBottom: 2 }}
+                            variant="outlined"
                             labelId="media_type"
                             id="media_type"
                             label="Media Type"
                             required
+                            value={selectedMediaType}
+                            onChange={(e) => setSelectedMediaType(e.target.value)}
                         >
                             {mediaTypes?.map((mediaType) => (
-                                <MenuItem value={mediaType.id}>
+                                <MenuItem value={mediaType.id} key={mediaType.id}>
                                     {mediaType.type}
                                 </MenuItem>
                             ))}
@@ -305,7 +446,7 @@ const AddEditProductModal = ({
 
                     {/* Drag and Drop for Media */}
                     <MDBox
-                        border={isDragging1 ? '2px dashed #aaa' : '2px dashed #ccc'}
+                        border={(isDragging1 || uploadedMedia.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
                         padding="20px"
                         marginBottom="20px"
@@ -334,11 +475,22 @@ const AddEditProductModal = ({
                                 hidden
                             />
                         </MDButton>
+                        {(uploadedMedia.length === 0) && (
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
+                                Please add atleast one file
+                            </span>
+                        )}
                         {uploadedMedia.map((file, index) => (
-                            <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
-                                <MDTypography variant="body1" color="secondary">
+                            <MDBox key={index} display="flex" alignItems="center" marginTop="10px" padding="5px" border="1px solid #ccc">
+                                <MDTypography variant="body1" color="secondary" sx={{ flex: '1 1 auto' }}>
                                     {file.name}
                                 </MDTypography>
+                                <IconButton
+                                    color="error"
+                                    onClick={() => handleDeleteFileMedia(index, 'media')}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </MDBox>
                         ))}
                     </MDBox>
@@ -346,7 +498,7 @@ const AddEditProductModal = ({
 
                     {/* Drag and Drop for Thumbnail */}
                     <MDBox
-                        border={isDragging2 ? '2px dashed #aaa' : '2px dashed #ccc'}
+                        border={(isDragging2 || uploadedThumbnail.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
                         padding="20px"
                         marginBottom="20px"
@@ -375,11 +527,22 @@ const AddEditProductModal = ({
                                 hidden
                             />
                         </MDButton>
+                        {(uploadedThumbnail.length === 0) && (
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
+                                Please add one file
+                            </span>
+                        )}
                         {uploadedThumbnail.map((file, index) => (
-                            <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
-                                <MDTypography variant="body1" color="secondary">
+                            <MDBox key={index} display="flex" alignItems="center" marginTop="10px" padding="5px" border="1px solid #ccc">
+                                <MDTypography variant="body1" color="secondary" sx={{ flex: '1 1 auto' }}>
                                     {file.name}
                                 </MDTypography>
+                                <IconButton
+                                    color="error"
+                                    onClick={() => handleDeleteFileMedia(index, 'thumbnail')}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </MDBox>
                         ))}
                     </MDBox>
@@ -387,7 +550,7 @@ const AddEditProductModal = ({
 
                     {/* Drag and Drop for Previews */}
                     <MDBox
-                        border={isDragging3 ? '2px dashed #aaa' : '2px dashed #ccc'}
+                        border={(isDragging3 || uploadedPreviews.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
                         padding="20px"
                         marginBottom="20px"
@@ -417,37 +580,53 @@ const AddEditProductModal = ({
                                 hidden
                             />
                         </MDButton>
+                        {(uploadedPreviews.length === 0) && (
+                            <span role="alert" style={{ color: 'primary', fontSize: '0.8rem', marginTop: '0.8rem', display: 'block' }} >
+                                Please add atleast one file
+                            </span>
+                        )}
                         {uploadedPreviews.map((file, index) => (
-                            <MDBox key={index} marginTop="10px" padding="5px" border="1px solid #ccc">
-                                <MDTypography variant="body1" color="secondary">
+                            <MDBox key={index} display="flex" alignItems="center" marginTop="10px" padding="5px" border="1px solid #ccc">
+                                <MDTypography variant="body1" color="secondary" sx={{ flex: '1 1 auto' }}>
                                     {file.name}
                                 </MDTypography>
+                                <IconButton
+                                    color="error"
+                                    onClick={() => handleDeleteFileMedia(index, 'previews')}
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
                             </MDBox>
                         ))}
                     </MDBox>
+                    {errors.tags && (
+                        <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block' }} >
+                            {errors.tags.message}
+                        </span>
+                    )}
                     <TextField
-                        {...register('tags')}
+                        {...register('tags', { required: 'Tags are required' })}
                         label="Tags"
                         defaultValue={product?.tags}
                         fullWidth
-                        margin="normal"
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
                     />
-                    <FormControl sx={{ width: 120 }}>
+                    <FormControl fullWidth>
                         <InputLabel id="category">Category</InputLabel>
                         <Select
                             {...register('category')}
                             sx={{ padding: 1.5 }}
-                            fullWidth
                             labelId="category"
                             id="category"
                             label="Category"
                             defaultValue={product?.category}
                             required
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
                         >
                             {categories?.map((category) => (
-                                <MenuItem value={category.id}>
+                                <MenuItem value={category.id} key={category.id}>
                                     {category.type}
                                 </MenuItem>
                             ))}
@@ -459,8 +638,9 @@ const AddEditProductModal = ({
                             variant="contained"
                             color="primary"
                             sx={{ marginRight: 2 }}
+                            disabled={isSubmitting}
                         >
-                            Send for Approval
+                            {isSubmitting ? 'Submitting...' : 'Send for Approval'}
                         </MDButton>
                         <MDButton
                             onClick={(e) => {
@@ -485,6 +665,16 @@ const AddEditProductModal = ({
                     </DialogActions>
                 </form>
             </DialogContent>
+            <MDSnackbar
+                color={sb.color}
+                icon={sb.icon}
+                title={sb.title}
+                content={sb.message}
+                open={sb.open}
+                onClose={closeSb}
+                close={closeSb}
+                bgWhite
+            />
         </Dialog>
     )
 }
