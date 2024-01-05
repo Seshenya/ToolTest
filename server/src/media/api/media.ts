@@ -6,6 +6,7 @@ import {
     getMediaCategories,
     createCategory,
     getMediaTypes,
+    alterCategory,
 } from '../services'
 import formidable from 'express-formidable'
 
@@ -129,4 +130,5 @@ export {
     fetchMediaCategories,
     addMediaCategory,
     fetchMediaTypes,
+    updateMediaCategory
 }
