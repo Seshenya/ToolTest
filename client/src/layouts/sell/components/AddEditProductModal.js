@@ -222,6 +222,32 @@ const AddEditProductModal = ({
             return;
         }
 
+        if(!data.thumbnail[0].type.startsWith('image/')) {
+            setSb({
+                open: true,
+                color: 'error',
+                icon: 'error',
+                title: 'Error: Please add only image files in thumbnail',
+                message: '',
+            });
+            setIsSubmitting(false)
+            return;
+        }
+
+        for(const preview of data.previews) {
+            if (!preview.type.startsWith('image/')) {
+                setSb({
+                    open: true,
+                    color: 'error',
+                    icon: 'error',
+                    title: 'Error: Please add only image files in previews',
+                    message: '',
+                });
+                setIsSubmitting(false)
+                return;
+            }
+        }
+
         console.log('On Submit:', data)
 
         const formData = new FormData()
