@@ -1,11 +1,14 @@
 import { ArrowBackIosNewRounded, ArrowForwardIosRounded } from "@mui/icons-material";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-import React from "react";
+import React, { Suspense } from "react";
 
 import imageFallback from 'assets/images/fallback/image_fallback.jpg'
 import videoFallback from 'assets/images/fallback/video_fallback.jpg'
 import audioFallback from 'assets/images/fallback/audio_fallback.png'
+import { Canvas, useLoader } from '@react-three/fiber'
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
+import { Stats, OrbitControls, Circle } from '@react-three/drei'
 
 const PDMainImage = ({ productDetails }) => {
 
@@ -26,7 +29,7 @@ const PDMainImage = ({ productDetails }) => {
   };
 
   const handleThumbnailError = (e) => {
-    if(productDetails.media_type === 1) {
+    if (productDetails.media_type === 1) {
       e.target.src = imageFallback;
     } else if (productDetails.media_type === 2) {
       e.target.src = audioFallback;
@@ -38,7 +41,7 @@ const PDMainImage = ({ productDetails }) => {
   }
 
   const handlePreviewError = (e) => {
-    if(productDetails.media_type === 1) {
+    if (productDetails.media_type === 1) {
       e.target.src = imageFallback;
     } else if (productDetails.media_type === 2) {
       e.target.src = audioFallback;
@@ -53,20 +56,44 @@ const PDMainImage = ({ productDetails }) => {
     const previews = []
     const thumbnail = renderThumbnail();
 
-    if(thumbnail) {
+    if (thumbnail) {
       previews.push(thumbnail);
     }
 
-    if(productDetails.previews) {
+    if (productDetails.previews) {
       productDetails.previews.map(preview => previews.push(preview));
     }
     return previews;
   }
 
+  const GlTFModel = () => {
+    try {
+      const gltf = useLoader(GLTFLoader, productDetails.thumbnail);
+      return <primitive key={"ASDSAD"} object={gltf.scene} />;
+    } catch (error) {
+      console.log(error, "ERROR")
+    }
+  };
+
   return (
     <MDBox>
-      <MDBox position={"relative"} display={"flex"} alignItems={"center"} justifyContent={"center"}>
-        <MDBox
+      <MDBox position={"relative"} display={"flex"} alignItems={"center"} justifyContent={"center"} style={{ width: 500, height: 500 }}>
+        {productDetails.file_format === 'glb' ? (
+          <Canvas
+            height={'100%'}
+            width={'100%'}
+            camera={{ position: [-0.5, 1, 2] }}
+            shadows
+          >
+            <directionalLight position={[3.3, 1.0, 4.4]} castShadow intensity={Math.PI * 2} />
+            <GlTFModel />
+            <Circle args={[10]} rotation-x={-Math.PI / 2} receiveShadow>
+              <meshStandardMaterial />
+            </Circle>
+            <OrbitControls target={[0, 1, 0]} />
+            <axesHelper args={[5]} />
+          </Canvas>
+        ) : (<MDBox
           component={"img"}
           src={renderThumbnail()}
           onError={handleThumbnailError}
@@ -77,7 +104,7 @@ const PDMainImage = ({ productDetails }) => {
             objectFit: "cover",
           }}
           alt={""}
-        />
+        />)}
         <MDBox
           position={"absolute"}
           width={"107%"}
@@ -105,22 +132,21 @@ const PDMainImage = ({ productDetails }) => {
           },
         }}
       >
-        {console.log(productDetails)}
         {
-         getAllPreviews().map((preview, idx) => (
-          <MDBox
-            key={idx}
-            component={"img"}
-            src={preview}
-            onError={handlePreviewError}
-            sx={{
-              width: "80px",
-              height: "80px",
-              objectFit: "cover",
-              borderRadius: "md",
-            }}
-          />
-        ))}
+          getAllPreviews().map((preview, idx) => (
+            <MDBox
+              key={idx}
+              component={"img"}
+              src={preview}
+              onError={handlePreviewError}
+              sx={{
+                width: "80px",
+                height: "80px",
+                objectFit: "cover",
+                borderRadius: "md",
+              }}
+            />
+          ))}
       </MDBox>
     </MDBox>
   );
