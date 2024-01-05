@@ -20,6 +20,7 @@ import Footer from 'examples/Footer'
 import ProductCard from 'examples/Cards/ProductCard'
 
 import useAxiosPrivate from 'hooks/useAxiosPrivate'
+import useAuth from 'hooks/useAuth'
 
 
 function Sell() {
@@ -31,6 +32,8 @@ function Sell() {
   const [loading, setLoading] = useState(false)
   const [totalCount, setTotalCount] = useState(0)
   const axiosPrivate = useAxiosPrivate()
+  const { auth } = useAuth();
+
 
   const filtersRef = useRef({
     category: '',
@@ -85,40 +88,41 @@ function Sell() {
     setLoading(true)
     axiosPrivate
       .get(`/media`, {
-          params: {
-              page: pageNo,
-              size: 10,
-              ...filters,
-          },
+        params: {
+          page: pageNo,
+          size: 10,
+          owner_id: auth?.user_id,
+          ...filters,
+        },
       })
       .then((res) => {
-          setLoading(false)
-          setProducts(res.data.media)
-          console.log(res.data.media)
+        setLoading(false)
+        setProducts(res.data.media)
+        console.log(res.data.media)
 
-          if (res.data.totalCount !== totalCount) {
-              setTotalCount(res.data.totalCount)
-          }
+        if (res.data.totalCount !== totalCount) {
+          setTotalCount(res.data.totalCount)
+        }
       })
       .catch((error) => {
-          setLoading(false)
-          setSb({
-              open: true,
-              color: 'error',
-              icon: 'error',
-              title: error.message,
-              message: '',
-          })
+        setLoading(false)
+        setSb({
+          open: true,
+          color: 'error',
+          icon: 'error',
+          title: error.message,
+          message: '',
+        })
       })
   }
 
   const closeSb = () => {
     setSb({
-        open: false,
-        color: '',
-        icon: '',
-        title: '',
-        message: '',
+      open: false,
+      color: '',
+      icon: '',
+      title: '',
+      message: '',
     })
   }
 
@@ -130,8 +134,8 @@ function Sell() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar 
-        filters 
+      <DashboardNavbar
+        filters
         reCallApi={(filtersRef) => {
           getMedia(filtersRef, 1)
           setPage(1)
@@ -168,53 +172,54 @@ function Sell() {
           <MDBox p={3}>
             {loading ? (
               <MDBox style={{ textAlign: 'center' }}>
-                  <CircularProgress />
+                <CircularProgress />
               </MDBox>
             ) : (
               <Grid container spacing={6}>
                 {products.map((product, index) => {
-                    return (
-                      <Grid
-                        item
-                        xs={12}
-                        md={6}
-                        xl={4}
-                        key={index}
-                      >
-                        <ProductCard
-                            productId={product.product_id}
-                            product={product}
-                            image={product.thumbnail}
-                            label={product.title}
-                            title={product.title}
-                            status={product.status}
-                            description={
-                                product.description
-                            }
-                            action={{
-                              type: 'internal',
-                              route: '/sell',
-                          }}
-                            authors={[product.owner_id]}
-                            categories={categories}
-                            mediaTypes={mediaTypes}
-                            deleteBtn
-                            discountCode
-                            editBtn
-                            refreshSellPage={refreshSellPage}
-                        />
-                      </Grid>
-                    )
+                  return (
+                    <Grid
+                      item
+                      xs={12}
+                      md={6}
+                      xl={4}
+                      key={index}
+                    >
+                      <ProductCard
+                        productId={product.product_id}
+                        product={product}
+                        image={product.thumbnail}
+                        label={product.title}
+                        title={product.title}
+                        status={product.status}
+                        description={
+                          product.description
+                        }
+                        action={{
+                          type: 'internal',
+                          route: '/sell',
+                        }}
+                        authors={[product.owner_id]}
+                        categories={categories}
+                        mediaTypes={mediaTypes}
+                        comment={product.comment}
+                        deleteBtn
+                        discountCode
+                        editBtn
+                        refreshSellPage={refreshSellPage}
+                      />
+                    </Grid>
+                  )
                 })}
               </Grid>
             )}
           </MDBox>
           <Pagination
             sx={{
-                padding: 2,
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'flex-end',
+              padding: 2,
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-end',
             }}
             count={Math.ceil(totalCount / 10)}
             page={page}

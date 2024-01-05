@@ -59,6 +59,7 @@ function Shop() {
                 params: {
                     page: pageNo,
                     size: 10,
+                    status: 3,
                     ...filters,
                 },
             })

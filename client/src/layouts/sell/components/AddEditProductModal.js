@@ -316,6 +316,7 @@ const AddEditProductModal = ({
         formData.append('title', data.title)
         formData.append('description', data.description)
         formData.append('tags', data.tags)
+        formData.append('status', '1')
         formData.append('category', data.category)
         if (data.media && data.media[0]) {
             formData.append('media', data.media[0])

@@ -26,22 +26,176 @@ import Select from '@mui/material/Select';
 
 // Data
 import productsTableData from "./data/productsData";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import competitionsTableData from "./data/cometitionsData";
 import userReportsData from "./data/userReports";
+import { useSnackbar } from "context/SnackbarContext";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
+import { CircularProgress, Pagination } from "@mui/material";
+import { statusTypes } from "helpers";
 
 function AdminDashboard() {
 
+  const [products, setProducts] = useState([])
+  const [totalProducts, setTotalProducts] = useState(0)
+
+  const [competitions, setCompetitions] = useState([])
+  const [totalCompetitions, setTotalCompetitions] = useState(0)
+
+  const [reports, setReports] = useState([])
+  const [totalReports, seTotalReports] = useState(0)
+
   const [updateStatusOpen, setUpdateStatusOpen] = useState(false);
-  const { columns, rows } = productsTableData(setUpdateStatusOpen);
-  const { columns: competitionCols, rows: competitionRows } = competitionsTableData(setUpdateStatusOpen);
-  const { columns: userCols, rows: userRows } = userReportsData();
-  console.log(competitionCols)
+  const curItem = useRef(null)
+  const curStatus = useRef(null)
+  const curComment = useRef(null)
+
+
+  const { showSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false)
+  const axiosPrivate = useAxiosPrivate()
+  const [page, setPage] = useState(1)
+
+
+  const getMedia = () => {
+    setLoading(true)
+    axiosPrivate
+      .get(`/media`, {
+        params: {
+          page: page,
+          size: 10,
+        },
+      })
+      .then((res) => {
+        setLoading(false)
+        setProducts(res.data.media)
+        setTotalProducts(res.data.totalCount)
+      })
+      .catch((error) => {
+        setLoading(false)
+        showSnackbar({
+          color: 'error',
+          title: error.message,
+          message: '',
+          icon: 'error',
+        });
+      })
+  }
+
+  const getCompetitions = () => {
+    setLoading(true)
+    axiosPrivate
+      .get(`/competitions`, {
+        params: {
+          page: page,
+          size: 10,
+        },
+      })
+      .then((res) => {
+        setLoading(false)
+        setProducts(res.data.media)
+        setTotalProducts(res.data.totalCount)
+      })
+      .catch((error) => {
+        setLoading(false)
+        showSnackbar({
+          color: 'error',
+          title: error.message,
+          message: '',
+          icon: 'error',
+        });
+      })
+  }
+
+  const getUserReports = () => {
+    setLoading(true)
+    axiosPrivate
+      .get(`/user-reports`, {
+        params: {
+          page: page,
+          size: 10,
+        },
+      })
+      .then((res) => {
+        setLoading(false)
+        setProducts(res.data.media)
+        setTotalProducts(res.data.totalCount)
+      })
+      .catch((error) => {
+        setLoading(false)
+        showSnackbar({
+          color: 'error',
+          title: error.message,
+          message: '',
+          icon: 'error',
+        });
+      })
+  }
+
+  const updateMedia = () => {
+    if (curItem?.current?.product_id) {
+      axiosPrivate.put(`/media/${curItem?.current?.product_id}`, {
+        status: curStatus.current,
+        comment: curComment.current
+      }, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then(res => {
+        setUpdateStatusOpen(false)
+        getMedia()
+      }).catch((error) => {
+        setLoading(false)
+        showSnackbar({
+          color: 'error',
+          title: error.message,
+          message: '',
+          icon: 'error',
+        });
+      })
+    }
+  }
+
+  const updateStatus = () => {
+    switch (curItem.current.type) {
+      case "media":
+        updateMedia()
+        break
+      case "competition":
+        break
+      default:
+        console.log("Invalid Type")
+        break
+    }
+  }
+
+  const openUpdateStatus = (item) => {
+    setUpdateStatusOpen(true)
+    curItem.current = {
+      ...item,
+      type: 'media'
+    }
+    curStatus.current = item.status
+    curComment.current = item.comment
+  }
+
+  useEffect(() => {
+    getMedia()
+    // getCompetitions()
+    // getUserReports()
+  }, [page])
+
+  console.log(Object.values(statusTypes))
+
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
+      {loading ? (
+        <MDBox style={{ textAlign: 'center' }}>
+          <CircularProgress />
+        </MDBox>
+      ) : (<MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
@@ -61,13 +215,24 @@ function AdminDashboard() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }}
+                  table={productsTableData(products, openUpdateStatus)}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
                   noEndBorder
                 />
               </MDBox>
+              {products.length ? <Pagination
+                sx={{
+                  padding: 2,
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                }}
+                count={Math.ceil(totalProducts / 10)}
+                page={page}
+                onChange={(e) => { console.log(e) }}
+              /> : null}
             </Card>
           </Grid>
           <Grid item xs={12}>
@@ -88,7 +253,7 @@ function AdminDashboard() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns: competitionCols, rows: competitionRows }}
+                  table={competitionsTableData(competitions, openUpdateStatus)}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -115,7 +280,7 @@ function AdminDashboard() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns: userCols, rows: userRows }}
+                  table={userReportsData(reports)}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -125,7 +290,7 @@ function AdminDashboard() {
             </Card>
           </Grid>
         </Grid>
-      </MDBox>
+      </MDBox>)}
       <Footer />
 
       <Dialog
@@ -138,7 +303,13 @@ function AdminDashboard() {
           Update Status
         </DialogTitle>
         <DialogContent>
-          <MDInput multiline rows={3} sx={{ width: '100%', marginTop: 2 }} label={'Comments'} />
+          <MDInput
+            defaultValue={curComment.current}
+            multiline
+            rows={3}
+            sx={{ width: '100%', marginTop: 2 }}
+            onChange={(e) => { curComment.current = e.target.value }}
+            label={'Comments'} />
           <FormControl sx={{ width: '100%', marginTop: 2 }}>
             <InputLabel id="status">Status</InputLabel>
             <Select
@@ -146,18 +317,20 @@ function AdminDashboard() {
               fullWidth
               labelId="status"
               id="status"
-              defaultValue={'Approved'}
+              defaultValue={curStatus.current}
               label="Status"
+              onChange={(e) => {
+                curStatus.current = e.target.value
+              }}
             >
-              <MenuItem value={'Approved'}>Approved</MenuItem>
-              <MenuItem value={'Pending'}>Pending</MenuItem>
-              <MenuItem value={'Modifications Required'}>Modifications Required</MenuItem>
-              <MenuItem value={'Rejected'}>Rejected</MenuItem>
+              {Object.values(statusTypes).map((type) => {
+                return <MenuItem value={type.value}>{type.label}</MenuItem>
+              })}
             </Select>
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <MDButton sx={{ width: '100%' }} color='primary' variant='gradient' onClick={() => setUpdateStatusOpen(false)}>Update</MDButton>
+          <MDButton sx={{ width: '100%' }} color='primary' variant='gradient' onClick={() => updateStatus()}>Update</MDButton>
         </DialogActions>
       </Dialog>
     </DashboardLayout>

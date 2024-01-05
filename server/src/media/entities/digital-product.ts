@@ -70,4 +70,7 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'tinyint' })
 
     category: number
+
+    @Column({ type: 'text' })
+    comment: string
 }
