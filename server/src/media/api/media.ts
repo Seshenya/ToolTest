@@ -1,5 +1,14 @@
-import { getMedia, createMedia, alterMedia, searchMedia, getMediaCategories, createCategory, alterCategory, getMediaTypes } from '../services'
-import formidable from 'express-formidable';
+import {
+    getMedia,
+    createMedia,
+    alterMedia,
+    searchMedia,
+    getMediaCategories,
+    createCategory,
+    getMediaTypes,
+    alterCategory,
+} from '../services'
+import formidable from 'express-formidable'
 
 async function fetchMedia(req: any, res: any) {
     getMedia(req.params.id)
@@ -113,4 +122,12 @@ async function fetchMediaTypes(req: any, res: any) {
         })
 }
 
-export { fetchMedia, addMedia, updateMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory, updateMediaCategory, fetchMediaTypes }
+export {
+    fetchMedia,
+    addMedia,
+    updateMedia,
+    fetchSearchedMedia,
+    fetchMediaCategories,
+    addMediaCategory,
+    fetchMediaTypes,
+}

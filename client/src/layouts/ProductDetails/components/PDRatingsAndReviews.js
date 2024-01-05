@@ -5,7 +5,7 @@ import React from "react";
 import PDReviews from "./PDReviews";
 import PDRatings from "./PDRatings";
 
-const PDRatingsAndReviews = () => {
+const PDRatingsAndReviews = ({ productReviewDetails }) => {
   return (
     <MDBox
       sx={{
@@ -24,8 +24,8 @@ const PDRatingsAndReviews = () => {
       >
         Ratings & reviews
       </MDTypography>
-      <PDReviews />
-      <PDRatings />
+      <PDRatings productReviewDetails={productReviewDetails} />
+      <PDReviews productReviewDetails={productReviewDetails} />
       <br />
     </MDBox>
   );
