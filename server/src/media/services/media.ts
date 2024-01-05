@@ -1,6 +1,4 @@
-import { User } from '../../user/entities'
 import { DigitalProduct } from '../entities'
-import { MediaType } from '../types'
 import { promises as fsPromises } from 'fs'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
 import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
@@ -144,8 +142,7 @@ async function createMedia(media: MediaData) {
 
 async function alterMedia(
     product_id: number,
-    user_id: number,
-    media: MediaData
+    media: any
 ) {
     const {
         price,
@@ -156,6 +153,7 @@ async function alterMedia(
         category,
         media_type,
         file_format,
+        comment
     } = media.fields
     const containerName = 'gdsdt4'
 
@@ -169,13 +167,14 @@ async function alterMedia(
         // Build the update object by excluding undefined values
         const updateObject: Record<string, any> = {}
         if (status !== undefined) {
-            const user = await User.findOneBy({ user_id })
-            if (user?.type !== 2) {
-                throw 'Unauthorized'
-            }
 
             updateObject.status = status
         }
+
+        if (comment) {
+            updateObject.comment = comment
+        }
+
         if (price !== undefined) {
             updateObject.price = price
         }

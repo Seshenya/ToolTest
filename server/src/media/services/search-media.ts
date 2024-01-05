@@ -6,12 +6,15 @@ async function searchMedia(
     size: number,
     category: string,
     media_type: number,
-    query: string
+    query: string,
+    status: number,
+    owner_id: number
 ) {
     const skip = (page - 1) * size
 
     try {
         let baseQuery = DigitalProduct.createQueryBuilder('product')
+            .leftJoinAndSelect('product.owner', 'owner')
             .where('1 = 1')
             .skip(skip)
             .take(size)
@@ -25,6 +28,18 @@ async function searchMedia(
         if (media_type) {
             baseQuery = baseQuery.andWhere('product.media_type = :media_type', {
                 media_type,
+            })
+        }
+
+        if (status) {
+            baseQuery = baseQuery.andWhere('product.status = :status', {
+                status,
+            })
+        }
+
+        if (owner_id) {
+            baseQuery = baseQuery.andWhere('product.owner_id = :owner_id', {
+                owner_id,
             })
         }
 
