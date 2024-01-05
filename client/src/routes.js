@@ -47,6 +47,7 @@ import Categories from 'layouts/categories'
 //
 import ProductDetails from 'layouts/ProductDetails'
 import OrderHistory from 'layouts/orderHistory'
+import Developer from 'layouts/about/developer'
 
 const routes = [
     {
@@ -217,6 +218,11 @@ const routes = [
         // name: 'Order history',
         // key: 'Order history',
         component: <OrderHistory />,
+    },
+    {
+        name: 'Developer',
+        route: '/about-us/:developer',
+        component: <Developer />,
     },
 ]
 
