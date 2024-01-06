@@ -88,7 +88,11 @@ const AddEditProductModal = ({
     const handleFormSubmit = (data) => {
         if (!isSubmitting) {
             setIsSubmitting(true)
-                (editProduct ? onSubmitEdit : onSubmit)(data)
+            if(editProduct) {
+                onSubmitEdit(data)
+            } else {
+                onSubmit(data)
+            }
         }
     }
 
