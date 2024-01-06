@@ -450,6 +450,7 @@ const AddEditProductModal = ({
                     {/* Drag and Drop for Files */}
 
                     {/* Drag and Drop for Media */}
+                    {!editProduct && (
                     <MDBox
                         border={(isDragging1 || uploadedMedia.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
@@ -499,9 +500,10 @@ const AddEditProductModal = ({
                             </MDBox>
                         ))}
                     </MDBox>
-
+                    )}
 
                     {/* Drag and Drop for Thumbnail */}
+                    {!editProduct && (
                     <MDBox
                         border={(isDragging2 || uploadedThumbnail.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
@@ -551,9 +553,10 @@ const AddEditProductModal = ({
                             </MDBox>
                         ))}
                     </MDBox>
-
+                    )}
 
                     {/* Drag and Drop for Previews */}
+                    {!editProduct && (
                     <MDBox
                         border={(isDragging3 || uploadedPreviews.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                         borderRadius="5px"
@@ -604,6 +607,7 @@ const AddEditProductModal = ({
                             </MDBox>
                         ))}
                     </MDBox>
+                    )}
                     {errors.tags && (
                         <span role="alert" style={{ color: 'red', fontSize: '0.8rem', marginBottom: '0.8rem', display: 'block' }} >
                             {errors.tags.message}

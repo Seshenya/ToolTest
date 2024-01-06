@@ -53,7 +53,7 @@ async function searchMedia(
         }
 
         const media = await baseQuery.getMany()
-
+        const totalCount = await baseQuery.getCount();
         const containerName = 'gdsdt4'
 
         for (let i = 0; i < media.length; i++) {
@@ -112,7 +112,6 @@ async function searchMedia(
             }
         }
 
-        const totalCount = media.length
         return {
             media,
             totalCount,
