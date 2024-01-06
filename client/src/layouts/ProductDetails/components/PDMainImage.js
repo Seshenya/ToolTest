@@ -75,17 +75,15 @@ const PDMainImage = ({ productDetails }) => {
   };
   return (
     <MDBox>
-      <MDBox position={"relative"} display={"flex"} alignItems={"center"} justifyContent={"center"} style={{ width: 500, height: 500 }}>
+      <MDBox position={"relative"} display={"flex"} alignItems={"center"} justifyContent={"center"} style={{ width: '100%', height: 300 }}>
         {productDetails.file_format === 'glb' ? (
           <Canvas
-            height={'100%'}
-            width={'100%'}
-            camera={{ position: [-0.5, 1, 2] }}
+            camera={{ position: [0, 1, 2] }}
             shadows
           >
             <directionalLight position={[3.3, 1.0, 4.4]} castShadow intensity={Math.PI * 2} />
             <GlTFModel />
-            <Circle args={[10]} rotation-x={-Math.PI / 2} receiveShadow>
+            <Circle args={[10]} receiveShadow>
               <meshStandardMaterial />
             </Circle>
             <OrbitControls target={[0, 1, 0]} />
