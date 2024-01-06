@@ -189,3 +189,12 @@ REFERENCES `user` (`user_id`)
 ON DELETE CASCADE
 ON UPDATE CASCADE;
 
+
+
+-- delete flow
+
+ALTER TABLE `product` 
+ADD COLUMN `isDeleted` BIT(1) NULL DEFAULT 0 AFTER `comment`;
+
+ALTER TABLE `ARTSYNC`.`product` 
+CHANGE COLUMN `isDeleted` `isDeleted` TINYINT(1) NULL DEFAULT 0 ;

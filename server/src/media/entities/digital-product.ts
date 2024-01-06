@@ -73,4 +73,7 @@ export class DigitalProduct extends BaseEntity {
 
     @Column({ type: 'text' })
     comment: string
+
+    @Column({ type: 'tinyint' })
+    isDeleted: number
 }
