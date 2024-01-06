@@ -16,6 +16,7 @@ async function searchMedia(
         let baseQuery = DigitalProduct.createQueryBuilder('product')
             .leftJoinAndSelect('product.owner', 'owner')
             .where('1 = 1')
+            .where('product.isDeleted = 0')
             .skip(skip)
             .take(size)
 
