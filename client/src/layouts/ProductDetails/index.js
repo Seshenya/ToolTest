@@ -1,22 +1,32 @@
 import MDBox from 'components/MDBox';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PDMainImage from './components/PDMainImage';
 import PDSellerInfo from './components/PDSellerInfo';
 import { CircularProgress, Grid } from '@mui/material';
 import NewArrivalIcon from './components/NewArrivalIcon';
 import PDInfoSection from './components/PDInfoSection';
 import PDActionButtons from './components/PDActionButtons';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useProductDetails from './hooks/useProductDetails';
 import useProductReviewDetails from './hooks/useProductReviewDetails';
 import MDSnackbar from 'components/MDSnackbar';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
+import useAuth from 'hooks/useAuth';
 
 const ProductDetails = () => {
   const { productId } = useParams();
   const { productDetails, sb, closeSb } = useProductDetails(productId);
   const { productReviewDetails, sbar, closeSbar } = useProductReviewDetails(productId);
+  const navigate = useNavigate()
+  const { auth } = useAuth()
+
+
+  useEffect(() => {
+    if (productDetails && (productDetails?.isDeleted || (auth.type === 1 && productDetails?.status !== 3))) {
+      navigate(`/shop`)
+    }
+  }, [productDetails, productId])
 
   return (
     <DashboardLayout>
