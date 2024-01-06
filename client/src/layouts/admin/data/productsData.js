@@ -8,11 +8,10 @@ import MDBadge from "components/MDBadge";
 
 import Icon from '@mui/material/Icon';
 
-import { statusColors } from "constants/DummyProducts";
 import { getFormattedDate } from "helpers";
 import { getStatus } from "helpers";
 
-export default function productsTableData(products, openUpdateStatus) {
+export default function productsTableData(products, openUpdateStatus, navigate) {
 
     return {
         columns: [
@@ -30,18 +29,32 @@ export default function productsTableData(products, openUpdateStatus) {
 
             return (
                 {
-                    product: product?.title,
+                    product: (
+                        <MDTypography
+                            component="span"
+                            style={{
+                                cursor: 'pointer',
+                                textDecoration: 'underline',
+                                color: 'primary',
+                                fontWeight: 'medium',
+                            }}
+                            onClick={() => {
+                                navigate(`/shop/${product.product_id}`);
+                            }}
+                            variant="caption"
+                            color="text"
+                            fontWeight="medium"
+                        >
+                            {product.title}
+                        </MDTypography>
+                    ),
                     creator: `${product?.owner?.firstname} ${product?.owner?.lastname}`,
                     status: (
                         <MDBox ml={-1}>
                             <MDBadge badgeContent={status.label} color={status.color} variant="gradient" size="sm" />
                         </MDBox>
                     ),
-                    date: (
-                        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                            {formattedDate}
-                        </MDTypography>
-                    ),
+                    date: formattedDate,
                     action: (
                         <MDBox display='flex'>
                             <MDBox>

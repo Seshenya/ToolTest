@@ -33,6 +33,7 @@ import { useSnackbar } from "context/SnackbarContext";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import { CircularProgress, Pagination } from "@mui/material";
 import { statusTypes } from "helpers";
+import { useNavigate } from "react-router-dom";
 
 function AdminDashboard() {
 
@@ -55,6 +56,7 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(false)
   const axiosPrivate = useAxiosPrivate()
   const [page, setPage] = useState(1)
+  const navigate = useNavigate()
 
 
   const getMedia = () => {
@@ -215,7 +217,7 @@ function AdminDashboard() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={productsTableData(products, openUpdateStatus)}
+                  table={productsTableData(products, openUpdateStatus, navigate)}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
