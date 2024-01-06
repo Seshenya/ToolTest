@@ -5,6 +5,9 @@ async function getOrders(buyer_id: number) {
         const orders = await Order.find({
             where: { buyer_id },
             relations: ['product'],
+            order: {
+                order_date: 'DESC',
+            },
         })
         return orders
     } catch (error) {
