@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import useProductDetails from './hooks/useProductDetails';
 import useProductReviewDetails from './hooks/useProductReviewDetails';
 import MDSnackbar from 'components/MDSnackbar';
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 
 const ProductDetails = () => {
   const { productId } = useParams();
@@ -19,6 +20,7 @@ const ProductDetails = () => {
 
   return (
     <DashboardLayout>
+      <DashboardNavbar hideBreadCrumbs />
       {productDetails && productReviewDetails ? (
         <Grid
           container
@@ -88,7 +90,7 @@ const ProductDetails = () => {
         close={closeSbar}
         bgWhite
       />
-    </DashboardLayout>
+    </DashboardLayout >
   );
 };
 

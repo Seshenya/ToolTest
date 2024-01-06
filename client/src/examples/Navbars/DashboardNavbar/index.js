@@ -49,7 +49,7 @@ import { debounce } from 'lodash'
 import { axiosPrivate } from 'api/axios'
 import useAuth from 'hooks/useAuth'
 
-function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersRef }) {
+function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersRef, hideBreadCrumbs }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
@@ -192,7 +192,7 @@ function DashboardNavbar({ absolute, light, isMini, filters, reCallApi, filtersR
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+          {hideBreadCrumbs ? null : <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />}
         </MDBox>
         {isMini ? null : auth?.user_id ?
           (
