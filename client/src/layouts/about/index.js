@@ -1,4 +1,3 @@
-import Avatar from '@mui/material/Avatar';
 import { useNavigate } from 'react-router-dom';
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -8,8 +7,6 @@ import Card from "@mui/material/Card";
 import Grid from "@mui/material/Grid";
 import { aboutData } from 'constants/AboutData';
 import DeveloperCard from 'examples/Cards/DeveloperCards';
-
-
 
 const TeamMember = (props) => {
     const navigate = useNavigate();
@@ -21,9 +18,11 @@ const TeamMember = (props) => {
                 label={props.developer.name}
                 title={props.developer.name}
                 description={props.developer.role}
+                developer={props.developer}
+                navigate={navigate}
                 action={{
                     type: "internal",
-                    route: `/about/${props.member}`,
+                    route: `/about-us/${props.developer.name.split(' ')[0]}`,
                     color: "info",
                     label: "view profile",
                 }}
@@ -33,6 +32,8 @@ const TeamMember = (props) => {
 }
 
 const Team = () => {
+
+    const navigate = useNavigate();
 
     return (
         <DashboardLayout>
@@ -55,8 +56,9 @@ const Team = () => {
                 <MDBox pt={3}>
                     <Grid container spacing={6}>
                         {Object.keys(aboutData).map((member, index) => (
+                            console.log(member),
                             member !== "John" ? (
-                                <TeamMember key={index} developer={aboutData[member]} member={member} />
+                                <TeamMember key={index} developer={aboutData[member]} member={member} navigate={navigate} />
                             ) : null
                         ))}
                     </Grid>

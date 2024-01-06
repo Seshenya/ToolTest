@@ -24,12 +24,11 @@ export class DigitalProduct extends BaseEntity {
 
     @ManyToOne(() => MediaType)
     @JoinColumn({ name: 'media_type', referencedColumnName: 'id' })
-
     @Column({ type: 'tinyint' })
     media_type: number
 
-    @Column({ type: 'text' })
-    media: string
+    @Column({ type: 'simple-array' })
+    media: string[]
 
     @Column({ type: 'text' })
     size: number
@@ -68,7 +67,13 @@ export class DigitalProduct extends BaseEntity {
 
     @ManyToOne(() => Category)
     @JoinColumn({ name: 'category', referencedColumnName: 'id' })
+    @Column({ type: 'tinyint' })
+
+    category: number
+
+    @Column({ type: 'text' })
+    comment: string
 
     @Column({ type: 'tinyint' })
-    category: number
+    isDeleted: number
 }

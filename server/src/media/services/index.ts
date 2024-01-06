@@ -3,4 +3,13 @@ import { searchMedia } from './search-media'
 import { getMediaCategories, createCategory, alterCategory } from './media-category'
 import { getMediaTypes } from './media-type'
 
-export { createMedia, alterMedia, getMedia, searchMedia, getMediaCategories, createCategory, alterCategory, getMediaTypes }
+export {
+    createMedia,
+    alterMedia,
+    getMedia,
+    searchMedia,
+    getMediaCategories,
+    createCategory,
+    getMediaTypes,
+    alterCategory
+}

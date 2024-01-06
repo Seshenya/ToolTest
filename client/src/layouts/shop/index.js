@@ -59,6 +59,7 @@ function Shop() {
                 params: {
                     page: pageNo,
                     size: 10,
+                    status: 3,
                     ...filters,
                 },
             })
@@ -130,7 +131,7 @@ function Shop() {
                             </MDBox>
                         ) : (
                             <Grid container spacing={6}>
-                                {products.map((product, index) => {
+                                {products.length ? products.map((product, index) => {
                                     return (
                                         <Grid
                                             item
@@ -150,7 +151,7 @@ function Shop() {
                                                 }
                                                 action={{
                                                     type: 'internal',
-                                                    route: '/shop',
+                                                    route: `/shop/${product.product_id}`,
                                                     color: 'primary',
                                                     label: 'Explore',
                                                 }}
@@ -158,11 +159,17 @@ function Shop() {
                                             />
                                         </Grid>
                                     )
-                                })}
+                                }) :
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        md={6}
+                                        xl={4}
+                                    >No Products Available</Grid>}
                             </Grid>
                         )}
                     </MDBox>
-                    <Pagination
+                    {products.length ? <Pagination
                         sx={{
                             padding: 2,
                             width: '100%',
@@ -172,7 +179,7 @@ function Shop() {
                         count={Math.ceil(totalCount / 10)}
                         page={page}
                         onChange={handleChange}
-                    />
+                    /> : null}
                 </Card>
             </MDBox>
             <Footer />

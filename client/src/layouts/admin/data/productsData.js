@@ -8,12 +8,11 @@ import MDBadge from "components/MDBadge";
 
 import Icon from '@mui/material/Icon';
 
-// Images
-import { products } from "constants/DummyProducts";
+import { getFormattedDate } from "helpers";
+import { getStatus } from "helpers";
 
-import { statusColors } from "constants/DummyProducts";
+export default function productsTableData(products, openUpdateStatus, navigate) {
 
-export default function productsTableData(setUpdateStatusOpen) {
     return {
         columns: [
             { Header: "Product", accessor: "product", align: "left" },
@@ -24,24 +23,42 @@ export default function productsTableData(setUpdateStatusOpen) {
         ],
 
         rows: products.map((product) => {
+
+            const formattedDate = getFormattedDate(product?.date)
+            const status = getStatus(product?.status)
+
             return (
                 {
-                    product: product.title,
-                    creator: product.creator.name,
-                    status: (
-                        <MDBox ml={-1}>
-                            <MDBadge badgeContent={product.status} color={statusColors[product.status]} variant="gradient" size="sm" />
-                        </MDBox>
-                    ),
-                    date: (
-                        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-                            {product.date}
+                    product: (
+                        <MDTypography
+                            component="span"
+                            style={{
+                                cursor: 'pointer',
+                                textDecoration: 'underline',
+                                color: 'primary',
+                                fontWeight: 'medium',
+                            }}
+                            onClick={() => {
+                                navigate(`/shop/${product.product_id}`);
+                            }}
+                            variant="caption"
+                            color="text"
+                            fontWeight="medium"
+                        >
+                            {product.title}
                         </MDTypography>
                     ),
+                    creator: `${product?.owner?.firstname} ${product?.owner?.lastname}`,
+                    status: (
+                        <MDBox ml={-1}>
+                            <MDBadge badgeContent={status.label} color={status.color} variant="gradient" size="sm" />
+                        </MDBox>
+                    ),
+                    date: formattedDate,
                     action: (
                         <MDBox display='flex'>
                             <MDBox>
-                                <Icon fontSize='small' onClick={() => setUpdateStatusOpen(true)}>edit</Icon>
+                                <Icon fontSize='small' onClick={() => openUpdateStatus(product)}>edit</Icon>
                             </MDBox>
                             <MDBox ml={1}>
                                 <Icon fontSize='small'>download</Icon>

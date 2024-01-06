@@ -1,5 +1,14 @@
-import { getMedia, createMedia, alterMedia, searchMedia, getMediaCategories, createCategory, alterCategory, getMediaTypes } from '../services'
-import formidable from 'express-formidable';
+import {
+    getMedia,
+    createMedia,
+    alterMedia,
+    searchMedia,
+    getMediaCategories,
+    createCategory,
+    getMediaTypes,
+    alterCategory,
+} from '../services'
+import formidable from 'express-formidable'
 
 async function fetchMedia(req: any, res: any) {
     getMedia(req.params.id)
@@ -42,17 +51,17 @@ async function updateMedia(req: any, res: any) {
         }
 
         const mediaData = {
-            fields: req.fields,
-            fileMedia: req.files.media,
+            fields: req?.fields || {},
+            fileMedia: req?.files?.media || undefined,
             filePreviews: Array.isArray(req.files.previews)
-                ? req.files.previews
-                : req.files.previews
-                ? [req.files.previews]
-                : undefined,
-            fileThumbnail: req.files.thumbnail,
+                ? req?.files?.previews
+                : req?.files?.previews
+                    ? [req.files.previews]
+                    : undefined,
+            fileThumbnail: req?.files?.thumbnail,
         }
 
-        await alterMedia(req.params.id, req.userId, mediaData)
+        await alterMedia(req.params.id, mediaData)
             .then((media) => {
                 res.send(media)
             })
@@ -63,8 +72,8 @@ async function updateMedia(req: any, res: any) {
 }
 
 async function fetchSearchedMedia(req: any, res: any) {
-    const { page, size, category, media_type, query } = req.query // get search parameters
-    searchMedia(page, size, category, media_type, query)
+    const { page, size, category, media_type, query, status, owner_id } = req.query // get search parameters
+    searchMedia(page, size, category, media_type, query, status, owner_id)
         .then(({ media, totalCount }) => {
             res.send({ media, totalCount })
         })
@@ -113,4 +122,13 @@ async function fetchMediaTypes(req: any, res: any) {
         })
 }
 
-export { fetchMedia, addMedia, updateMedia, fetchSearchedMedia, fetchMediaCategories, addMediaCategory, updateMediaCategory, fetchMediaTypes }
+export {
+    fetchMedia,
+    addMedia,
+    updateMedia,
+    fetchSearchedMedia,
+    fetchMediaCategories,
+    addMediaCategory,
+    fetchMediaTypes,
+    updateMediaCategory
+}

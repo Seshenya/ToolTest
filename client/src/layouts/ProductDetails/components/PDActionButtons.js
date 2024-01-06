@@ -16,25 +16,14 @@ const PDActionButtons = (productDetails) => {
         setShowConfirmationModal(true)
     }
 
-    const handleDownload = () => {
-        setShowConfirmationModal(false)
-        const link = document.createElement('a');
-        link.href = productDetails.media;
-        link.target = '_blank';
-        link.download = `downloaded_media.${productDetails.file_format}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
     const handleCloseModal = () => {
         setShowConfirmationModal(false)
     }
 
-    const goOrderHistory = () => {
-        // TODO not implemented change onClick to go to order history
-        console.log('go to order history')
-    }
+    const handleConfirm = () => {
+        navigate('/order-history');
+        setShowConfirmationModal(false);
+    };
 
     return (
         <>
@@ -72,8 +61,8 @@ const PDActionButtons = (productDetails) => {
             <ConfirmationModal
                 open={showConfirmationModal}
                 onClose={handleCloseModal}
-                onConfirm={handleDownload}
-                confirmationText={`Are you sure you want to buy this media for $${productDetails.price}?`}
+                onConfirm={handleConfirm}
+                confirmationText={`Are you sure you want to buy this media for $${Number(productDetails?.productDetails?.price).toFixed(2)}?`}
             ></ConfirmationModal>
         </>
     )

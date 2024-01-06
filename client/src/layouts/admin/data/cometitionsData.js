@@ -11,9 +11,8 @@ import Icon from '@mui/material/Icon';
 // Images
 
 import { statusColors } from 'constants/DummyCompetitions';
-import { competitions } from 'constants/DummyCompetitions';
 
-export default function competitionsTableData(setUpdateStatusOpen) {
+export default function competitionsTableData(competitions, openUpdateStatus) {
   return {
     columns: [
       { Header: 'Competition', accessor: 'competition', align: 'left' },
@@ -45,7 +44,7 @@ export default function competitionsTableData(setUpdateStatusOpen) {
         action: (
           <MDBox display='flex'>
             <MDBox>
-              <Icon fontSize='small' onClick={() => setUpdateStatusOpen(true)}>
+              <Icon fontSize='small' onClick={() => openUpdateStatus(competition)}>
                 edit
               </Icon>
             </MDBox>

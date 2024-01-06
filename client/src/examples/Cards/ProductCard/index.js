@@ -19,7 +19,7 @@ import MDBox from 'components/MDBox'
 import MDTypography from 'components/MDTypography'
 import MDButton from 'components/MDButton'
 import MDInput from 'components/MDInput'
-import { IconButton } from '@mui/material'
+import { CardActionArea, IconButton } from '@mui/material'
 import MDBadge from 'components/MDBadge'
 import AddEditProductModal from 'layouts/sell/components/AddEditProductModal'
 import { useEffect, useState } from 'react'
@@ -28,6 +28,9 @@ import { useForm } from 'react-hook-form'
 import imageFallback from 'assets/images/fallback/image_fallback.jpg'
 import videoFallback from 'assets/images/fallback/video_fallback.jpg'
 import audioFallback from 'assets/images/fallback/audio_fallback.png'
+import { statusTypes } from 'helpers'
+import { useSnackbar } from 'context/SnackbarContext'
+import useAxiosPrivate from 'hooks/useAxiosPrivate'
 
 function ProductCard({
     image,
@@ -47,33 +50,20 @@ function ProductCard({
     product,
     categories,
     mediaTypes,
-    refreshSellPage
+    refreshSellPage,
+    comment
 }) {
     const [deleteOpen, setDeleteOpen] = useState(false)
     const [discountOpen, setDiscountOpen] = useState(false)
     const navigate = useNavigate()
+    const axiosPrivate = useAxiosPrivate()
+    const { showSnackbar } = useSnackbar();
 
     const fallbackImages = {
         1: imageFallback,
         2: audioFallback,
         3: videoFallback,
         4: imageFallback,
-    }
-
-    const statusColors = {
-        1: "warning",
-        2: "info",
-        3: "success",
-        4: "error",
-        5: "warning"
-    }
-
-    const statusText = {
-        1: "Pending",
-        2: "Modification Required",
-        3: "Approved",
-        4: "Rejected",
-        5: "Banned"
     }
 
     const [openModal, setOpenModal] = useState(false)
@@ -126,10 +116,39 @@ function ProductCard({
         e.target.src = fallbackImages[mediaType];
     }
 
-    const onSubmit = (data) => {}
+    const onSubmit = (data) => { }
 
     const handleFormReset = () => {
         reset()
+    }
+
+    const onHandleDelete = (id) => {
+        if (id) {
+            axiosPrivate.put(`/media/${id}`, {
+                isDeleted: 1
+            }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }).then(res => {
+                setDeleteOpen(false)
+                refreshSellPage()
+            }).catch((error) => {
+                showSnackbar({
+                    color: 'error',
+                    title: error.message,
+                    message: '',
+                    icon: 'error',
+                });
+            })
+        } else {
+            showSnackbar({
+                color: 'error',
+                title: 'Product id missing',
+                message: '',
+                icon: 'error',
+            });
+        }
     }
 
     return (
@@ -146,26 +165,29 @@ function ProductCard({
                     boxShadow: '0px 10px 20px 3px #0000000f',
                 },
             }}
-            onClick={handleClick}
         >
-            <MDBox position="relative" width="100.25%" borderRadius="xl">
-                <CardMedia
-                    src={image}
-                    component="img"
-                    onError={handleImageLoadError}
-                    title={title}
-                    sx={{
-                        width: '100%',
-                        height: '20vh',
-                        margin: 0,
-                        // boxShadow: ({ boxShadows: { md } }) => md,
-                        objectFit: 'cover',
-                        objectPosition: 'center',
-                        textAlign: 'center',
-                        borderRadius: '0.75rem 0.75rem 0 0',
-                    }}
-                />
-            </MDBox>
+            <CardActionArea
+                onClick={handleClick}
+            >
+                <MDBox position="relative" width="100.25%" borderRadius="xl">
+                    <CardMedia
+                        src={image}
+                        component="img"
+                        onError={handleImageLoadError}
+                        title={title}
+                        sx={{
+                            width: '100%',
+                            height: '20vh',
+                            margin: 0,
+                            // boxShadow: ({ boxShadows: { md } }) => md,
+                            objectFit: 'cover',
+                            objectPosition: 'center',
+                            textAlign: 'center',
+                            borderRadius: '0.75rem 0.75rem 0 0',
+                        }}
+                    />
+                </MDBox>
+            </CardActionArea>
             <MDBox mt={1} mx={0.5} padding={2}>
                 <MDBox mb={1}>
                     {action ? (
@@ -207,12 +229,14 @@ function ProductCard({
                     alignItems="center"
                 >
                     {status ? (
-                        <MDBadge
-                            badgeContent={statusText[status]}
-                            color={statusColors[status]}
-                            variant="gradient"
-                            size="sm"
-                        />
+                        <Tooltip title={comment || statusTypes[status].label}>
+                            <MDBadge
+                                badgeContent={statusTypes[status].label}
+                                color={statusTypes[status].color}
+                                variant="gradient"
+                                size="sm"
+                            />
+                        </Tooltip>
                     ) : null}
                     {action ? (
                         action.type === 'internal' ? (
@@ -284,10 +308,10 @@ function ProductCard({
                             aria-describedby="delete-description"
                         >
                             <DialogTitle id="delete-title">
-                                Are you sure ?
+                                Are you sure you want to delete this product?
                             </DialogTitle>
                             <DialogActions>
-                                <MDButton onClick={() => setDeleteOpen(false)}>
+                                <MDButton onClick={() => onHandleDelete(product.product_id)}>
                                     Yes
                                 </MDButton>
                                 <MDButton onClick={() => setDeleteOpen(false)}>

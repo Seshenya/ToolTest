@@ -39,3 +39,10 @@ FOREIGN KEY (`category`)
 REFERENCES `category` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
+
+-- 3 jan
+
+
+ALTER TABLE `ARTSYNC`.`product` 
+ADD COLUMN `comment` VARCHAR(255) NULL AFTER `category`;
+
