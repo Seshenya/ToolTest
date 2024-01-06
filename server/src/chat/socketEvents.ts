@@ -14,6 +14,7 @@ interface User {
 export const setupSocketEvents = (io: Server) => {
 
     io.on('connection', (socket: Socket) => {
+        // eslint-disable-next-line no-console
         console.log('User connected');
 
         const user = JSON.parse(socket.handshake.query.user as string) as User;
@@ -24,6 +25,7 @@ export const setupSocketEvents = (io: Server) => {
             // Fetch and send the past chat users
             socket.on('getPastChats', async () => {
                 const pastUsers = await getPastChats(user.id)
+                // eslint-disable-next-line no-console
                 console.log(pastUsers)
                 io.to(user.id).emit('pastChats', { pastUsers })
             })
@@ -44,6 +46,7 @@ export const setupSocketEvents = (io: Server) => {
             });
 
             socket.on('disconnect', () => {
+                // eslint-disable-next-line no-console
                 console.log('User disconnected');
             });
         }

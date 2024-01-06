@@ -55,6 +55,7 @@ function DashboardNavbar({
     filters,
     reCallApi,
     filtersRef,
+    hideBreadCrumbs,
 }) {
     const [navbarType, setNavbarType] = useState();
     const [controller, dispatch] = useMaterialUIController();
@@ -165,12 +166,11 @@ function DashboardNavbar({
                         title="My Profile"
                     />
                 </Link>
-                <Link to="/order-history">
-                    <NotificationItem
-                        icon={<Icon>history</Icon>}
-                        title="Order History"
-                    />
-                </Link>
+                <NotificationItem
+                    icon={<Icon>history</Icon>}
+                    title="Order History"
+                    onClick={() => navigate('/order-history')}
+                />
                 <NotificationItem
                     onClick={logout}
                     icon={<Icon>logout</Icon>}
@@ -210,12 +210,14 @@ function DashboardNavbar({
                     mb={{ xs: 1, md: 0 }}
                     sx={(theme) => navbarRow(theme, { isMini })}
                 >
-                    <Breadcrumbs
-                        icon="home"
-                        title={route[route.length - 1]}
-                        route={route}
-                        light={light}
-                    />
+                    {hideBreadCrumbs ? null : (
+                        <Breadcrumbs
+                            icon="home"
+                            title={route[route.length - 1]}
+                            route={route}
+                            light={light}
+                        />
+                    )}
                 </MDBox>
                 {isMini ? null : auth?.user_id ? (
                     <MDBox sx={(theme) => navbarRow(theme, { isMini })}>

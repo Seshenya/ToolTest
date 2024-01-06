@@ -118,6 +118,7 @@ CREATE TABLE IF NOT EXISTS message (
 DROP TABLE IF EXISTS `category`;
 
 CREATE TABLE `category` (
+    `id` TINYINT AUTO_INCREMENT PRIMARY KEY,
     `type` VARCHAR(255) NOT NULL,
     UNIQUE INDEX `type_UNIQUE` (`type` ASC)
 );
@@ -139,7 +140,7 @@ ON UPDATE NO ACTION;
 
 DROP TABLE IF EXISTS `media_type`;
 
-CREATE TABLE `artsync`.`media_type` (
+CREATE TABLE `media_type` (
     `id` TINYINT AUTO_INCREMENT PRIMARY KEY,
     `type` VARCHAR(25) NOT NULL,
      UNIQUE INDEX `type_UNIQUE` (`type` ASC)
@@ -149,9 +150,51 @@ CREATE TABLE `artsync`.`media_type` (
 -- Alter Table product for foreign key media_type
 --
 
-ALTER TABLE `artsync`.`product`
+ALTER TABLE `product`
 ADD CONSTRAINT `fk_product_type`
 FOREIGN KEY (`media_type`)
 REFERENCES `media_type` (`id`)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION;
+
+--
+-- Table structure for table review
+--
+
+DROP TABLE IF EXISTS `review`;
+
+CREATE TABLE `review` (
+  `review_id` BIGINT NOT NULL AUTO_INCREMENT,
+  `product_id` BIGINT NOT NULL,
+  `rating` DECIMAL(2, 1) NULL,
+  `description` TEXT NULL,
+  `reviewed_by` BIGINT NOT NULL,
+  PRIMARY KEY (`review_id`));
+
+-- Adding foreign key constraint for product_id
+
+ALTER TABLE `review`
+ADD CONSTRAINT `fk_review_product`
+FOREIGN KEY (`product_id`)
+REFERENCES `product` (`product_id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+-- Adding foreign key constraint for reviewed_by
+
+ALTER TABLE `review`
+ADD CONSTRAINT `fk_review_user`
+FOREIGN KEY (`reviewed_by`)
+REFERENCES `user` (`user_id`)
+ON DELETE CASCADE
+ON UPDATE CASCADE;
+
+
+
+-- delete flow
+
+ALTER TABLE `product` 
+ADD COLUMN `isDeleted` BIT(1) NULL DEFAULT 0 AFTER `comment`;
+
+ALTER TABLE `ARTSYNC`.`product` 
+CHANGE COLUMN `isDeleted` `isDeleted` TINYINT(1) NULL DEFAULT 0 ;

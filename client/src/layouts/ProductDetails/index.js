@@ -1,32 +1,41 @@
 import MDBox from 'components/MDBox';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PDMainImage from './components/PDMainImage';
 import PDSellerInfo from './components/PDSellerInfo';
 import { CircularProgress, Grid } from '@mui/material';
 import NewArrivalIcon from './components/NewArrivalIcon';
 import PDInfoSection from './components/PDInfoSection';
 import PDActionButtons from './components/PDActionButtons';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useProductDetails from './hooks/useProductDetails';
+import useProductReviewDetails from './hooks/useProductReviewDetails';
 import MDSnackbar from 'components/MDSnackbar';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
+import useAuth from 'hooks/useAuth';
 
 const ProductDetails = () => {
     const { productId } = useParams();
     const { productDetails, sb, closeSb } = useProductDetails(productId);
+    const { productReviewDetails, sbar, closeSbar } =
+        useProductReviewDetails(productId);
+    const navigate = useNavigate();
+    const { auth } = useAuth();
+
+    useEffect(() => {
+        if (
+            productDetails &&
+            (productDetails?.isDeleted ||
+                (auth.type === 1 && productDetails?.status !== 3))
+        ) {
+            navigate(`/shop`);
+        }
+    }, [productDetails, productId]);
 
     return (
         <DashboardLayout>
-            <DashboardNavbar
-            // filters
-            // reCallApi={(filtersRef) => {
-            //     getMedia(filtersRef, 1);
-            //     setPage(1);
-            // }}
-            // filtersRef={filtersRef}
-            />
-            {productDetails ? (
+            <DashboardNavbar hideBreadCrumbs />
+            {productDetails && productReviewDetails ? (
                 <Grid
                     container
                     flexWrap={'nowrap'}
@@ -59,7 +68,10 @@ const ProductDetails = () => {
                     </Grid>
                     <Grid item width={'100%'}>
                         <NewArrivalIcon />
-                        <PDInfoSection productDetails={productDetails} />
+                        <PDInfoSection
+                            productReviewDetails={productReviewDetails}
+                            productDetails={productDetails}
+                        />
                     </Grid>
                 </Grid>
             ) : (
@@ -83,6 +95,16 @@ const ProductDetails = () => {
                 open={sb.open}
                 onClose={closeSb}
                 close={closeSb}
+                bgWhite
+            />
+            <MDSnackbar
+                color={sbar.color}
+                icon={sbar.icon}
+                title={sbar.title}
+                content={sbar.message}
+                open={sbar.open}
+                onClose={closeSbar}
+                close={closeSbar}
                 bgWhite
             />
         </DashboardLayout>

@@ -19,7 +19,7 @@ const PDActionButtons = ({ productDetails }) => {
     const { auth } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
 
-    const handleDownload = () => {
+    const handleConfirm = () => {
         // setShowConfirmationModal(false);
         // const link = document.createElement('a');
         // link.href = productDetails.media;
@@ -44,11 +44,6 @@ const PDActionButtons = ({ productDetails }) => {
 
     const handleCloseModal = () => {
         setShowConfirmationModal(false);
-    };
-
-    const goOrderHistory = () => {
-        // TODO not implemented change onClick to go to order history
-        console.log('go to order history');
     };
 
     return (
@@ -92,7 +87,7 @@ const PDActionButtons = ({ productDetails }) => {
             <ConfirmationModal
                 open={showConfirmationModal}
                 onClose={handleCloseModal}
-                onConfirm={handleDownload}
+                onConfirm={handleConfirm}
                 confirmationText={`Are you sure you want to buy this media for €${parseFloat(
                     productDetails.price
                 ).toFixed(2)}?`}

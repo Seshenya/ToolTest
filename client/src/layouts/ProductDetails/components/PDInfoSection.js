@@ -6,13 +6,13 @@ import PDAdditionalInfo from './PDAdditionalInfo';
 import PDRatingsAndReviews from './PDRatingsAndReviews';
 import { bytesToMb } from 'common/commonUtils';
 
-const PDInfoSection = ({ productDetails }) => {
+const PDInfoSection = ({ productReviewDetails, productDetails }) => {
   return (
     <>
       <MDTypography variant='h3' sx={{ fontWeight: '400', marginTop: 2 }}>
         {productDetails.title}
       </MDTypography>
-      <ReviewStars />
+      <ReviewStars productReviewDetails={productReviewDetails}/>
       <MDTypography variant='h1' marginY={2}>
         <span style={{ fontWeight: '400' }}>€</span>
         {parseFloat(productDetails.price).toFixed(2)}
@@ -24,7 +24,7 @@ const PDInfoSection = ({ productDetails }) => {
         fileSize={bytesToMb(productDetails.size)}
         tags={productDetails.tags.split(',')}
       />
-      <PDRatingsAndReviews />
+      <PDRatingsAndReviews productReviewDetails={productReviewDetails} />  
     </>
   );
 };

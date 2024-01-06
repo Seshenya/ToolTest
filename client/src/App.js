@@ -39,6 +39,8 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
 import ProtectedRoute from "components/ProtectedRoute";
+import { SnackbarProvider } from "context/SnackbarContext";
+import useAuth from "hooks/useAuth";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -55,6 +57,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const { auth } = useAuth();
 
   // Cache for the rtl
   useMemo(() => {
@@ -98,11 +101,12 @@ export default function App() {
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
+
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
 
-      if (route.route) {
+      if (route.route && (!route.admin || (route.admin && auth.type === 2))) {
         return <Route exact path={route.route} element={route.notProtected ? route.component : <ProtectedRoute>{route.component}</ProtectedRoute>} key={route.key} />;
       }
 
@@ -133,33 +137,8 @@ export default function App() {
     </MDBox>
   );
 
-  return direction === "rtl" ? (
-    <CacheProvider value={rtlCache}>
-      <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
-        <CssBaseline />
-        {layout === "dashboard" && (
-          <>
-            <Sidenav
-              color={sidenavColor}
-              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="Artsync"
-              routes={routes}
-              onMouseEnter={handleOnMouseEnter}
-              onMouseLeave={handleOnMouseLeave}
-            />
-            <Configurator />
-            {configsButton}
-          </>
-        )}
-        {layout === "vr" && <Configurator />}
-        <Routes>
-          {getRoutes(routes)}
-          {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
-        </Routes>
-      </ThemeProvider>
-    </CacheProvider>
-  ) : (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
+  return <ThemeProvider theme={darkMode ? themeDark : theme}>
+    <SnackbarProvider>
       <CssBaseline />
       {layout === "dashboard" && (
         <>
@@ -167,12 +146,12 @@ export default function App() {
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="Artsync"
-            routes={routes}
+            routes={routes.filter((route) => (!route.admin || (route.admin && auth.type === 2)))}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
           {/* <Configurator />
-          {configsButton} */}
+      {configsButton} */}
         </>
       )}
       {layout === "vr" && <Configurator />}
@@ -180,6 +159,37 @@ export default function App() {
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
-    </ThemeProvider>
-  );
+    </SnackbarProvider>
+  </ThemeProvider>
+
+  // direction === "rtl" ? (
+  //   <CacheProvider value={rtlCache}>
+  //     <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
+  //       <SnackbarProvider>
+  //         <CssBaseline />
+  //         {layout === "dashboard" && (
+  //           <>
+  //             <Sidenav
+  //               color={sidenavColor}
+  //               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+  //               brandName="Artsync"
+  //               routes={routes}
+  //               onMouseEnter={handleOnMouseEnter}
+  //               onMouseLeave={handleOnMouseLeave}
+  //             />
+  //             <Configurator />
+  //             {configsButton}
+  //           </>
+  //         )}
+  //         {layout === "vr" && <Configurator />}
+  //         <Routes>
+  //           {getRoutes(routes)}
+  //           {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
+  //         </Routes>
+  //       </SnackbarProvider>
+  //     </ThemeProvider>
+  //   </CacheProvider>
+  // ) : (
+
+  // );
 }

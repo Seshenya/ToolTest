@@ -58,6 +58,7 @@ function Shop() {
                 params: {
                     page: pageNo,
                     size: 10,
+                    status: 3,
                     ...filters,
                 },
             })
@@ -129,49 +130,59 @@ function Shop() {
                             </MDBox>
                         ) : (
                             <Grid container spacing={6}>
-                                {products.map((product, index) => {
-                                    return (
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            md={6}
-                                            xl={4}
-                                            key={index}
-                                        >
-                                            <ProductCard
-                                                productId={product.product_id}
-                                                product={product}
-                                                image={product.thumbnail}
-                                                label={product.title}
-                                                title={product.title}
-                                                description={
-                                                    product.description
-                                                }
-                                                action={{
-                                                    type: 'internal',
-                                                    route: '/shop',
-                                                    color: 'primary',
-                                                    label: 'Explore',
-                                                }}
-                                                authors={[product.owner_id]}
-                                            />
-                                        </Grid>
-                                    );
-                                })}
+                                {products.length ? (
+                                    products.map((product, index) => {
+                                        return (
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                md={6}
+                                                xl={4}
+                                                key={index}
+                                            >
+                                                <ProductCard
+                                                    productId={
+                                                        product.product_id
+                                                    }
+                                                    product={product}
+                                                    image={product.thumbnail}
+                                                    label={product.title}
+                                                    title={product.title}
+                                                    description={
+                                                        product.description
+                                                    }
+                                                    action={{
+                                                        type: 'internal',
+                                                        route: `/shop/${product.product_id}`,
+                                                        color: 'primary',
+                                                        label: 'Explore',
+                                                    }}
+                                                    authors={[product.owner_id]}
+                                                />
+                                            </Grid>
+                                        );
+                                    })
+                                ) : (
+                                    <Grid item xs={12} md={6} xl={4}>
+                                        No Products Available
+                                    </Grid>
+                                )}
                             </Grid>
                         )}
                     </MDBox>
-                    <Pagination
-                        sx={{
-                            padding: 2,
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                        }}
-                        count={Math.ceil(totalCount / 10)}
-                        page={page}
-                        onChange={handleChange}
-                    />
+                    {products.length ? (
+                        <Pagination
+                            sx={{
+                                padding: 2,
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                            }}
+                            count={Math.ceil(totalCount / 10)}
+                            page={page}
+                            onChange={handleChange}
+                        />
+                    ) : null}
                 </Card>
             </MDBox>
             <Footer />

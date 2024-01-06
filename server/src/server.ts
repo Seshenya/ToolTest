@@ -38,7 +38,7 @@ const io = new Server(server, {
     },
 })
 
-setupSocketEvents(io);
+setupSocketEvents(io)
 
 // eslint-disable-next-line no-console
 console.log('Running a API server at http://localhost:4000')
