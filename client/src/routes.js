@@ -121,6 +121,7 @@ const routes = [
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: '/admin',
         component: <AdminDashboard />,
+        admin: true
     },
     {
         type: 'title',

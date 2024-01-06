@@ -153,7 +153,8 @@ async function alterMedia(
         category,
         media_type,
         file_format,
-        comment
+        comment,
+        isDeleted
     } = media.fields
     const containerName = 'gdsdt4'
 
@@ -195,6 +196,9 @@ async function alterMedia(
         }
         if (file_format !== undefined) {
             updateObject.file_format = file_format
+        }
+        if (isDeleted !== undefined) {
+            updateObject.isDeleted = isDeleted
         }
         if (media.fileMedia !== undefined) {
             // Add Media to Azure Blob Storage
