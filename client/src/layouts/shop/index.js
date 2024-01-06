@@ -1,48 +1,47 @@
 // @mui material components
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 
 // Material Dashboard 2 React components
-import MDBox from 'components/MDBox'
-import MDTypography from 'components/MDTypography'
+import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography';
 
 // Material Dashboard 2 React example components
-import Footer from 'examples/Footer'
-import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
+import Footer from 'examples/Footer';
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 
 // Data
 
 // Dashboard components
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import ProductCard from 'examples/Cards/ProductCard'
+import ProductCard from 'examples/Cards/ProductCard';
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react';
 
-import { CircularProgress, Pagination } from '@mui/material'
-import MDSnackbar from 'components/MDSnackbar'
-import useAxiosPrivate from 'hooks/useAxiosPrivate'
-
+import { CircularProgress, Pagination } from '@mui/material';
+import MDSnackbar from 'components/MDSnackbar';
+import useAxiosPrivate from 'hooks/useAxiosPrivate';
 
 function Shop() {
-    const [page, setPage] = useState(1)
-    const [totalCount, setTotalCount] = useState(0)
-    const [products, setProducts] = useState([])
-    const [loading, setLoading] = useState(false)
-    const axiosPrivate = useAxiosPrivate()
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const axiosPrivate = useAxiosPrivate();
 
     const handleChange = (event, value) => {
-        getMedia(filtersRef.current, value)
-        setPage(value)
-    }
+        getMedia(filtersRef.current, value);
+        setPage(value);
+    };
 
     const filtersRef = useRef({
         category: '',
         mediatype: '',
         query: '',
-    })
+    });
 
     const [sb, setSb] = useState({
         open: false,
@@ -50,10 +49,10 @@ function Shop() {
         icon: '',
         title: '',
         message: '',
-    })
+    });
 
     const getMedia = (filters = filtersRef.current, pageNo) => {
-        setLoading(true)
+        setLoading(true);
         axiosPrivate
             .get(`/media`, {
                 params: {
@@ -63,25 +62,25 @@ function Shop() {
                 },
             })
             .then((res) => {
-                setLoading(false)
-                setProducts(res.data.media)
-                console.log(res.data.media)
+                setLoading(false);
+                setProducts(res.data.media);
+                console.log(res.data.media);
 
                 if (res.data.totalCount !== totalCount) {
-                    setTotalCount(res.data.totalCount)
+                    setTotalCount(res.data.totalCount);
                 }
             })
             .catch((error) => {
-                setLoading(false)
+                setLoading(false);
                 setSb({
                     open: true,
                     color: 'error',
                     icon: 'error',
                     title: error.message,
                     message: '',
-                })
-            })
-    }
+                });
+            });
+    };
 
     const closeSb = () => {
         setSb({
@@ -90,20 +89,20 @@ function Shop() {
             icon: '',
             title: '',
             message: '',
-        })
-    }
+        });
+    };
 
     useEffect(() => {
-        getMedia(filtersRef.current, 1)
-    }, [])
+        getMedia(filtersRef.current, 1);
+    }, []);
 
     return (
         <DashboardLayout>
             <DashboardNavbar
                 filters
                 reCallApi={(filtersRef) => {
-                    getMedia(filtersRef, 1)
-                    setPage(1)
+                    getMedia(filtersRef, 1);
+                    setPage(1);
                 }}
                 filtersRef={filtersRef}
             />
@@ -157,7 +156,7 @@ function Shop() {
                                                 authors={[product.owner_id]}
                                             />
                                         </Grid>
-                                    )
+                                    );
                                 })}
                             </Grid>
                         )}
@@ -187,7 +186,7 @@ function Shop() {
                 bgWhite
             />
         </DashboardLayout>
-    )
+    );
 }
 
-export default Shop
+export default Shop;
