@@ -176,7 +176,7 @@ function Sell() {
               </MDBox>
             ) : (
               <Grid container spacing={6}>
-                {products.map((product, index) => {
+                {products.length ? products.map((product, index) => {
                   return (
                     <Grid
                       item
@@ -210,11 +210,20 @@ function Sell() {
                       />
                     </Grid>
                   )
-                })}
+                }) :
+                  <Grid
+                    item
+                    xs={12}
+                    md={6}
+                    xl={4}
+                  >
+                    No Products Available
+                  </Grid>
+                }
               </Grid>
             )}
           </MDBox>
-          <Pagination
+          {products.length ? <Pagination
             sx={{
               padding: 2,
               width: '100%',
@@ -224,7 +233,7 @@ function Sell() {
             count={Math.ceil(totalCount / 10)}
             page={page}
             onChange={handleChange}
-          />
+          /> : null}
         </Card>
       </MDBox>
       <Footer />
