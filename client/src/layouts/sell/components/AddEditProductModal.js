@@ -495,290 +495,302 @@ const AddEditProductModal = ({
                     {/* Drag and Drop for Files */}
 
                     {/* Drag and Drop for Media */}
-                    <MDBox
-                        border={
-                            isDragging1 || uploadedMedia.length === 0
-                                ? '2px dashed #aaa'
-                                : '2px dashed #ccc'
-                        }
-                        borderRadius="5px"
-                        padding="20px"
-                        marginBottom="20px"
-                        textAlign="center"
-                        onDragOver={(e) => handleDragEnter1(e)}
-                        onDragEnter={(e) => handleDragEnter1(e)}
-                        onDragLeave={(e) => handleDragLeave1(e)}
-                        onDrop={(e) => handleDrop1(e)}
-                    >
-                        {
+                    {!editProduct && (
+                        <MDBox
+                            border={
+                                isDragging1 || uploadedMedia.length === 0
+                                    ? '2px dashed #aaa'
+                                    : '2px dashed #ccc'
+                            }
+                            borderRadius="5px"
+                            padding="20px"
+                            marginBottom="20px"
+                            textAlign="center"
+                            onDragOver={(e) => handleDragEnter1(e)}
+                            onDragEnter={(e) => handleDragEnter1(e)}
+                            onDragLeave={(e) => handleDragLeave1(e)}
+                            onDrop={(e) => handleDrop1(e)}
+                        >
+                            {
+                                <MDTypography
+                                    variant="h3"
+                                    color="primary"
+                                    gutterBottom
+                                >
+                                    Media File
+                                </MDTypography>
+                            }
                             <MDTypography
-                                variant="h3"
-                                color="primary"
+                                variant="body1"
+                                color="secondary"
                                 gutterBottom
                             >
-                                Media File
+                                {isDragging1
+                                    ? 'Drop your file here'
+                                    : 'Drag and drop your file here'}
                             </MDTypography>
-                        }
-                        <MDTypography
-                            variant="body1"
-                            color="secondary"
-                            gutterBottom
-                        >
-                            {isDragging1
-                                ? 'Drop your file here'
-                                : 'Drag and drop your file here'}
-                        </MDTypography>
-                        <MDTypography
-                            variant="body1"
-                            color="secondary"
-                            gutterBottom
-                        >
-                            OR
-                        </MDTypography>
-                        <MDButton
-                            variant="outlined"
-                            component="label"
-                            color="primary"
-                        >
-                            Upload File
-                            <input
-                                type="file"
-                                onChange={handleFileInputChange1}
-                                hidden
-                            />
-                        </MDButton>
-                        {uploadedMedia.length === 0 && (
-                            <span
-                                role="alert"
-                                style={{
-                                    color: 'primary',
-                                    fontSize: '0.8rem',
-                                    marginTop: '0.8rem',
-                                    display: 'block',
-                                }}
+                            <MDTypography
+                                variant="body1"
+                                color="secondary"
+                                gutterBottom
                             >
-                                Please add atleast one file
-                            </span>
-                        )}
-                        {uploadedMedia.map((file, index) => (
-                            <MDBox
-                                key={index}
-                                display="flex"
-                                alignItems="center"
-                                marginTop="10px"
-                                padding="5px"
-                                border="1px solid #ccc"
+                                OR
+                            </MDTypography>
+                            <MDButton
+                                variant="outlined"
+                                component="label"
+                                color="primary"
                             >
-                                <MDTypography
-                                    variant="body1"
-                                    color="secondary"
-                                    sx={{ flex: '1 1 auto' }}
+                                Upload File
+                                <input
+                                    type="file"
+                                    onChange={handleFileInputChange1}
+                                    hidden
+                                />
+                            </MDButton>
+                            {uploadedMedia.length === 0 && (
+                                <span
+                                    role="alert"
+                                    style={{
+                                        color: 'primary',
+                                        fontSize: '0.8rem',
+                                        marginTop: '0.8rem',
+                                        display: 'block',
+                                    }}
                                 >
-                                    {file.name}
-                                </MDTypography>
-                                <IconButton
-                                    color="error"
-                                    onClick={() =>
-                                        handleDeleteFileMedia(index, 'media')
-                                    }
+                                    Please add atleast one file
+                                </span>
+                            )}
+                            {uploadedMedia.map((file, index) => (
+                                <MDBox
+                                    key={index}
+                                    display="flex"
+                                    alignItems="center"
+                                    marginTop="10px"
+                                    padding="5px"
+                                    border="1px solid #ccc"
                                 >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </MDBox>
-                        ))}
-                    </MDBox>
+                                    <MDTypography
+                                        variant="body1"
+                                        color="secondary"
+                                        sx={{ flex: '1 1 auto' }}
+                                    >
+                                        {file.name}
+                                    </MDTypography>
+                                    <IconButton
+                                        color="error"
+                                        onClick={() =>
+                                            handleDeleteFileMedia(
+                                                index,
+                                                'media'
+                                            )
+                                        }
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </MDBox>
+                            ))}
+                        </MDBox>
+                    )}
 
                     {/* Drag and Drop for Thumbnail */}
-                    <MDBox
-                        border={
-                            isDragging2 || uploadedThumbnail.length === 0
-                                ? '2px dashed #aaa'
-                                : '2px dashed #ccc'
-                        }
-                        borderRadius="5px"
-                        padding="20px"
-                        marginBottom="20px"
-                        textAlign="center"
-                        onDragOver={(e) => handleDragEnter2(e)}
-                        onDragEnter={(e) => handleDragEnter2(e)}
-                        onDragLeave={(e) => handleDragLeave2(e)}
-                        onDrop={(e) => handleDrop2(e)}
-                    >
-                        {
+                    {!editProduct && (
+                        <MDBox
+                            border={
+                                isDragging2 || uploadedThumbnail.length === 0
+                                    ? '2px dashed #aaa'
+                                    : '2px dashed #ccc'
+                            }
+                            borderRadius="5px"
+                            padding="20px"
+                            marginBottom="20px"
+                            textAlign="center"
+                            onDragOver={(e) => handleDragEnter2(e)}
+                            onDragEnter={(e) => handleDragEnter2(e)}
+                            onDragLeave={(e) => handleDragLeave2(e)}
+                            onDrop={(e) => handleDrop2(e)}
+                        >
+                            {
+                                <MDTypography
+                                    variant="h3"
+                                    color="primary"
+                                    gutterBottom
+                                >
+                                    Thumbnail Image
+                                </MDTypography>
+                            }
                             <MDTypography
-                                variant="h3"
-                                color="primary"
+                                variant="body1"
+                                color="secondary"
                                 gutterBottom
                             >
-                                Thumbnail Image
+                                {isDragging2
+                                    ? 'Drop your file here'
+                                    : 'Drag and drop your file here'}
                             </MDTypography>
-                        }
-                        <MDTypography
-                            variant="body1"
-                            color="secondary"
-                            gutterBottom
-                        >
-                            {isDragging2
-                                ? 'Drop your file here'
-                                : 'Drag and drop your file here'}
-                        </MDTypography>
-                        <MDTypography
-                            variant="body1"
-                            color="secondary"
-                            gutterBottom
-                        >
-                            OR
-                        </MDTypography>
-                        <MDButton
-                            variant="outlined"
-                            component="label"
-                            color="primary"
-                        >
-                            Upload File
-                            <input
-                                type="file"
-                                onChange={handleFileInputChange2}
-                                hidden
-                            />
-                        </MDButton>
-                        {uploadedThumbnail.length === 0 && (
-                            <span
-                                role="alert"
-                                style={{
-                                    color: 'primary',
-                                    fontSize: '0.8rem',
-                                    marginTop: '0.8rem',
-                                    display: 'block',
-                                }}
+                            <MDTypography
+                                variant="body1"
+                                color="secondary"
+                                gutterBottom
                             >
-                                Please add one file
-                            </span>
-                        )}
-                        {uploadedThumbnail.map((file, index) => (
-                            <MDBox
-                                key={index}
-                                display="flex"
-                                alignItems="center"
-                                marginTop="10px"
-                                padding="5px"
-                                border="1px solid #ccc"
+                                OR
+                            </MDTypography>
+                            <MDButton
+                                variant="outlined"
+                                component="label"
+                                color="primary"
                             >
-                                <MDTypography
-                                    variant="body1"
-                                    color="secondary"
-                                    sx={{ flex: '1 1 auto' }}
+                                Upload File
+                                <input
+                                    type="file"
+                                    onChange={handleFileInputChange2}
+                                    hidden
+                                />
+                            </MDButton>
+                            {uploadedThumbnail.length === 0 && (
+                                <span
+                                    role="alert"
+                                    style={{
+                                        color: 'primary',
+                                        fontSize: '0.8rem',
+                                        marginTop: '0.8rem',
+                                        display: 'block',
+                                    }}
                                 >
-                                    {file.name}
-                                </MDTypography>
-                                <IconButton
-                                    color="error"
-                                    onClick={() =>
-                                        handleDeleteFileMedia(
-                                            index,
-                                            'thumbnail'
-                                        )
-                                    }
+                                    Please add one file
+                                </span>
+                            )}
+                            {uploadedThumbnail.map((file, index) => (
+                                <MDBox
+                                    key={index}
+                                    display="flex"
+                                    alignItems="center"
+                                    marginTop="10px"
+                                    padding="5px"
+                                    border="1px solid #ccc"
                                 >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </MDBox>
-                        ))}
-                    </MDBox>
+                                    <MDTypography
+                                        variant="body1"
+                                        color="secondary"
+                                        sx={{ flex: '1 1 auto' }}
+                                    >
+                                        {file.name}
+                                    </MDTypography>
+                                    <IconButton
+                                        color="error"
+                                        onClick={() =>
+                                            handleDeleteFileMedia(
+                                                index,
+                                                'thumbnail'
+                                            )
+                                        }
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </MDBox>
+                            ))}
+                        </MDBox>
+                    )}
 
                     {/* Drag and Drop for Previews */}
-                    <MDBox
-                        border={
-                            isDragging3 || uploadedPreviews.length === 0
-                                ? '2px dashed #aaa'
-                                : '2px dashed #ccc'
-                        }
-                        borderRadius="5px"
-                        padding="20px"
-                        marginBottom="20px"
-                        textAlign="center"
-                        onDragOver={(e) => handleDragEnter3(e)}
-                        onDragEnter={(e) => handleDragEnter3(e)}
-                        onDragLeave={(e) => handleDragLeave3(e)}
-                        onDrop={(e) => handleDrop3(e)}
-                    >
-                        {
+                    {!editProduct && (
+                        <MDBox
+                            border={
+                                isDragging3 || uploadedPreviews.length === 0
+                                    ? '2px dashed #aaa'
+                                    : '2px dashed #ccc'
+                            }
+                            borderRadius="5px"
+                            padding="20px"
+                            marginBottom="20px"
+                            textAlign="center"
+                            onDragOver={(e) => handleDragEnter3(e)}
+                            onDragEnter={(e) => handleDragEnter3(e)}
+                            onDragLeave={(e) => handleDragLeave3(e)}
+                            onDrop={(e) => handleDrop3(e)}
+                        >
+                            {
+                                <MDTypography
+                                    variant="h3"
+                                    color="primary"
+                                    gutterBottom
+                                >
+                                    Preview Images
+                                </MDTypography>
+                            }
                             <MDTypography
-                                variant="h3"
-                                color="primary"
+                                variant="body1"
+                                color="secondary"
                                 gutterBottom
                             >
-                                Preview Images
+                                {isDragging3
+                                    ? 'Drop your file here'
+                                    : 'Drag and drop your file here'}
                             </MDTypography>
-                        }
-                        <MDTypography
-                            variant="body1"
-                            color="secondary"
-                            gutterBottom
-                        >
-                            {isDragging3
-                                ? 'Drop your file here'
-                                : 'Drag and drop your file here'}
-                        </MDTypography>
-                        <MDTypography
-                            variant="body1"
-                            color="secondary"
-                            gutterBottom
-                        >
-                            OR
-                        </MDTypography>
-                        <MDButton
-                            variant="outlined"
-                            component="label"
-                            color="primary"
-                        >
-                            Upload File
-                            <input
-                                type="file"
-                                onChange={handleFileInputChange3}
-                                multiple
-                                hidden
-                            />
-                        </MDButton>
-                        {uploadedPreviews.length === 0 && (
-                            <span
-                                role="alert"
-                                style={{
-                                    color: 'primary',
-                                    fontSize: '0.8rem',
-                                    marginTop: '0.8rem',
-                                    display: 'block',
-                                }}
+                            <MDTypography
+                                variant="body1"
+                                color="secondary"
+                                gutterBottom
                             >
-                                Please add atleast one file
-                            </span>
-                        )}
-                        {uploadedPreviews.map((file, index) => (
-                            <MDBox
-                                key={index}
-                                display="flex"
-                                alignItems="center"
-                                marginTop="10px"
-                                padding="5px"
-                                border="1px solid #ccc"
+                                OR
+                            </MDTypography>
+                            <MDButton
+                                variant="outlined"
+                                component="label"
+                                color="primary"
                             >
-                                <MDTypography
-                                    variant="body1"
-                                    color="secondary"
-                                    sx={{ flex: '1 1 auto' }}
+                                Upload File
+                                <input
+                                    type="file"
+                                    onChange={handleFileInputChange3}
+                                    multiple
+                                    hidden
+                                />
+                            </MDButton>
+                            {uploadedPreviews.length === 0 && (
+                                <span
+                                    role="alert"
+                                    style={{
+                                        color: 'primary',
+                                        fontSize: '0.8rem',
+                                        marginTop: '0.8rem',
+                                        display: 'block',
+                                    }}
                                 >
-                                    {file.name}
-                                </MDTypography>
-                                <IconButton
-                                    color="error"
-                                    onClick={() =>
-                                        handleDeleteFileMedia(index, 'previews')
-                                    }
+                                    Please add atleast one file
+                                </span>
+                            )}
+                            {uploadedPreviews.map((file, index) => (
+                                <MDBox
+                                    key={index}
+                                    display="flex"
+                                    alignItems="center"
+                                    marginTop="10px"
+                                    padding="5px"
+                                    border="1px solid #ccc"
                                 >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </MDBox>
-                        ))}
-                    </MDBox>
+                                    <MDTypography
+                                        variant="body1"
+                                        color="secondary"
+                                        sx={{ flex: '1 1 auto' }}
+                                    >
+                                        {file.name}
+                                    </MDTypography>
+                                    <IconButton
+                                        color="error"
+                                        onClick={() =>
+                                            handleDeleteFileMedia(
+                                                index,
+                                                'previews'
+                                            )
+                                        }
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </MDBox>
+                            ))}
+                        </MDBox>
+                    )}
                     {errors.tags && (
                         <span
                             role="alert"
