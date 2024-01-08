@@ -1,3 +1,3 @@
-import { fetchProductReviews } from './review'
+import { fetchProductReviews, addProductReviews } from './review'
 
-export { fetchProductReviews }
+export { fetchProductReviews, addProductReviews }

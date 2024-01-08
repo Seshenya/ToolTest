@@ -1,16 +1,15 @@
-import { axiosPrivate } from 'api/axios'
-import { baseUrl } from 'baseUrl'
+import { axiosPrivate } from 'api/axios';
 
 const getProductDetails = (productId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const resp = await axiosPrivate.get(`${baseUrl}/media/${productId}`)
-            console.log('service')
-            resolve(resp.data)
+            const resp = await axiosPrivate.get(`/media/${productId}`);
+            console.log('service');
+            resolve(resp.data);
         } catch (error) {
-            reject(error)
+            reject(error);
         }
-    })
-}
+    });
+};
 
-export { getProductDetails }
+export { getProductDetails };
