@@ -45,3 +45,12 @@ export const getStatus = (status) => {
     return statusTypes?.[status] || { value: 'error', color: 'error' }
 
 }
+
+export const getExtensionFromUrl = (url) => {
+    const match = url.match(/\.([a-zA-Z0-9]+)(\?.*)?$/);
+    return match ? match[1] : null;
+};
+
+export const generateKey = () => {
+    return `${new Date().getTime()}`;
+}
