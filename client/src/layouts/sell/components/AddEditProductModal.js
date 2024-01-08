@@ -170,10 +170,11 @@ const AddEditProductModal = ({
             });
 
             if (response.status === 200) {
-                const data = response.data;
-                console.log('New media created:', data);
-                setOpenModal(false);
-                reset();
+                const data = response.data
+                console.log('New media created:', data)
+                refreshSellPage()
+                setOpenModal(false)
+                reset()
             } else {
                 console.error('Failed to create media');
             }
@@ -274,7 +275,7 @@ const AddEditProductModal = ({
         }
 
         for (const preview of data.previews) {
-            if (!preview.type.startsWith('image/')) {
+            if (!preview.type.startsWith('image/') && !(!preview.type && preview?.name?.split('.')?.pop()?.toLowerCase() === 'glb')) {
                 setSb({
                     open: true,
                     color: 'error',
@@ -695,11 +696,7 @@ const AddEditProductModal = ({
                     {/* Drag and Drop for Previews */}
                     {!editProduct && (
                         <MDBox
-                            border={
-                                isDragging3 || uploadedPreviews.length === 0
-                                    ? '2px dashed #aaa'
-                                    : '2px dashed #ccc'
-                            }
+                            border={(isDragging3 || uploadedPreviews.length === 0) ? '2px dashed #aaa' : '2px dashed #ccc'}
                             borderRadius="5px"
                             padding="20px"
                             marginBottom="20px"
@@ -710,35 +707,17 @@ const AddEditProductModal = ({
                             onDrop={(e) => handleDrop3(e)}
                         >
                             {
-                                <MDTypography
-                                    variant="h3"
-                                    color="primary"
-                                    gutterBottom
-                                >
-                                    Preview Images
+                                <MDTypography variant="h3" color="primary" gutterBottom>
+                                    Preview Files
                                 </MDTypography>
                             }
-                            <MDTypography
-                                variant="body1"
-                                color="secondary"
-                                gutterBottom
-                            >
-                                {isDragging3
-                                    ? 'Drop your file here'
-                                    : 'Drag and drop your file here'}
+                            <MDTypography variant="body1" color="secondary" gutterBottom>
+                                {isDragging3 ? 'Drop your file here' : 'Drag and drop your file here'}
                             </MDTypography>
-                            <MDTypography
-                                variant="body1"
-                                color="secondary"
-                                gutterBottom
-                            >
+                            <MDTypography variant="body1" color="secondary" gutterBottom>
                                 OR
                             </MDTypography>
-                            <MDButton
-                                variant="outlined"
-                                component="label"
-                                color="primary"
-                            >
+                            <MDButton variant="outlined" component="label" color="primary">
                                 Upload File
                                 <input
                                     type="file"
@@ -747,6 +726,7 @@ const AddEditProductModal = ({
                                     hidden
                                 />
                             </MDButton>
+
                             {uploadedPreviews.length === 0 && (
                                 <span
                                     role="alert"
