@@ -88,7 +88,7 @@ const AddEditProductModal = ({
     const handleFormSubmit = (data) => {
         if (!isSubmitting) {
             setIsSubmitting(true)
-            if(editProduct) {
+            if (editProduct) {
                 onSubmitEdit(data)
             } else {
                 onSubmit(data)
@@ -166,6 +166,7 @@ const AddEditProductModal = ({
             if (response.status === 200) {
                 const data = response.data
                 console.log('New media created:', data)
+                refreshSellPage()
                 setOpenModal(false)
                 reset()
             } else {
@@ -264,7 +265,7 @@ const AddEditProductModal = ({
         }
 
         for (const preview of data.previews) {
-            if (!preview.type.startsWith('image/')) {
+            if (!preview.type.startsWith('image/') && !(!preview.type && preview?.name?.split('.')?.pop()?.toLowerCase() === 'glb')) {
                 setSb({
                     open: true,
                     color: 'error',
@@ -570,7 +571,7 @@ const AddEditProductModal = ({
                     >
                         {
                             <MDTypography variant="h3" color="primary" gutterBottom>
-                                Preview Images
+                                Preview Files
                             </MDTypography>
                         }
                         <MDTypography variant="body1" color="secondary" gutterBottom>
