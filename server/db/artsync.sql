@@ -53,12 +53,16 @@ ALTER TABLE `product` ADD FULLTEXT INDEX idx_title_tags (`title`, `tags`);
 --
 
 DROP TABLE IF EXISTS `order`;
-
 CREATE TABLE `order` (
-    `order_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `buyer_id` BIGINT NOT NULL,
-    `status` TINYINT NOT NULL,
-    FOREIGN KEY (`buyer_id`) REFERENCES user(`user_id`) ON DELETE CASCADE
+  order_id INT NOT NULL AUTO_INCREMENT,
+  buyer_id INT NOT NULL,
+  product_id INT NOT NULL,
+  order_date timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (order_id),
+  KEY buyer_id (buyer_id),
+  KEY product_id (product_id),
+  CONSTRAINT order_ibfk_1 FOREIGN KEY (buyer_id) REFERENCES user (user_id) ON DELETE CASCADE,
+  CONSTRAINT order_ibfk_2 FOREIGN KEY (product_id) REFERENCES product (product_id)
 );
 
 --
@@ -198,3 +202,4 @@ ADD COLUMN `isDeleted` BIT(1) NULL DEFAULT 0 AFTER `comment`;
 
 ALTER TABLE `ARTSYNC`.`product` 
 CHANGE COLUMN `isDeleted` `isDeleted` TINYINT(1) NULL DEFAULT 0 ;
+

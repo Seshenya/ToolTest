@@ -62,7 +62,7 @@ const DownloadBtn = ({ productId, media }) => {
 
                         // Set the link attributes
                         link.href = blobUrl;
-                        link.download = fileName;
+                        link.download = media;
 
                         // Append the link to the document
                         document.body.appendChild(link);
@@ -130,12 +130,12 @@ const ReviewBtn = ({ productId }) => {
 
         try {
             await addProductReviews(formData);
-      
+
             reset();
             setIsModalOpen(false);
-          } catch (error) {
+        } catch (error) {
             console.error('Error adding product reviews:', error);
-          }
+        }
     };
 
     return (
