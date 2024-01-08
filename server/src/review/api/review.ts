@@ -1,4 +1,4 @@
-import { getProductReviews } from '../services'
+import { createProductReview, getProductReviews } from '../services'
 
 async function fetchProductReviews(req: any, res: any) {
     getProductReviews(req.params.productId)
@@ -10,4 +10,14 @@ async function fetchProductReviews(req: any, res: any) {
         })
 }
 
-export { fetchProductReviews }
+async function addProductReviews(req: any, res: any) {
+    createProductReview(req.body)
+        .then((review) => {
+            res.send(review)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+export { fetchProductReviews, addProductReviews }

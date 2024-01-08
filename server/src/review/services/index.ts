@@ -1,3 +1,3 @@
-import { getProductReviews } from './review'
+import { getProductReviews,createProductReview } from './review'
 
-export { getProductReviews }
+export { getProductReviews,createProductReview }

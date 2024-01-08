@@ -4,12 +4,17 @@
 // Material Dashboard 2 React components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
+import { useForm } from 'react-hook-form';
+import useAuth from "hooks/useAuth";
 
 import Icon from '@mui/material/Icon';
 import { IconButton } from '@mui/material';
 import { getProductDetails } from 'layouts/ProductDetails/services/productDetailsServices.service';
 import MDSnackbar from 'components/MDSnackbar';
 import { useState } from 'react';
+
+import ReviewModal from 'layouts/orderHistory/data/addReviewModal';
+import { addProductReviews } from 'layouts/ProductDetails/services/productReviewsServices.service';
 
 // Images
 
@@ -102,6 +107,48 @@ const DownloadBtn = ({ productId, media }) => {
     );
 };
 
+const ReviewBtn = ({ productId }) => {
+    const { auth } = useAuth();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const { register, handleSubmit, reset } = useForm();
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const onSubmit = async (data) => {
+
+        const formData = new FormData();
+        formData.append('description', data.review);
+        formData.append('rating', data.rating);
+        formData.append('product_id', productId);
+        formData.append('reviewed_by', auth.user_id);
+
+        try {
+            await addProductReviews(formData);
+      
+            reset();
+            setIsModalOpen(false);
+          } catch (error) {
+            console.error('Error adding product reviews:', error);
+          }
+    };
+
+    return (
+        <MDBox display="flex">
+            <IconButton color="info" onClick={openModal}>
+                <Icon fontSize="small">rate_review</Icon>
+            </IconButton>
+            <ReviewModal isOpen={isModalOpen} handleClose={closeModal} productId={productId} handleSubmit={handleSubmit} onSubmit={onSubmit} register={register} reset={reset} />
+        </MDBox>
+    );
+};
+
+
 export default function orderHistoryTableData(orders) {
     return {
         columns: [
@@ -130,10 +177,15 @@ export default function orderHistoryTableData(orders) {
                     </MDTypography>
                 ),
                 action: (
-                    <DownloadBtn
-                        productId={order.product_id}
-                        media={order.product.media}
-                    />
+                    <MDBox display="flex" justifyContent="space-evenly" gap={2}>
+                        <DownloadBtn
+                            productId={order.product_id}
+                            media={order.product.media}
+                        />
+                        <ReviewBtn
+                            productId={order.product_id}
+                        />
+                    </MDBox>
                 ),
             };
         }),

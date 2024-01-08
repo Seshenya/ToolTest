@@ -12,7 +12,7 @@ import {
 } from './media/api'
 import { hasToken, refreshToken, logoutUser, loginUser } from './middleware'
 import { buyMedia, fetchOrders } from './orders/api'
-import { fetchProductReviews } from './review/api'
+import { fetchProductReviews, addProductReviews } from './review/api'
 
 const router = express.Router()
 
@@ -40,6 +40,7 @@ router.post('/buy-media/:buyer_id/:product_id', hasToken, buyMedia)
 router.get('/order-history/:id', fetchOrders)
 
 router.get('/reviews/:productId', hasToken, fetchProductReviews)
+router.post('/reviews', hasToken, addProductReviews)
 
 router.get('/', function (req, res) {
     res.send('GDSD Team 4')

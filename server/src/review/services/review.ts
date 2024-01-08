@@ -1,4 +1,5 @@
 import { Review } from '../entities'
+import { ReviewType } from '../types';
 
 async function getProductReviews(product_id: number) {
     try {
@@ -60,4 +61,15 @@ async function getProductReviews(product_id: number) {
     }
 }
 
-export { getProductReviews }
+async function createProductReview(review: ReviewType) {
+    try {
+        const createdReview: ReviewType = await new Review(review).save()
+        return createdReview
+    } catch (err: any) {
+        // eslint-disable-next-line no-console
+        console.log('Error :', err)
+        throw err
+    }
+}
+
+export { getProductReviews, createProductReview }
