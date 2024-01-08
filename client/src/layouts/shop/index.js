@@ -1,48 +1,47 @@
 // @mui material components
-import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 
 // Material Dashboard 2 React components
-import MDBox from 'components/MDBox'
-import MDTypography from 'components/MDTypography'
+import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography';
 
 // Material Dashboard 2 React example components
-import Footer from 'examples/Footer'
-import DashboardLayout from 'examples/LayoutContainers/DashboardLayout'
-import DashboardNavbar from 'examples/Navbars/DashboardNavbar'
+import Footer from 'examples/Footer';
+import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
+import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 
 // Data
 
 // Dashboard components
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import ProductCard from 'examples/Cards/ProductCard'
+import ProductCard from 'examples/Cards/ProductCard';
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react';
 
-import { CircularProgress, Pagination } from '@mui/material'
-import MDSnackbar from 'components/MDSnackbar'
-import useAxiosPrivate from 'hooks/useAxiosPrivate'
-
+import { CircularProgress, Pagination } from '@mui/material';
+import MDSnackbar from 'components/MDSnackbar';
+import useAxiosPrivate from 'hooks/useAxiosPrivate';
 
 function Shop() {
-    const [page, setPage] = useState(1)
-    const [totalCount, setTotalCount] = useState(0)
-    const [products, setProducts] = useState([])
-    const [loading, setLoading] = useState(false)
-    const axiosPrivate = useAxiosPrivate()
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const axiosPrivate = useAxiosPrivate();
 
     const handleChange = (event, value) => {
-        getMedia(filtersRef.current, value)
-        setPage(value)
-    }
+        getMedia(filtersRef.current, value);
+        setPage(value);
+    };
 
     const filtersRef = useRef({
         category: '',
         mediatype: '',
         query: '',
-    })
+    });
 
     const [sb, setSb] = useState({
         open: false,
@@ -50,38 +49,39 @@ function Shop() {
         icon: '',
         title: '',
         message: '',
-    })
+    });
 
     const getMedia = (filters = filtersRef.current, pageNo) => {
-        setLoading(true)
+        setLoading(true);
         axiosPrivate
             .get(`/media`, {
                 params: {
                     page: pageNo,
                     size: 10,
+                    status: 3,
                     ...filters,
                 },
             })
             .then((res) => {
-                setLoading(false)
-                setProducts(res.data.media)
-                console.log(res.data.media)
+                setLoading(false);
+                setProducts(res.data.media);
+                console.log(res.data.media);
 
                 if (res.data.totalCount !== totalCount) {
-                    setTotalCount(res.data.totalCount)
+                    setTotalCount(res.data.totalCount);
                 }
             })
             .catch((error) => {
-                setLoading(false)
+                setLoading(false);
                 setSb({
                     open: true,
                     color: 'error',
                     icon: 'error',
                     title: error.message,
                     message: '',
-                })
-            })
-    }
+                });
+            });
+    };
 
     const closeSb = () => {
         setSb({
@@ -90,20 +90,20 @@ function Shop() {
             icon: '',
             title: '',
             message: '',
-        })
-    }
+        });
+    };
 
     useEffect(() => {
-        getMedia(filtersRef.current, 1)
-    }, [])
+        getMedia(filtersRef.current, 1);
+    }, []);
 
     return (
         <DashboardLayout>
             <DashboardNavbar
                 filters
                 reCallApi={(filtersRef) => {
-                    getMedia(filtersRef, 1)
-                    setPage(1)
+                    getMedia(filtersRef, 1);
+                    setPage(1);
                 }}
                 filtersRef={filtersRef}
             />
@@ -130,49 +130,59 @@ function Shop() {
                             </MDBox>
                         ) : (
                             <Grid container spacing={6}>
-                                {products.map((product, index) => {
-                                    return (
-                                        <Grid
-                                            item
-                                            xs={12}
-                                            md={6}
-                                            xl={4}
-                                            key={index}
-                                        >
-                                            <ProductCard
-                                                productId={product.product_id}
-                                                product={product}
-                                                image={product.thumbnail}
-                                                label={product.title}
-                                                title={product.title}
-                                                description={
-                                                    product.description
-                                                }
-                                                action={{
-                                                    type: 'internal',
-                                                    route: '/shop',
-                                                    color: 'primary',
-                                                    label: 'Explore',
-                                                }}
-                                                authors={[product.owner_id]}
-                                            />
-                                        </Grid>
-                                    )
-                                })}
+                                {products.length ? (
+                                    products.map((product, index) => {
+                                        return (
+                                            <Grid
+                                                item
+                                                xs={12}
+                                                md={6}
+                                                xl={4}
+                                                key={index}
+                                            >
+                                                <ProductCard
+                                                    productId={
+                                                        product.product_id
+                                                    }
+                                                    product={product}
+                                                    image={product.thumbnail}
+                                                    label={product.title}
+                                                    title={product.title}
+                                                    description={
+                                                        product.description
+                                                    }
+                                                    action={{
+                                                        type: 'internal',
+                                                        route: `/shop/${product.product_id}`,
+                                                        color: 'primary',
+                                                        label: 'Explore',
+                                                    }}
+                                                    authors={[product.owner_id]}
+                                                />
+                                            </Grid>
+                                        );
+                                    })
+                                ) : (
+                                    <Grid item xs={12} md={6} xl={4}>
+                                        No Products Available
+                                    </Grid>
+                                )}
                             </Grid>
                         )}
                     </MDBox>
-                    <Pagination
-                        sx={{
-                            padding: 2,
-                            width: '100%',
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                        }}
-                        count={Math.ceil(totalCount / 10)}
-                        page={page}
-                        onChange={handleChange}
-                    />
+                    {products.length ? (
+                        <Pagination
+                            sx={{
+                                padding: 2,
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                            }}
+                            count={Math.ceil(totalCount / 10)}
+                            page={page}
+                            onChange={handleChange}
+                        />
+                    ) : null}
                 </Card>
             </MDBox>
             <Footer />
@@ -187,7 +197,7 @@ function Shop() {
                 bgWhite
             />
         </DashboardLayout>
-    )
+    );
 }
 
-export default Shop
+export default Shop;

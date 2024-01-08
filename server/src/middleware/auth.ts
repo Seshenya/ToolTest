@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import config from '../config'
 import { comparePasswords, getUserByEmail } from '../user/services'
 
 let refreshTokens: string[] = []

@@ -6,13 +6,17 @@ async function searchMedia(
     size: number,
     category: string,
     media_type: number,
-    query: string
+    query: string,
+    status: number,
+    owner_id: number
 ) {
     const skip = (page - 1) * size
 
     try {
         let baseQuery = DigitalProduct.createQueryBuilder('product')
+            .leftJoinAndSelect('product.owner', 'owner')
             .where('1 = 1')
+            .where('product.isDeleted = 0')
             .skip(skip)
             .take(size)
 
@@ -28,6 +32,18 @@ async function searchMedia(
             })
         }
 
+        if (status) {
+            baseQuery = baseQuery.andWhere('product.status = :status', {
+                status,
+            })
+        }
+
+        if (owner_id) {
+            baseQuery = baseQuery.andWhere('product.owner_id = :owner_id', {
+                owner_id,
+            })
+        }
+
         if (query) {
             query += '*' // for partial string matching
             baseQuery = baseQuery.andWhere(
@@ -37,7 +53,7 @@ async function searchMedia(
         }
 
         const media = await baseQuery.getMany()
-
+        const totalCount = await baseQuery.getCount();
         const containerName = 'gdsdt4'
 
         for (let i = 0; i < media.length; i++) {
@@ -46,11 +62,15 @@ async function searchMedia(
             const blobNameThumbnail = media[i].thumbnail
 
             try {
-                const blobUrlWithSAS = await generateSASUrl(
-                    containerName,
-                    blobNameMedia
-                )
-                media[i].media = blobUrlWithSAS
+                const medias: string[] = []
+                for (const media of blobNameMedia) {
+                    const blobUrlWithSAS = await generateSASUrl(
+                        containerName,
+                        media
+                    )
+                    medias.push(blobUrlWithSAS)
+                }
+                media[i].media = medias
             } catch (error) {
                 throw new Error(`Error generating SAS URL for ${blobNameMedia}`)
             }
@@ -92,7 +112,6 @@ async function searchMedia(
             }
         }
 
-        const totalCount = media.length
         return {
             media,
             totalCount,
