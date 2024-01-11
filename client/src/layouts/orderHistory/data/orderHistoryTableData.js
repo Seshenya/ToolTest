@@ -107,7 +107,7 @@ const DownloadBtn = ({ productId, media }) => {
     );
 };
 
-const ReviewBtn = ({ productId }) => {
+const ReviewBtn = ({ productId, productTitle }) => {
     const { auth } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { register, handleSubmit, reset } = useForm();
@@ -143,7 +143,7 @@ const ReviewBtn = ({ productId }) => {
             <IconButton color="info" onClick={openModal}>
                 <Icon fontSize="small">rate_review</Icon>
             </IconButton>
-            <ReviewModal isOpen={isModalOpen} handleClose={closeModal} productId={productId} handleSubmit={handleSubmit} onSubmit={onSubmit} register={register} reset={reset} />
+            <ReviewModal isOpen={isModalOpen} handleClose={closeModal} productId={productId}  productTitle={productTitle} handleSubmit={handleSubmit} onSubmit={onSubmit} register={register} reset={reset} />
         </MDBox>
     );
 };
@@ -184,6 +184,7 @@ export default function orderHistoryTableData(orders) {
                         />
                         <ReviewBtn
                             productId={order.product_id}
+                            productTitle={order.product.title}
                         />
                     </MDBox>
                 ),
