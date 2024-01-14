@@ -63,8 +63,6 @@ const PDActionButtons = ({ productDetails }) => {
                     color={'secondary'}
                     fullWidth
                     onClick={() => {
-                        console.log("YES");
-                        console.log(productDetails.owner.user_id);
                         if (productDetails?.owner?.user_id) {
                             navigate(`/chat`, {
                                 state: {
