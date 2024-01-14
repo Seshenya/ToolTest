@@ -63,13 +63,14 @@ const PDActionButtons = ({ productDetails }) => {
                     color={'secondary'}
                     fullWidth
                     onClick={() => {
-                        if (productDetails?.productDetails?.owner?.user_id) {
+                        console.log("YES");
+                        console.log(productDetails.owner.user_id);
+                        if (productDetails?.owner?.user_id) {
                             navigate(`/chat`, {
                                 state: {
                                     user: {
-                                        userId: productDetails?.productDetails
-                                            ?.owner?.user_id,
-                                        name: `${productDetails?.productDetails?.owner?.firstname} ${productDetails?.productDetails?.owner?.lastname}`,
+                                        userId: productDetails?.owner?.user_id,
+                                        name: `${productDetails?.owner?.firstname} ${productDetails?.owner?.lastname}`,
                                     },
                                 },
                             });
