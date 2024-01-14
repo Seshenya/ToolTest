@@ -8,7 +8,7 @@ import { Rating } from '@mui/material';
 import MDButton from 'components/MDButton';
 import { useState, useEffect } from 'react';
 
-const ReviewModal = ({ isOpen, handleClose, productId, handleSubmit, onSubmit, register, reset }) => {
+const ReviewModal = ({ isOpen, handleClose, productId, productTitle, handleSubmit, onSubmit, register, reset }) => {
     const [rating, setRating] = useState(0);
 
     const handleRatingChange = (event, newValue) => {
@@ -29,7 +29,7 @@ const ReviewModal = ({ isOpen, handleClose, productId, handleSubmit, onSubmit, r
 
     return (
         <Dialog open={isOpen} onClose={handleClose}>
-        <DialogTitle id="review-product">Review for Product {productId}</DialogTitle>
+        <DialogTitle id="review-product">Review for {productTitle}</DialogTitle>
         <DialogContent>
             <form onSubmit={handleSubmit(submitWithRating)}>
             <TextField
