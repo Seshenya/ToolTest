@@ -233,7 +233,7 @@ function AdminDashboard() {
                 }}
                 count={Math.ceil(totalProducts / 10)}
                 page={page}
-                onChange={(e) => { console.log(e) }}
+                onChange={(e, value) => { setPage(value) }}
               /> : null}
             </Card>
           </Grid>
