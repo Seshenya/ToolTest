@@ -243,6 +243,7 @@ function Sell() {
         setOpenModal={setOpenModal}
         categories={categories}
         mediaTypes={mediaTypes}
+        refreshSellPage={refreshSellPage}
       />
       <MDSnackbar
         color={sb.color}
