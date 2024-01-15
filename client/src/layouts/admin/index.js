@@ -217,7 +217,7 @@ function AdminDashboard() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={productsTableData(products, openUpdateStatus, navigate)}
+                  table={productsTableData(products, openUpdateStatus, navigate, showSnackbar)}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
