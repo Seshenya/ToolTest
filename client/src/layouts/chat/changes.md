@@ -256,6 +256,22 @@ const { auth } = useAuth();
         }
     }, [messages]);
 
+    function getCurrentTime() {
+        const currentTime = new Date();
+
+        let hours = currentTime.getHours();
+        const minutes = currentTime.getMinutes();
+        const period = hours >= 12 ? 'pm' : 'am';
+
+        // Convert 24-hour time to 12-hour time
+        hours = hours % 12 || 12;
+
+        // Add leading zero to minutes if needed
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+        return `${hours}:${formattedMinutes}${period}`;
+    }
+
     return (
         <ChatBoxContainer elevation={3}>
             <HeaderContainer>
@@ -311,7 +327,8 @@ const { auth } = useAuth();
                                         sx={{ opacity: '0.8' }}
                                         fontSize={12}
                                     >
-                                        3:15pm
+                                        {/* store and send correct date */}
+                                        {getCurrentTime()}
                                     </MDTypography>
                                 </MDBox>
                             </MDBox>
