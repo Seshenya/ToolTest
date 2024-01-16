@@ -57,6 +57,20 @@ async function getMedia(product_id: number) {
         throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`)
     }
 
+
+    const blobNameUserProfile = media?.owner?.profile_picture
+    if (blobNameUserProfile) {
+        try {
+            const blobUrlWithSAS = await generateSASUrl(
+                containerName,
+                blobNameUserProfile
+            )
+            media.owner.profile_picture = blobUrlWithSAS
+        } catch (error) {
+            throw new Error(`Error generating SAS URL for ${blobNameUserProfile}`)
+        }
+    }
+
     return media
 }
 

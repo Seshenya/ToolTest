@@ -75,49 +75,51 @@ const OrderHistory = () => {
     return (
         <DashboardLayout>
             <DashboardNavbar />
-            <Card>
-                <MDBox
-                    mx={2}
-                    mt={-3}
-                    py={3}
-                    px={2}
-                    variant="gradient"
-                    bgColor="info"
-                    borderRadius="lg"
-                    coloredShadow="info"
-                >
-                    <MDTypography variant="h6" color="white">
-                        User Reports
-                    </MDTypography>
-                </MDBox>
-                <MDBox pt={3}>
-                    {loading ? (
-                        <MDBox style={{ textAlign: 'center' }}>
-                            <CircularProgress />
-                        </MDBox>
-                    ) : orders.length ? (
-                        <DataTable
-                            table={{
-                                columns: orderHistoryCols,
-                                rows: orderHistoryRows,
-                            }}
-                            isSorted={false}
-                            entriesPerPage={false}
-                            showTotalEntries={false}
-                            noEndBorder
-                        />
-                    ) : (
-                        <MDTypography
-                            textAlign={'center'}
-                            fontSize={'1rem'}
-                            sx={{ opacity: 0.5 }}
-                            paddingY={4}
-                        >
-                            Nothing to show here!
+            <MDBox py={3}>
+                <Card>
+                    <MDBox
+                        mx={2}
+                        mt={-3}
+                        py={3}
+                        px={2}
+                        variant="gradient"
+                        bgColor="info"
+                        borderRadius="lg"
+                        coloredShadow="info"
+                    >
+                        <MDTypography variant="h6" color="white">
+                            Pruchase history
                         </MDTypography>
-                    )}
-                </MDBox>
-            </Card>
+                    </MDBox>
+                    <MDBox pt={3}>
+                        {loading ? (
+                            <MDBox style={{ textAlign: 'center' }}>
+                                <CircularProgress />
+                            </MDBox>
+                        ) : orders.length ? (
+                            <DataTable
+                                table={{
+                                    columns: orderHistoryCols,
+                                    rows: orderHistoryRows,
+                                }}
+                                isSorted={false}
+                                entriesPerPage={false}
+                                showTotalEntries={false}
+                                noEndBorder
+                            />
+                        ) : (
+                            <MDTypography
+                                textAlign={'center'}
+                                fontSize={'1rem'}
+                                sx={{ opacity: 0.5 }}
+                                paddingY={4}
+                            >
+                                Nothing to show here!
+                            </MDTypography>
+                        )}
+                    </MDBox>
+                </Card>
+            </MDBox>
             <MDSnackbar
                 color={sb.color}
                 icon={sb.icon}

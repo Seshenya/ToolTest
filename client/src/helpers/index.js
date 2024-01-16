@@ -1,3 +1,5 @@
+import { getProductDetails } from "layouts/ProductDetails/services/productDetailsServices.service";
+
 export const getFormattedDate = (date) => {
     if (date) {
         return new Date(date).toLocaleString('de-DE', {
@@ -53,4 +55,35 @@ export const getExtensionFromUrl = (url) => {
 
 export const generateKey = () => {
     return `${new Date().getTime()}`;
+}
+
+export const downloadMedia = async (productId, fileName) => {
+    const resp = await getProductDetails(productId);
+    resp.media.forEach((url, index) => {
+        fetch(url)
+            .then((response) => response.blob())
+            .then((blob) => {
+                // Create a link element
+                const link = document.createElement('a');
+
+                // Create a Blob URL for the file
+                const blobUrl = URL.createObjectURL(blob);
+
+                // Set the link attributes
+                link.href = blobUrl;
+                link.download = fileName;
+
+                // Append the link to the document
+                document.body.appendChild(link);
+
+                // Trigger a click on the link to start the download
+                link.click();
+
+                // Remove the link from the document
+                document.body.removeChild(link);
+            })
+            .catch((error) => {
+                console.error(`Error downloading file ${url}:`, error);
+            });
+    });
 }

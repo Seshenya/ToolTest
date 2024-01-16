@@ -10,8 +10,23 @@ import Icon from '@mui/material/Icon';
 
 import { getFormattedDate } from "helpers";
 import { getStatus } from "helpers";
+import { downloadMedia } from "helpers";
+import { IconButton } from "@mui/material";
 
-export default function productsTableData(products, openUpdateStatus, navigate) {
+export default function productsTableData(products, openUpdateStatus, navigate, showSnackbar) {
+
+    const handleDownloadMedia = (productId, fileName) => {
+        try {
+            downloadMedia(productId, fileName)
+        } catch (error) {
+            showSnackbar({
+                color: 'error',
+                title: error.message,
+                message: '',
+                icon: 'error',
+            });
+        }
+    };
 
     return {
         columns: [
@@ -58,10 +73,14 @@ export default function productsTableData(products, openUpdateStatus, navigate) 
                     action: (
                         <MDBox display='flex'>
                             <MDBox>
-                                <Icon fontSize='small' onClick={() => openUpdateStatus(product)}>edit</Icon>
+                                <IconButton color="info" onClick={() => openUpdateStatus(product)}>
+                                    <Icon fontSize='small' >edit</Icon>
+                                </IconButton>
                             </MDBox>
                             <MDBox ml={1}>
-                                <Icon fontSize='small'>download</Icon>
+                                <IconButton color="info" onClick={() => handleDownloadMedia(product.product_id, `${product.title || 'Example'}.${product.file_format}`)}>
+                                    <Icon fontSize="small">download</Icon>
+                                </IconButton>
                             </MDBox>
                         </MDBox>
 
