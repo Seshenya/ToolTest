@@ -16,8 +16,6 @@ import ReviewModal from 'layouts/orderHistory/data/addReviewModal';
 import { addProductReviews } from 'layouts/ProductDetails/services/productReviewsServices.service';
 import { downloadMedia } from 'helpers';
 
-import ReactGa from 'react-ga';
-
 // Images
 
 const initSb = {
