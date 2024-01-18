@@ -20,6 +20,7 @@ import MDSnackbar from 'components/MDSnackbar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { useEffect } from 'react';
+import { useSnackbar } from 'context/SnackbarContext';
 
 import ReactGa from 'react-ga';
 
@@ -42,6 +43,7 @@ const AddEditProductModal = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedMediaType, setSelectedMediaType] = useState('1');
     const [selectedCategory, setSelectedCategory] = useState('1');
+    const { showSnackbar } = useSnackbar();
     const {
         register,
         handleSubmit,
@@ -190,6 +192,12 @@ const AddEditProductModal = ({
                 fatal: false,
             });
             console.error('Error creating media:', error);
+            showSnackbar({
+                color: 'error',
+                title: error.message,
+                message: '',
+                icon: 'error',
+            });
         } finally {
             setIsSubmitting(false);
             setOpenModal(false);
@@ -236,6 +244,12 @@ const AddEditProductModal = ({
                     fatal: false,
                 });
                 console.error('Error updating media:', error);
+                showSnackbar({
+                    color: 'error',
+                    title: error.message,
+                    message: '',
+                    icon: 'error',
+                });
             });
     };
 
@@ -459,6 +473,7 @@ const AddEditProductModal = ({
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
+                        type='number'
                     />
                     {errors.description && (
                         <span
