@@ -11,10 +11,12 @@ import Icon from '@mui/material/Icon';
 import { IconButton } from '@mui/material';
 import { getProductDetails } from 'layouts/ProductDetails/services/productDetailsServices.service';
 import MDSnackbar from 'components/MDSnackbar';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import ReviewModal from 'layouts/orderHistory/data/addReviewModal';
 import { addProductReviews } from 'layouts/ProductDetails/services/productReviewsServices.service';
+
+import ReactGa from 'react-ga';
 
 // Images
 
@@ -49,6 +51,11 @@ const DownloadBtn = ({ productId, media }) => {
                 fetch(url)
                     .then((response) => response.blob())
                     .then((blob) => {
+                        ReactGa.event({
+                            category: 'User',
+                            action: 'Downloaded media',
+                        })
+
                         // Create a link element
                         const link = document.createElement('a');
 
@@ -74,6 +81,10 @@ const DownloadBtn = ({ productId, media }) => {
                         document.body.removeChild(link);
                     })
                     .catch((error) => {
+                        ReactGa.exception({
+                            description: `Error downloading file ${url}:`,
+                            fatal: false,
+                        })
                         console.error(`Error downloading file ${url}:`, error);
                     });
             });

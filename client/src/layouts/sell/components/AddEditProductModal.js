@@ -21,6 +21,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { useEffect } from 'react';
 
+import ReactGa from 'react-ga';
+
 const AddEditProductModal = ({
     openModal,
     onClose,
@@ -170,6 +172,10 @@ const AddEditProductModal = ({
             });
 
             if (response.status === 200) {
+                ReactGa.event({
+                    category: 'Media',
+                    action: 'Media Created',
+                });
                 const data = response.data
                 console.log('New media created:', data)
                 refreshSellPage()
@@ -179,6 +185,10 @@ const AddEditProductModal = ({
                 console.error('Failed to create media');
             }
         } catch (error) {
+            ReactGa.exception({
+                description: 'Error creating media:',
+                fatal: false,
+            });
             console.error('Error creating media:', error);
         } finally {
             setIsSubmitting(false);
@@ -206,6 +216,10 @@ const AddEditProductModal = ({
             })
             .then((response) => {
                 if (response.status === 200) {
+                    ReactGa.event({
+                        category: 'Media',
+                        action: 'Media Updated',
+                    });
                     const data = response.data;
                     console.log('Media updated:', data);
                     refreshSellPage();
@@ -217,6 +231,10 @@ const AddEditProductModal = ({
             })
 
             .catch((error) => {
+                ReactGa.exception({
+                    description: 'Error updating media:',
+                    fatal: false,
+                });
                 console.error('Error updating media:', error);
             });
     };
