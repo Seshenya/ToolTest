@@ -208,7 +208,7 @@ CHANGE COLUMN `isDeleted` `isDeleted` TINYINT(1) NULL DEFAULT 0 ;
 ALTER TABLE `product`
 ADD COLUMN `transcribed_text` TEXT NULL DEFAULT NULL AFTER `isDeleted`;
 
-ALTER TABLE `artsync`.`product` 
+ALTER TABLE `product` 
 DROP INDEX `idx_title_tags` ,
 ADD FULLTEXT INDEX `idx_title_tags` (`title`, `tags`, `transcribed_text`) VISIBLE;
 ;

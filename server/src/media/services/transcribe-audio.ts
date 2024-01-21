@@ -10,7 +10,7 @@ async function transcribeAudio(mediaFile: string): Promise<string> {
 
     try {
         if (!mediaFile){
-            throw 'Req body incomplete'
+            throw new Error("Req body incomplete")
         }
     
         const audio = await generateSASUrl(containerName, mediaFile)
@@ -19,11 +19,8 @@ async function transcribeAudio(mediaFile: string): Promise<string> {
             audio,
         };
 
-        const options: CreateTranscriptOptions = {
-            // pollingTimeout: 60000, // Maximum polling time of 60 seconds
-        };
 
-        const transcript = await client.transcripts.transcribe(params, options);
+        const transcript = await client.transcripts.transcribe(params);
         
         if (transcript && transcript.text) {
             return transcript.text;
