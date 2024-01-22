@@ -213,3 +213,14 @@ CREATE TABLE `ARTSYNC`.`three_d_models` (
   `url` TEXT NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
+-- transcribe text
+
+ALTER TABLE `product`
+ADD COLUMN `transcribed_text` TEXT NULL DEFAULT NULL AFTER `isDeleted`;
+
+ALTER TABLE `product` 
+DROP INDEX `idx_title_tags` ,
+ADD FULLTEXT INDEX `idx_title_tags` (`title`, `tags`, `transcribed_text`) VISIBLE;
+;
+
+

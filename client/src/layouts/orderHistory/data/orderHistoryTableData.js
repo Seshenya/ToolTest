@@ -10,7 +10,7 @@ import useAuth from "hooks/useAuth";
 import Icon from '@mui/material/Icon';
 import { IconButton } from '@mui/material';
 import MDSnackbar from 'components/MDSnackbar';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import ReviewModal from 'layouts/orderHistory/data/addReviewModal';
 import { addProductReviews } from 'layouts/ProductDetails/services/productReviewsServices.service';

@@ -21,7 +21,9 @@ import { useForm } from "react-hook-form";
 import { TextField } from "@mui/material";
 import axios from "api/axios";
 
-import { useState } from "react";
+import ReactGa from "react-ga";
+
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 
@@ -65,9 +67,20 @@ function Cover() {
       active_status: 1
     }).then((res) => {
       if (res.data) {
+        ReactGa.event({
+          category: 'User',
+          action: 'User Registered'
+        })
+
         navigate('/authentication/sign-in')
       }
     }).catch((error) => {
+      ReactGa.exception({
+        category: 'User',
+        action: 'User Registration Failed',
+        description: error?.response?.data?.message || error?.message,
+        fatal: false
+      })
       console.log(error.response.data.message)
       setSb({
         open: true,

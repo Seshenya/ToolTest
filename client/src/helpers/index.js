@@ -1,4 +1,5 @@
 import { getProductDetails } from "layouts/ProductDetails/services/productDetailsServices.service";
+import ReactGa from "react-ga";
 
 export const getFormattedDate = (date) => {
     if (date) {
@@ -63,6 +64,11 @@ export const downloadMedia = async (productId, fileName) => {
         fetch(url)
             .then((response) => response.blob())
             .then((blob) => {
+                ReactGa.event({
+                    category: 'Download',
+                    action: 'Downloaded Media',
+                    label: fileName,
+                });
                 // Create a link element
                 const link = document.createElement('a');
 
@@ -83,6 +89,10 @@ export const downloadMedia = async (productId, fileName) => {
                 document.body.removeChild(link);
             })
             .catch((error) => {
+                ReactGa.exception({
+                    description: 'Error downloading file',
+                    fatal: false,
+                });
                 console.error(`Error downloading file ${url}:`, error);
             });
     });
