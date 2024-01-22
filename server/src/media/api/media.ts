@@ -7,6 +7,7 @@ import {
     createCategory,
     getMediaTypes,
     alterCategory,
+    searchImage
 } from '../services'
 import formidable from 'express-formidable'
 
@@ -18,6 +19,27 @@ async function fetchMedia(req: any, res: any) {
         .catch((error) => {
             res.status(400).send({ message: error })
         })
+}
+
+async function fetchImage(req: any, res: any) {
+    formidable({ multiples: true })(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'File upload failed.' })
+        }
+
+        const imageData = {
+            fields: req?.fields || {},
+            fileMedia: req?.files?.media || undefined,
+        }
+
+        await searchImage(imageData)
+            .then(({query}) => {
+                res.send(query)
+            })
+            .catch((error) => {
+                res.status(400).send({ message: error })
+            })
+    })
 }
 
 async function addMedia(req: any, res: any) {
@@ -130,5 +152,6 @@ export {
     fetchMediaCategories,
     addMediaCategory,
     fetchMediaTypes,
-    updateMediaCategory
+    updateMediaCategory,
+    fetchImage
 }
