@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm'
 import 'reflect-metadata'
 import { User } from '../user/entities'
-import { Category, DigitalProduct, MediaType } from '../media/entities'
+import { Category, DigitalProduct, MediaType, ThreeDModel } from '../media/entities'
 import config from '../config'
 import { Message } from '../chat/entities/message'
 import { Order } from '../orders/entities'
@@ -26,6 +26,7 @@ export const AppDataSource = new DataSource({
         Message,
         Order,
         Review,
+        ThreeDModel
     ],
     subscribers: [],
     migrations: [],

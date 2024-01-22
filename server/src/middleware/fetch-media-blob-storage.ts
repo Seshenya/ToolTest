@@ -6,7 +6,8 @@ import {
 
 export async function generateSASUrl(
     containerName: string,
-    blobName: string
+    blobName: string,
+    expiry = 60
 ): Promise<string> {
     const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING
 
@@ -16,7 +17,7 @@ export async function generateSASUrl(
 
     const startDate = new Date()
     const expiryDate = new Date(startDate)
-    expiryDate.setMinutes(startDate.getMinutes() + 60)
+    expiryDate.setMinutes(startDate.getMinutes() + expiry)
 
     const sharedAccessPolicy = {
         startsOn: startDate,

@@ -203,3 +203,13 @@ ADD COLUMN `isDeleted` BIT(1) NULL DEFAULT 0 AFTER `comment`;
 ALTER TABLE `ARTSYNC`.`product` 
 CHANGE COLUMN `isDeleted` `isDeleted` TINYINT(1) NULL DEFAULT 0 ;
 
+
+
+-- 3D Model
+
+CREATE TABLE `ARTSYNC`.`three_d_models` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `url` TEXT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);

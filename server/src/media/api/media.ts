@@ -7,6 +7,8 @@ import {
     createCategory,
     getMediaTypes,
     alterCategory,
+    get3DModels,
+    create3DModel,
 } from '../services'
 import formidable from 'express-formidable'
 
@@ -122,6 +124,36 @@ async function fetchMediaTypes(req: any, res: any) {
         })
 }
 
+async function fetch3DModels(req: any, res: any) {
+    get3DModels()
+        .then((models) => {
+            res.send(models)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+async function add3DModel(req: any, res: any) {
+    formidable()(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'File upload failed.' })
+        }
+
+        const data = {
+            fields: req.fields,
+            file: req.files.model,
+        }
+
+        try {
+            const model = await create3DModel(data)
+            res.send(model)
+        } catch (error) {
+            res.status(500).send({ message: 'Error creating model.' })
+        }
+    })
+}
+
 export {
     fetchMedia,
     addMedia,
@@ -130,5 +162,7 @@ export {
     fetchMediaCategories,
     addMediaCategory,
     fetchMediaTypes,
-    updateMediaCategory
+    updateMediaCategory,
+    fetch3DModels,
+    add3DModel
 }
