@@ -101,6 +101,8 @@ async function createMedia(media: MediaData) {
 
         const containerName = 'gdsdt4'
 
+        // Better to create helper function generate blob name since it is used more than twice.
+
         // Add Medias to Azure Blob Storage
 
         const blobNameMedias: string[] = []
