@@ -38,11 +38,11 @@ export const setupSocketEvents = (io: Server) => {
 
             socket.on('message', async ({ receiver_id, content }: MessageEvent) => {
                 // Save the message to the database
-                await saveMessage(user.id, receiver_id, content);
+                const savedMessage = await saveMessage(user.id, receiver_id, content);
 
                 // Send the message to the target user only
-                io.to(receiver_id).emit('message', { sender_id: user.id, content, receiver_id: receiver_id });
-                io.to(user.id).emit('message', { sender_id: user.id, content, receiver_id: receiver_id });
+                io.to(receiver_id).emit('message', savedMessage);
+                io.to(user.id).emit('message', savedMessage);
             });
 
             socket.on('disconnect', () => {
