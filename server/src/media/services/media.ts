@@ -2,6 +2,7 @@ import { DigitalProduct } from '../entities'
 import { promises as fsPromises } from 'fs'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
 import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
+import { transcribeAudio } from './transcribe-audio'
 
 interface MediaData {
     fields: any
@@ -55,6 +56,20 @@ async function getMedia(product_id: number) {
         media.thumbnail = blobUrlWithSAS
     } catch (error) {
         throw new Error(`Error generating SAS URL for ${blobNameThumbnail}`)
+    }
+
+
+    const blobNameUserProfile = media?.owner?.profile_picture
+    if (blobNameUserProfile) {
+        try {
+            const blobUrlWithSAS = await generateSASUrl(
+                containerName,
+                blobNameUserProfile
+            )
+            media.owner.profile_picture = blobUrlWithSAS
+        } catch (error) {
+            throw new Error(`Error generating SAS URL for ${blobNameUserProfile}`)
+        }
     }
 
     return media
@@ -126,10 +141,19 @@ async function createMedia(media: MediaData) {
         )
 
         storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
+        
+        const transcribedTexts: string[] = []
+        for (const mediaFile of blobNameMedias) {
+            if(newDigitalProduct.media_type === 2){
+                const transcribedText = await transcribeAudio(mediaFile)
+                transcribedTexts.push(transcribedText)
+            }
+        }
 
         newDigitalProduct.media = blobNameMedias
         newDigitalProduct.previews = blobNamePreviews
         newDigitalProduct.thumbnail = blobNameThumbnail
+        newDigitalProduct.transcribed_text = transcribedTexts
 
         const createdMedia = await newDigitalProduct.save()
         return createdMedia
@@ -207,7 +231,10 @@ async function alterMedia(
 
             storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
 
+            const transcribedText = await transcribeAudio(blobNameMedia)
             updateObject.media = blobNameMedia
+            updateObject.transcribed_text = transcribedText
+
         }
         if (media.filePreviews !== undefined) {
             // Add Previews to Azure Blob Storage

@@ -76,4 +76,7 @@ export class DigitalProduct extends BaseEntity {
 
     @Column({ type: 'tinyint' })
     isDeleted: number
+
+    @Column({ type: 'simple-array' })
+    transcribed_text: string[]
 }
