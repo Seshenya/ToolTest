@@ -21,9 +21,11 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/hs-fulda.jpeg";
 import axios from "api/axios";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "hooks/useAuth";
+
+import ReactGa from "react-ga";
 
 function Basic() {
 
@@ -54,9 +56,19 @@ function Basic() {
         }
       )
       .then((res) => {
+        ReactGa.event({
+          category: "User",
+          action: "User logged in"
+        })
         updateAuth({ ...res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken })
         navigate('/shop')
       }).catch((error) => {
+        ReactGa.exception({
+          category: "User",
+          action: "User login failed",
+          label: error?.response?.data?.message || error?.message || '',
+          fatal: false
+        })
         setSb({
           open: true,
           color: 'error',

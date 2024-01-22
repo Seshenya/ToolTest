@@ -9,10 +9,12 @@ import {
     addMediaCategory,
     updateMediaCategory,
     fetchMediaTypes,
+    fetchImage
 } from './media/api'
 import { hasToken, refreshToken, logoutUser, loginUser } from './middleware'
 import { buyMedia, fetchOrders } from './orders/api'
 import { fetchProductReviews, addProductReviews } from './review/api'
+import { add3DModel, fetch3DModels } from './media/api/media'
 
 const router = express.Router()
 
@@ -29,6 +31,7 @@ router.get('/media/:id', hasToken, fetchMedia)
 router.get('/media', hasToken, fetchSearchedMedia)
 router.post('/media', hasToken, addMedia)
 router.put('/media/:id', hasToken, updateMedia)
+router.post('/image', hasToken, fetchImage)
 
 router.get('/categories', hasToken, fetchMediaCategories)
 router.post('/categories', hasToken, addMediaCategory)
@@ -41,6 +44,9 @@ router.get('/order-history/:id', fetchOrders)
 
 router.get('/reviews/:productId', hasToken, fetchProductReviews)
 router.post('/reviews', hasToken, addProductReviews)
+
+router.get('/3d-models', hasToken, fetch3DModels)
+router.post('/3d-models', hasToken, add3DModel)
 
 router.get('/', function (req, res) {
     res.send('GDSD Team 4')

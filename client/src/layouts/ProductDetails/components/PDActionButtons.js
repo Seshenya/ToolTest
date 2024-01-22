@@ -6,8 +6,9 @@ import ConfirmationModal from './ConfirmationModal';
 import { useContext, useState } from 'react';
 import useAxiosPrivate from 'hooks/useAxiosPrivate';
 import AuthContext from 'context/AuthProvider';
+import ReactGa from 'react-ga';
 
-const PDActionButtons = ({ productDetails }) => {
+const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D }) => {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const navigate = useNavigate();
 
@@ -20,23 +21,23 @@ const PDActionButtons = ({ productDetails }) => {
     const [loading, setLoading] = useState(false);
 
     const handleConfirm = () => {
-        // setShowConfirmationModal(false);
-        // const link = document.createElement('a');
-        // link.href = productDetails.media;
-        // link.target = '_blank';
-        // link.download = `downloaded_media.${productDetails.file_format}`;
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-
         setLoading(true);
         axiosPrivate
             .post(`/buy-media/${auth.user_id}/${productDetails.product_id}`)
             .then((resp) => {
+                ReactGa.event({
+                    category: 'User',
+                    action: 'Bought media',
+                })
                 // console.log(resp);
                 navigate('/order-history');
             })
             .catch((err) => {
+                ReactGa.exception({
+                    category: 'User',
+                    action: 'Error buying media',
+                    fatal: false,
+                })
                 setLoading(false);
                 console.log(err);
             });
@@ -78,11 +79,18 @@ const PDActionButtons = ({ productDetails }) => {
                     Contact Seller &nbsp;
                     <SwapHorizRounded />
                 </MDButton>
-                {/* <MDButton variant='gradient' color={'secondary'} fullWidth>
-          Add to Cart &nbsp;
-          <ShoppingCartRounded />
-        </MDButton> */}
             </MDBox>
+            <MDButton
+                variant="gradient"
+                color={'secondary'}
+                fullWidth
+                sx={{ marginTop: 1 }}
+                onClick={() => {
+                    setProjectOn3D(!projectOn3D)
+                }}
+            >
+                {projectOn3D ? `Original Image` : `Project On 3D`}
+            </MDButton>
             <ConfirmationModal
                 open={showConfirmationModal}
                 onClose={handleCloseModal}

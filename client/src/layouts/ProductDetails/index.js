@@ -1,6 +1,6 @@
 import MDBox from 'components/MDBox';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PDMainImage from './components/PDMainImage';
 import PDSellerInfo from './components/PDSellerInfo';
 import { CircularProgress, Grid } from '@mui/material';
@@ -21,6 +21,7 @@ const ProductDetails = () => {
         useProductReviewDetails(productId);
     const navigate = useNavigate();
     const { auth } = useAuth();
+    const [projectOn3D, setProjectOn3D] = useState(false)
 
     useEffect(() => {
         if (
@@ -58,12 +59,12 @@ const ProductDetails = () => {
                         }}
                     >
                         <MDBox sx={{ position: 'sticky', top: '24px' }}>
-                            <PDMainImage productDetails={productDetails} />
+                            <PDMainImage projectOn3D={projectOn3D} productDetails={productDetails} />
                             <br />
-                            <PDActionButtons productDetails={productDetails} />
+                            <PDActionButtons productDetails={productDetails} projectOn3D={projectOn3D} setProjectOn3D={setProjectOn3D} />
                             <br />
                             <br />
-                            <PDSellerInfo />
+                            <PDSellerInfo productDetails={productDetails} />
                         </MDBox>
                     </Grid>
                     <Grid item width={'100%'}>

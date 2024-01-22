@@ -42,6 +42,8 @@ import ProtectedRoute from "components/ProtectedRoute";
 import { SnackbarProvider } from "context/SnackbarContext";
 import useAuth from "hooks/useAuth";
 
+import ReactGa from "react-ga";
+
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -58,6 +60,10 @@ export default function App() {
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
   const { auth } = useAuth();
+
+  // Google Analytics
+  const TRACKING_ID = "G-JJWXE7DPC1";
+  ReactGa.initialize(TRACKING_ID);
 
   // Cache for the rtl
   useMemo(() => {
@@ -136,6 +142,10 @@ export default function App() {
       </Icon>
     </MDBox>
   );
+
+  useEffect(() => {
+    ReactGa.pageview(window.location.pathname + window.location.search);
+  }, []);
 
   return <ThemeProvider theme={darkMode ? themeDark : theme}>
     <SnackbarProvider>

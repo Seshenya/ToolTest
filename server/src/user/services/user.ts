@@ -114,9 +114,8 @@ async function alterUser(user_id: number, user: UserData) {
             const containerName = 'gdsdt4'
 
             // Add Media to Azure Blob Storage
-            const blobNameProfilePic = `user_${firstname}_${lastname}_${Date.now()}_${Math.random()}_${
-                user.fileProfilePicture.name
-            }`
+            const blobNameProfilePic = `user_${firstname}_${lastname}_${Date.now()}_${Math.random()}_${user.fileProfilePicture.name
+                }`
             const dataMedia = await fsPromises.readFile(
                 user.fileProfilePicture.path
             )

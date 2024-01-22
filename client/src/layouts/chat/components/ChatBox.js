@@ -11,9 +11,13 @@ import {
 } from '@mui/material';
 import { Send } from '@mui/icons-material';
 import useAuth from 'hooks/useAuth';
+import MDBox from 'components/MDBox';
+import MDTypography from 'components/MDTypography';
+import { format } from 'date-fns';
+
 
 const ChatBoxContainer = styled(Paper)(({ theme }) => ({
-    height: '400px',
+    height: '95%',
     margin: '10px',
     overflow: 'hidden',
     position: 'relative',
@@ -40,23 +44,28 @@ const AvatarImage = styled(Avatar)({
 });
 
 const MessagesContainer = styled(List)(({ theme, isSender }) => ({
-    flex: '1',
+    height: 'calc(100vh - 542px)',
     overflowY: 'auto',
     padding: '10px',
     position: 'relative',
-    justifyContent: isSender ? 'flex-end' : 'flex-start',
+    display: 'flex',
+    flexDirection: 'column',
 }));
 
-const MessageItem = styled(ListItem)(({ theme, isSender }) => ({
-    alignSelf: 'flex-start', // Align items to the start by default
-    maxWidth: '80%',
-    backgroundColor: isSender ? '#DCF8C6' : '#E0E0E0',
-    borderRadius: '8px',
-    padding: '8px',
-    margin: '8px',
-    fontSize: '14px',
-    marginLeft: isSender ? 'auto' : 0, // Push sent messages to the right
-}));
+const MessageItem = styled(ListItem)(
+    ({ theme, isSender, nextSenderEqualsCurrentSender }) => ({
+        alignSelf: isSender ? 'flex-end' : 'flex-start', // Align items to the start by default
+        maxWidth: '80%',
+        // backgroundColor: isSender ? '#DCF8C6' : '#E0E0E0',
+        borderRadius: '8px',
+        // padding: '8px',
+        marginBottom: nextSenderEqualsCurrentSender ? 10 : '8px',
+        fontSize: '14px',
+        // marginLeft: isSender ? 'auto' : 0, // Push sent messages to the right
+        display: 'flex',
+        justifyContent: isSender ? 'flex-end' : 'flex-start',
+    })
+);
 
 const InputContainerWrapper = styled('div')({
     marginTop: 'auto',
@@ -86,9 +95,6 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
         }
     };
     useEffect(() => {
-
-
-
         // Listen for incoming chat messages
         socket.on('message', (res) => {
             setMessages((prevMessages) => [...prevMessages, { ...res }]);
@@ -104,6 +110,7 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
         // Get chat history
         socket.emit('getChatHistory', { targetUserId: receiver.userId })
         socket.on('chatHistory', (res) => {
+            console.log(res.chatHistory, 'HISTORY')
             setMessages(res?.chatHistory?.length ? res.chatHistory : []);
         })
     }, [receiver])
@@ -114,6 +121,15 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
         }
     }, [messages]);
 
+    function formatTimestamp(timestamp) {
+        const date = new Date(timestamp);
+        const formattedDate = format(date, 'MMM d, yyyy');
+        const formattedTime = format(date, 'h:mm a');
+
+        return `${formattedDate} ${formattedTime}`;
+    }
+
+
     return (
         <ChatBoxContainer elevation={3}>
             <HeaderContainer>
@@ -123,11 +139,60 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
                 </UserInfoContainer>
             </HeaderContainer>
             <MessagesContainer ref={messagesContainerRef}>
-                {messages.map((message, index) => (
-                    <MessageItem key={index} isSender={message.sender_id === auth.user_id}>
-                        {message.content}
-                    </MessageItem>
-                ))}
+                {messages.map((message, index) => {
+                    const isSender = message.sender_id === auth.user_id;
+                    const nextSenderEqualsCurrentSender =
+                        messages[index + 1]?.sender_id === message.sender_id;
+                    return (
+                        <MessageItem
+                            key={index}
+                            isSender={isSender}
+                            variant={'MDBox'}
+                            nextSenderEqualsCurrentSender={
+                                nextSenderEqualsCurrentSender
+                            }
+                        >
+                            <MDBox
+                                variant="gradient"
+                                bgColor={isSender ? 'info' : ''}
+                                // width={'100%'}
+                                height={'100%'}
+                                overflow={'hidden'}
+                                borderRadius={
+                                    isSender
+                                        ? '12px 12px 0px 12px'
+                                        : '12px 12px 12px 0'
+                                }
+                                padding={1}
+                                sx={{
+                                    color: isSender
+                                        ? 'white !important'
+                                        : 'black',
+                                    bgcolor: '#f2f6ff !important',
+                                }}
+                            >
+                                {message.content}
+                                <MDBox
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: isSender
+                                            ? 'flex-end'
+                                            : 'flex-start',
+                                    }}
+                                >
+                                    <MDTypography
+                                        color={isSender ? 'white' : ''}
+                                        sx={{ opacity: '0.8' }}
+                                        fontSize={12}
+                                    >
+                                        {/* store and send correct date */}
+                                        {formatTimestamp(message?.timestamp) || ''}
+                                    </MDTypography>
+                                </MDBox>
+                            </MDBox>
+                        </MessageItem>
+                    );
+                })}
             </MessagesContainer>
             <InputContainerWrapper>
                 <InputContainer>
@@ -137,7 +202,6 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         onKeyDown={(e) => {
-                            console.log(e.key)
                             if (e.key == 'Enter') {
                                 handleSendMessage()
                             }
@@ -145,7 +209,7 @@ const ChatBox = ({ socket, receiver, messages, setMessages }) => {
                     />
                     <IconButton
                         variant="gradient"
-                        color="primary"
+                        color="secondary"
                         style={{ marginLeft: 4 }}
                         onClick={handleSendMessage}
                     >

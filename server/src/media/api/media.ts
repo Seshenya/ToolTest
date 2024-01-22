@@ -7,6 +7,9 @@ import {
     createCategory,
     getMediaTypes,
     alterCategory,
+    get3DModels,
+    create3DModel,
+    searchImage
 } from '../services'
 import formidable from 'express-formidable'
 
@@ -18,6 +21,27 @@ async function fetchMedia(req: any, res: any) {
         .catch((error) => {
             res.status(400).send({ message: error })
         })
+}
+
+async function fetchImage(req: any, res: any) {
+    formidable({ multiples: true })(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'File upload failed.' })
+        }
+
+        const imageData = {
+            fields: req?.fields || {},
+            fileMedia: req?.files?.media || undefined,
+        }
+
+        await searchImage(imageData)
+            .then(({ query }) => {
+                res.send(query)
+            })
+            .catch((error) => {
+                res.status(400).send({ message: error })
+            })
+    })
 }
 
 async function addMedia(req: any, res: any) {
@@ -122,6 +146,36 @@ async function fetchMediaTypes(req: any, res: any) {
         })
 }
 
+async function fetch3DModels(req: any, res: any) {
+    get3DModels()
+        .then((models) => {
+            res.send(models)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+async function add3DModel(req: any, res: any) {
+    formidable()(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'File upload failed.' })
+        }
+
+        const data = {
+            fields: req.fields,
+            file: req.files.model,
+        }
+
+        try {
+            const model = await create3DModel(data)
+            res.send(model)
+        } catch (error) {
+            res.status(500).send({ message: 'Error creating model.' })
+        }
+    })
+}
+
 export {
     fetchMedia,
     addMedia,
@@ -130,5 +184,8 @@ export {
     fetchMediaCategories,
     addMediaCategory,
     fetchMediaTypes,
-    updateMediaCategory
+    updateMediaCategory,
+    fetch3DModels,
+    add3DModel,
+    fetchImage
 }

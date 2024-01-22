@@ -20,6 +20,9 @@ import MDSnackbar from 'components/MDSnackbar';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import { useEffect } from 'react';
+import { useSnackbar } from 'context/SnackbarContext';
+
+import ReactGa from 'react-ga';
 
 const AddEditProductModal = ({
     openModal,
@@ -40,6 +43,7 @@ const AddEditProductModal = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedMediaType, setSelectedMediaType] = useState('1');
     const [selectedCategory, setSelectedCategory] = useState('1');
+    const { showSnackbar } = useSnackbar();
     const {
         register,
         handleSubmit,
@@ -170,6 +174,10 @@ const AddEditProductModal = ({
             });
 
             if (response.status === 200) {
+                ReactGa.event({
+                    category: 'Media',
+                    action: 'Media Created',
+                });
                 const data = response.data
                 console.log('New media created:', data)
                 refreshSellPage()
@@ -179,7 +187,17 @@ const AddEditProductModal = ({
                 console.error('Failed to create media');
             }
         } catch (error) {
+            ReactGa.exception({
+                description: 'Error creating media:',
+                fatal: false,
+            });
             console.error('Error creating media:', error);
+            showSnackbar({
+                color: 'error',
+                title: error.message,
+                message: '',
+                icon: 'error',
+            });
         } finally {
             setIsSubmitting(false);
             setOpenModal(false);
@@ -206,6 +224,10 @@ const AddEditProductModal = ({
             })
             .then((response) => {
                 if (response.status === 200) {
+                    ReactGa.event({
+                        category: 'Media',
+                        action: 'Media Updated',
+                    });
                     const data = response.data;
                     console.log('Media updated:', data);
                     refreshSellPage();
@@ -217,7 +239,17 @@ const AddEditProductModal = ({
             })
 
             .catch((error) => {
+                ReactGa.exception({
+                    description: 'Error updating media:',
+                    fatal: false,
+                });
                 console.error('Error updating media:', error);
+                showSnackbar({
+                    color: 'error',
+                    title: error.message,
+                    message: '',
+                    icon: 'error',
+                });
             });
     };
 
@@ -441,6 +473,7 @@ const AddEditProductModal = ({
                         fullWidth
                         variant="outlined"
                         sx={{ marginBottom: 2 }}
+                        type='number'
                     />
                     {errors.description && (
                         <span
