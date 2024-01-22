@@ -26,6 +26,8 @@ import Footer from 'examples/Footer';
 // Data
 import categoriesTableData from "./data/categoriesData";
 
+import ReactGa from 'react-ga';
+
 
 function Categories() {
     const [categories, setCategories] = useState([]);
@@ -76,6 +78,10 @@ function Categories() {
           });
     
           if (response.status === 200) {
+            ReactGa.event({
+              category: 'Category',
+              action: 'Category Created'
+            })
             const data = response.data;
             console.log('New category created:', data);
 
@@ -128,6 +134,10 @@ function Categories() {
         });
   
         if (response.status === 200) {
+          ReactGa.event({
+            category: 'Category',
+            action: 'Category Updated'
+          })
           const updatedCategory = response.data;
           console.log('Category updated:', updatedCategory);
   
@@ -140,6 +150,10 @@ function Categories() {
           console.error('Failed to update category');
         }
       } catch (error) {
+        ReactGa.exception({
+          description: `Error updating category ${selectedCategory.id}:`,
+          fatal: false,
+        })
         console.error('Error updating category:', error);
       }
     };

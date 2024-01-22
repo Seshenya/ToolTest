@@ -4,7 +4,7 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import React from "react";
 
-const PDSellerInfo = () => {
+const PDSellerInfo = ({ productDetails }) => {
   return (
     <MDBox
       sx={{
@@ -21,17 +21,17 @@ const PDSellerInfo = () => {
           }}
         >
           <MDAvatar
-            src={"http://localhost:3000/static/media/bruce-mars.8a606c4a6dab54c9ceff.jpg"}
-            alt="profile-image"
+            src={productDetails?.owner?.profile_picture}
+            alt="JD"
             size="lg"
             shadow="sm"
           />
           <MDBox flex={1}>
             <MDTypography variant="h5" fontWeight="medium">
-              Richard Davis
+              {`${productDetails?.owner?.firstname} ${productDetails?.owner?.lastname}` || 'John Doe'}
             </MDTypography>
             <MDTypography fontWeight="lighter" fontSize={"12px"} color="lightgrey">
-              User since July, 2023
+              {`${productDetails?.owner?.email}` || 'johndoe@example.com'}
             </MDTypography>
           </MDBox>
         </MDBox>

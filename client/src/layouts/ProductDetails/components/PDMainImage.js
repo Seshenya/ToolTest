@@ -46,12 +46,8 @@ const PDMainImage = ({ productDetails }) => {
   }
 
   const GlTFModel = () => {
-    try {
-      const gltf = useLoader(GLTFLoader, productDetails?.previews?.[curPreview]);
-      return <primitive key={generateKey()} object={gltf.scene} />;
-    } catch (error) {
-      return null
-    }
+    const gltf = useLoader(GLTFLoader, productDetails?.previews?.[curPreview]);
+    return gltf?.scene ? <primitive key={generateKey()} object={gltf.scene} /> : null;
   };
 
   const handleArrowClick = (direction) => {

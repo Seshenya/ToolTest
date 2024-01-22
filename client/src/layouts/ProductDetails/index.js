@@ -63,7 +63,7 @@ const ProductDetails = () => {
                             <PDActionButtons productDetails={productDetails} />
                             <br />
                             <br />
-                            <PDSellerInfo />
+                            <PDSellerInfo productDetails={productDetails} />
                         </MDBox>
                     </Grid>
                     <Grid item width={'100%'}>

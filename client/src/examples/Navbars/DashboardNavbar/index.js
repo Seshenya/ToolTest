@@ -22,6 +22,7 @@ import Select from '@mui/material/Select';
 import MDBox from 'components/MDBox';
 import MDInput from 'components/MDInput';
 import MDButton from 'components/MDButton';
+import SearchByImageModal from 'layouts/shop/components/SearchByImageModal';
 
 // Material Dashboard 2 React example components
 import Breadcrumbs from 'examples/Breadcrumbs';
@@ -67,12 +68,21 @@ function DashboardNavbar({
         darkMode,
     } = controller;
     const [openMenu, setOpenMenu] = useState(false);
+    const [openModal, setOpenModal] = useState(false)
     const route = useLocation().pathname.split('/').slice(1);
     const { auth, updateAuth } = useAuth();
     const axiosPrivate = useAxiosPrivate();
 
     const [categories, setCategories] = useState([]);
     const [mediaTypes, setMediaTypes] = useState([]);
+
+    const handleModalOpen = () => {
+        setOpenModal(true)
+    }
+
+    const handleModalClose = () => {
+        setOpenModal(false)
+    }
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -314,6 +324,14 @@ function DashboardNavbar({
                                         label="Search..."
                                     />
                                 </MDBox>
+                                <MDButton
+                                    variant="gradient"
+                                    size="medium"
+                                    color={'primary'}
+                                    onClick={handleModalOpen}
+                                    >
+                                    Search By Image
+                                </MDButton>
                             </>
                         ) : null}
 
@@ -390,7 +408,15 @@ function DashboardNavbar({
                     </MDBox>
                 )}
             </Toolbar>
+            <SearchByImageModal
+                openModal={openModal}
+                onClose={handleModalClose}
+                setOpenModal={setOpenModal}
+                reCallApi={reCallApi}
+                filtersRef={filtersRef}
+            />
         </AppBar>
+        
     );
 }
 

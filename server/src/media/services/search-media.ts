@@ -47,7 +47,7 @@ async function searchMedia(
         if (query) {
             query += '*' // for partial string matching
             baseQuery = baseQuery.andWhere(
-                'MATCH(product.title, product.tags) AGAINST(:query IN BOOLEAN MODE)',
+                'MATCH(product.title, product.tags, product.transcribed_text) AGAINST(:query IN BOOLEAN MODE)',
                 { query }
             )
         }

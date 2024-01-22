@@ -9,12 +9,12 @@ import useAuth from "hooks/useAuth";
 
 import Icon from '@mui/material/Icon';
 import { IconButton } from '@mui/material';
-import { getProductDetails } from 'layouts/ProductDetails/services/productDetailsServices.service';
 import MDSnackbar from 'components/MDSnackbar';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import ReviewModal from 'layouts/orderHistory/data/addReviewModal';
 import { addProductReviews } from 'layouts/ProductDetails/services/productReviewsServices.service';
+import { downloadMedia } from 'helpers';
 
 // Images
 
@@ -32,51 +32,9 @@ const DownloadBtn = ({ productId, media }) => {
         setSb({ ...initSb });
     };
 
-    const downloadMedia = async () => {
+    const handleDownloadMedia = () => {
         try {
-            const resp = await getProductDetails(productId);
-            console.log(resp);
-
-            // const link = document.createElement('a');
-            // link.href = resp.media;
-            // link.download = media || 'downloaded-media';
-            // link.target = '_blank';
-            // document.body.appendChild(link);
-            // link.click();
-            // document.body.removeChild(link);
-            resp.media.forEach((url, index) => {
-                // Use fetch to download the file
-                fetch(url)
-                    .then((response) => response.blob())
-                    .then((blob) => {
-                        // Create a link element
-                        const link = document.createElement('a');
-
-                        // Create a unique filename for each file (you can customize this logic)
-                        const fileName = `file_${index + 1}.${url
-                            .split('.')
-                            .pop()}`;
-
-                        // Create a Blob URL for the file
-                        const blobUrl = URL.createObjectURL(blob);
-
-                        // Set the link attributes
-                        link.href = blobUrl;
-                        link.download = media;
-
-                        // Append the link to the document
-                        document.body.appendChild(link);
-
-                        // Trigger a click on the link to start the download
-                        link.click();
-
-                        // Remove the link from the document
-                        document.body.removeChild(link);
-                    })
-                    .catch((error) => {
-                        console.error(`Error downloading file ${url}:`, error);
-                    });
-            });
+            downloadMedia(productId, media)
         } catch (error) {
             setSb({
                 open: true,
@@ -90,7 +48,7 @@ const DownloadBtn = ({ productId, media }) => {
 
     return (
         <MDBox display="flex">
-            <IconButton color="info" onClick={downloadMedia}>
+            <IconButton color="info" onClick={handleDownloadMedia}>
                 <Icon fontSize="small">download</Icon>
             </IconButton>
             <MDSnackbar
@@ -143,7 +101,7 @@ const ReviewBtn = ({ productId, productTitle }) => {
             <IconButton color="info" onClick={openModal}>
                 <Icon fontSize="small">rate_review</Icon>
             </IconButton>
-            <ReviewModal isOpen={isModalOpen} handleClose={closeModal} productId={productId}  productTitle={productTitle} handleSubmit={handleSubmit} onSubmit={onSubmit} register={register} reset={reset} />
+            <ReviewModal isOpen={isModalOpen} handleClose={closeModal} productId={productId} productTitle={productTitle} handleSubmit={handleSubmit} onSubmit={onSubmit} register={register} reset={reset} />
         </MDBox>
     );
 };
