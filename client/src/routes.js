@@ -21,33 +21,34 @@
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from 'layouts/dashboard'
-import Tables from 'layouts/tables'
-import Billing from 'layouts/billing'
-import RTL from 'layouts/rtl'
-import Notifications from 'layouts/notifications'
-import Profile from 'layouts/profile'
-import SignIn from 'layouts/authentication/sign-in'
-import SignUp from 'layouts/authentication/sign-up'
-import Team from 'layouts/about/'
-import Home from 'layouts/home'
+import Dashboard from 'layouts/dashboard';
+import Tables from 'layouts/tables';
+import Billing from 'layouts/billing';
+import RTL from 'layouts/rtl';
+import Notifications from 'layouts/notifications';
+import Profile from 'layouts/profile';
+import SignIn from 'layouts/authentication/sign-in';
+import SignUp from 'layouts/authentication/sign-up';
+import Team from 'layouts/about/';
+import Home from 'layouts/home';
 
 // @mui icons
-import Icon from '@mui/material/Icon'
-import Shop from 'layouts/shop'
-import Sell from 'layouts/sell'
-import AdminDashboard from 'layouts/admin'
-import Competitions from 'layouts/competitions'
-import MyCompetitions from 'layouts/competitions/myCompetitions'
-import Collaborations from 'layouts/collaborations'
-import MyCollaborations from 'layouts/collaborations/myCollaborations'
-import Chat from 'layouts/chat'
-import Categories from 'layouts/categories'
+import Icon from '@mui/material/Icon';
+import Shop from 'layouts/shop';
+import Sell from 'layouts/sell';
+import AdminDashboard from 'layouts/admin';
+import Competitions from 'layouts/competitions';
+import MyCompetitions from 'layouts/competitions/myCompetitions';
+import Collaborations from 'layouts/collaborations';
+import MyCollaborations from 'layouts/collaborations/myCollaborations';
+import Chat from 'layouts/chat';
+import Categories from 'layouts/categories';
 
 //
-import ProductDetails from 'layouts/ProductDetails'
-import OrderHistory from 'layouts/orderHistory'
-import Developer from 'layouts/about/developer'
+import ProductDetails from 'layouts/ProductDetails';
+import OrderHistory from 'layouts/orderHistory';
+import Developer from 'layouts/about/developer';
+import ThreeTee from 'layouts/threeTee/ThreeTee';
 
 const routes = [
     {
@@ -121,7 +122,7 @@ const routes = [
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: '/admin',
         component: <AdminDashboard />,
-        admin: true
+        admin: true,
     },
     {
         type: 'title',
@@ -225,6 +226,14 @@ const routes = [
         route: '/about-us/:developer',
         component: <Developer />,
     },
-]
+    {
+        type: 'collapse',
+        name: '3Tee',
+        icon: <Icon fontSize="small">accessibility</Icon>,
+        key: '3tee',
+        route: '/3tee',
+        component: <ThreeTee />,
+    },
+];
 
-export default routes
+export default routes;
