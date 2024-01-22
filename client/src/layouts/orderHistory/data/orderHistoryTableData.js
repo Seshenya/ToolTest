@@ -36,6 +36,7 @@ const DownloadBtn = ({ productId, media }) => {
         try {
             downloadMedia(productId, media)
         } catch (error) {
+            //  FEEDBACK: You can use the global snackbar
             setSb({
                 open: true,
                 color: 'error',
@@ -124,6 +125,7 @@ export default function orderHistoryTableData(orders) {
                 fileType: order.product.file_format,
                 name: order.product.title,
                 date: (
+                    //  FEEDBACK: You can format the date here (maybe you can move the function from chatbox to format the date to helpers and use it here as well)
                     <MDTypography
                         component="a"
                         href="#"
@@ -136,6 +138,7 @@ export default function orderHistoryTableData(orders) {
                 ),
                 action: (
                     <MDBox display="flex" justifyContent="space-evenly" gap={2}>
+                        {/*  FEEDBACK: Add tooltip to the buttons to make it more user friendly */}
                         <DownloadBtn
                             productId={order.product_id}
                             media={order.product.media}

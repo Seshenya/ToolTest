@@ -30,6 +30,7 @@ const OrderHistory = () => {
     const getOrders = () => {
         setLoading(true);
         axiosPrivate
+            // FEEDBACK: You can pagination to this page as well so that it is more user friendly
             .get(`/order-history/${auth.user_id}`, {
                 // params: {
                 //     page: pageNo,
@@ -48,6 +49,7 @@ const OrderHistory = () => {
             })
             .catch((error) => {
                 setLoading(false);
+                // FEEDBACK: You can use the global snackbar
                 setSb({
                     open: true,
                     color: 'error',
