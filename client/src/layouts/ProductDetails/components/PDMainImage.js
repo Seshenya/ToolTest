@@ -8,14 +8,29 @@ import audioFallback from 'assets/images/fallback/audio_fallback.png';
 import { Canvas, useLoader } from '@react-three/fiber';
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader";
 import { OrbitControls, Circle } from '@react-three/drei';
-import { useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { getExtensionFromUrl } from "helpers";
 import { generateKey } from "helpers";
+import ImageIn3DScene from "./ImageIn3DScene";
+import useAxiosPrivate from "hooks/useAxiosPrivate";
+import { useSnackbar } from "context/SnackbarContext";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-const PDMainImage = ({ productDetails }) => {
+const PDMainImage = ({ productDetails, projectOn3D }) => {
 
   const [curPreview, setCurPreview] = useState(0)
+  const [models, setModels] = useState([])
+  const [selectedShape, setSelectedShape] = useState(null);
+  const axiosPrivate = useAxiosPrivate()
+  const { showSnackbar } = useSnackbar();
 
+
+
+  const handleShapeChange = (event) => {
+    console.log(event.target.value)
+    const newShape = event.target.value;
+    setSelectedShape(newShape);
+  };
 
   const renderPreview = () => {
     if (productDetails?.previews?.[curPreview]) {
@@ -58,6 +73,29 @@ const PDMainImage = ({ productDetails }) => {
     }
   };
 
+  const get3DModels = () => {
+    axiosPrivate
+      .get(`/3d-models`)
+      .then((res) => {
+        setModels(res.data.models)
+        if (res?.data?.models?.length) {
+          setSelectedShape(res.data.models[0]?.url || '')
+        }
+      })
+      .catch((error) => {
+        showSnackbar({
+          color: 'error',
+          title: error.message,
+          message: '',
+          icon: 'error',
+        });
+      })
+  }
+
+  useEffect(() => {
+    get3DModels()
+  }, [])
+
   return (
     <MDBox>
       <MDBox position={"relative"} display={"flex"} alignItems={"center"} justifyContent={"center"} style={{ width: '100%', height: 300 }}>
@@ -75,18 +113,24 @@ const PDMainImage = ({ productDetails }) => {
             <OrbitControls target={[0, 1, 0]} />
             <axesHelper args={[5]} />
           </Canvas>
-        ) : (<MDBox
-          component={"img"}
-          src={renderPreview()}
-          onError={handlePreviewError}
-          borderRadius="xl"
-          sx={{
-            width: "100%",
-            height: 300,
-            objectFit: "cover",
-          }}
-          alt={""}
-        />)}
+        ) : (
+          projectOn3D ? selectedShape ?
+            <Suspense fallback={'Loading...'}>
+              <ImageIn3DScene img={renderPreview()} selectedShape={selectedShape} />
+            </Suspense> : null :
+            <MDBox
+              component={"img"}
+              src={renderPreview()}
+              onError={handlePreviewError}
+              borderRadius="xl"
+              sx={{
+                width: "100%",
+                height: 300,
+                objectFit: "cover",
+              }}
+              alt={""}
+            />
+        )}
         <MDBox
           position={"absolute"}
           width={"107%"}
@@ -130,6 +174,31 @@ const PDMainImage = ({ productDetails }) => {
             />)
           })} */}
       </MDBox>
+      {projectOn3D &&
+        <>
+          <FormControl fullWidth>
+            <InputLabel id="3d_object">Select 3D Object:</InputLabel>
+            <Select
+              sx={{ padding: 1.5 }}
+              variant="outlined"
+              labelId="3d_object"
+              id="3d_object"
+              label="Select 3D Object"
+              value={selectedShape}
+              onChange={handleShapeChange}
+            >
+              {models?.map((shape) => (
+                <MenuItem
+                  value={shape.url}
+                  key={shape.url}
+                >
+                  {shape.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+        </>}
     </MDBox>
   );
 };

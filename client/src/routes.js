@@ -48,6 +48,7 @@ import Categories from 'layouts/categories'
 import ProductDetails from 'layouts/ProductDetails'
 import OrderHistory from 'layouts/orderHistory'
 import Developer from 'layouts/about/developer'
+import ThreeDModels from 'layouts/3dModels'
 
 const routes = [
     {
@@ -224,6 +225,14 @@ const routes = [
         name: 'Developer',
         route: '/about-us/:developer',
         component: <Developer />,
+    },
+    {
+        type: 'collapse',
+        name: '3D Models',
+        key: '3d-models',
+        icon: <Icon fontSize="small">category</Icon>,
+        route: '/3d-models',
+        component: <ThreeDModels />,
     },
 ]
 
