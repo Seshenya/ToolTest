@@ -16,7 +16,7 @@ export {
     getMediaTypes,
     alterCategory,
     get3DModels,
-    create3DModel
+    create3DModel,
     searchImage,
     transcribeAudio
 }
