@@ -1,7 +1,7 @@
 import { DigitalProduct } from '../entities'
 import { promises as fsPromises } from 'fs'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
-import { storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
+import { generateBlobName, storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
 import { transcribeAudio } from './transcribe-audio'
 
 interface MediaData {
@@ -101,21 +101,22 @@ async function createMedia(media: MediaData) {
 
         const containerName = 'gdsdt4'
 
+        // Better to create helper function generate blob name since it is used more than twice.
+        // Jonas: I agree. I've created a helper function called generateBlobName() in the store-media-blob-storage.ts file. I also replaced all accurences of the blob name generation with this helper function.
+
         // Add Medias to Azure Blob Storage
 
         const blobNameMedias: string[] = []
         if (media.fileMedia && typeof media.fileMedia[Symbol.iterator] === 'function') {
             for (const mediaFile of media.fileMedia) {
-                const blobNameMedia = `media_${Date.now()}_${Math.random()}_${mediaFile.name
-                    }`
+                const blobNameMedia = generateBlobName('media', mediaFile)
                 const dataMedia = await fsPromises.readFile(mediaFile.path)
 
                 storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
                 blobNameMedias.push(blobNameMedia)
             }
         } else {
-            const blobNameMedia = `media_${Date.now()}_${Math.random()}_${media.fileMedia.name
-                }`
+            const blobNameMedia = generateBlobName('media', media.fileMedia)
             const dataMedia = await fsPromises.readFile(media.fileMedia.path)
 
             storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
@@ -125,8 +126,7 @@ async function createMedia(media: MediaData) {
         // Add Previews to Azure Blob Storage
         const blobNamePreviews: string[] = []
         for (const preview of media.filePreviews) {
-            const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${preview.name
-                }`
+            const blobNamePreview = generateBlobName('preview', preview)
             const dataPreview = await fsPromises.readFile(preview.path)
 
             storeBlobToBlobStorage(containerName, blobNamePreview, dataPreview)
@@ -134,8 +134,7 @@ async function createMedia(media: MediaData) {
         }
 
         // Add Thumbnail to Azure Blob Storage
-        const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name
-            }`
+        const blobNameThumbnail = generateBlobName('thumbnail', media.fileThumbnail)
         const dataThumbnail = await fsPromises.readFile(
             media.fileThumbnail.path
         )
@@ -226,6 +225,7 @@ async function alterMedia(
         }
         if (media.fileMedia !== undefined) {
             // Add Media to Azure Blob Storage
+            // Jonas: I didn't change this part since here we use another way to generate blob name (e.g. with file_format)
             const blobNameMedia = `media_${Date.now()}_${Math.random()}_${title}.${file_format}`
             const dataMedia = await fsPromises.readFile(media.fileMedia.path)
 
@@ -240,8 +240,7 @@ async function alterMedia(
             // Add Previews to Azure Blob Storage
             const blobNamePreviews: string[] = []
             for (const preview of media.filePreviews) {
-                const blobNamePreview = `preview_${Date.now()}_${Math.random()}_${preview.name
-                    }`
+                const blobNamePreview = generateBlobName('preview', preview)
                 const dataPreview = await fsPromises.readFile(preview.path)
 
                 storeBlobToBlobStorage(
@@ -256,8 +255,7 @@ async function alterMedia(
         }
         if (media.fileThumbnail !== undefined) {
             // Add Thumbnail to Azure Blob Storage
-            const blobNameThumbnail = `thumbnail_${Date.now()}_${Math.random()}_${media.fileThumbnail.name
-                }`
+            const blobNameThumbnail = generateBlobName('thumbnail', media.fileThumbnail)
             const dataThumbnail = await fsPromises.readFile(
                 media.fileThumbnail.path
             )

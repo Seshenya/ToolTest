@@ -18,3 +18,10 @@ export async function storeBlobToBlobStorage(
 
     await blockBlobClient.upload(blob, Buffer.byteLength(blob))
 }
+
+export function generateBlobName(prefix: string, mediaFile: any) {
+    const mediaName = mediaFile.name
+    const date = Date.now()
+    const randomNumber = Math.random()
+    return `${prefix}_${date}_${randomNumber}_${mediaName}`
+}
