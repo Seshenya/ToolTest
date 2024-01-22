@@ -49,7 +49,7 @@ import ProductDetails from 'layouts/ProductDetails';
 import OrderHistory from 'layouts/orderHistory';
 import Developer from 'layouts/about/developer';
 import ThreeTee from 'layouts/threeTee/ThreeTee';
-import ThreeDModels from 'layouts/3dModels'
+import ThreeDModels from 'layouts/3dModels';
 
 const routes = [
     {
@@ -236,13 +236,13 @@ const routes = [
         component: <ThreeTee />,
     },
     {
-
+        type: 'collapse',
         name: '3D Models',
         key: '3d-models',
         icon: <Icon fontSize="small">category</Icon>,
         route: '/3d-models',
         component: <ThreeDModels />,
     },
-]
+];
 
 export default routes;
