@@ -143,9 +143,11 @@ export default function App() {
     </MDBox>
   );
 
+  ReactGa.pageview(window.location.pathname + window.location.search);
+
   useEffect(() => {
     ReactGa.pageview(window.location.pathname + window.location.search);
-  }, []);
+  }, [window.location.pathname + window.location.search]);
 
   return <ThemeProvider theme={darkMode ? themeDark : theme}>
     <SnackbarProvider>
