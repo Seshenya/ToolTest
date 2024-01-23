@@ -9,19 +9,21 @@ import orderHistoryTableData from './data/orderHistoryTableData';
 import AuthContext from 'context/AuthProvider';
 import useAxiosPrivate from 'hooks/useAxiosPrivate';
 import MDSnackbar from 'components/MDSnackbar';
+import { useSnackbar } from 'context/SnackbarContext';
 
 const OrderHistory = () => {
     const [loading, setLoading] = useState(false);
     const [orders, setOrders] = useState([]);
     const { columns: orderHistoryCols, rows: orderHistoryRows } =
         orderHistoryTableData(orders);
-    const [sb, setSb] = useState({
-        open: false,
-        color: '',
-        icon: '',
-        title: '',
-        message: '',
-    });
+    // const [sb, setSb] = useState({
+    //     open: false,
+    //     color: '',
+    //     icon: '',
+    //     title: '',
+    //     message: '',
+    // });
+    const { showSnackbar } = useSnackbar();
 
     const axiosPrivate = useAxiosPrivate();
 
@@ -50,7 +52,14 @@ const OrderHistory = () => {
             .catch((error) => {
                 setLoading(false);
                 // FEEDBACK: You can use the global snackbar
-                setSb({
+                // setSb({
+                //     open: true,
+                //     color: 'error',
+                //     icon: 'error',
+                //     title: error.message,
+                //     message: '',
+                // });
+                showSnackbar({
                     open: true,
                     color: 'error',
                     icon: 'error',
@@ -64,15 +73,15 @@ const OrderHistory = () => {
         getOrders();
     }, []);
 
-    const closeSb = () => {
-        setSb({
-            open: false,
-            color: '',
-            icon: '',
-            title: '',
-            message: '',
-        });
-    };
+    // const closeSb = () => {
+    // setSb({
+    //     open: false,
+    //     color: '',
+    //     icon: '',
+    //     title: '',
+    //     message: '',
+    // });
+    // };
 
     return (
         <DashboardLayout>
@@ -105,7 +114,7 @@ const OrderHistory = () => {
                                     rows: orderHistoryRows,
                                 }}
                                 isSorted={false}
-                                entriesPerPage={false}
+                                entriesPerPage={true}
                                 showTotalEntries={false}
                                 noEndBorder
                             />
@@ -122,7 +131,7 @@ const OrderHistory = () => {
                     </MDBox>
                 </Card>
             </MDBox>
-            <MDSnackbar
+            {/* <MDSnackbar
                 color={sb.color}
                 icon={sb.icon}
                 title={sb.title}
@@ -131,9 +140,11 @@ const OrderHistory = () => {
                 onClose={closeSb}
                 close={closeSb}
                 bgWhite
-            />
+            /> */}
         </DashboardLayout>
     );
 };
 
 export default OrderHistory;
+
+// Hey Dipesh, thanks for the review, I have made the necessary changes.

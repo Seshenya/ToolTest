@@ -5,7 +5,7 @@
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import { useForm } from 'react-hook-form';
-import useAuth from "hooks/useAuth";
+import useAuth from 'hooks/useAuth';
 
 import Icon from '@mui/material/Icon';
 import { IconButton } from '@mui/material';
@@ -15,29 +15,39 @@ import React, { useState } from 'react';
 import ReviewModal from 'layouts/orderHistory/data/addReviewModal';
 import { addProductReviews } from 'layouts/ProductDetails/services/productReviewsServices.service';
 import { downloadMedia } from 'helpers';
+import { useSnackbar } from 'context/SnackbarContext';
+import { getDate } from 'helpers';
 
 // Images
 
-const initSb = {
-    open: false,
-    color: '',
-    icon: '',
-    title: '',
-    message: '',
-};
+// const initSb = {
+//     open: false,
+//     color: '',
+//     icon: '',
+//     title: '',
+//     message: '',
+// };
 
 const DownloadBtn = ({ productId, media }) => {
-    const [sb, setSb] = useState({ ...initSb });
-    const closeSb = () => {
-        setSb({ ...initSb });
-    };
+    // const [sb, setSb] = useState({ ...initSb });
+    // const closeSb = () => {
+    //     setSb({ ...initSb });
+    // };
+    const { showSnackbar } = useSnackbar();
 
     const handleDownloadMedia = () => {
         try {
-            downloadMedia(productId, media)
+            downloadMedia(productId, media);
         } catch (error) {
             //  FEEDBACK: You can use the global snackbar
-            setSb({
+            // setSb({
+            //     open: true,
+            //     color: 'error',
+            //     icon: 'error',
+            //     title: error.message,
+            //     message: '',
+            // });
+            showSnackbar({
                 open: true,
                 color: 'error',
                 icon: 'error',
@@ -52,7 +62,7 @@ const DownloadBtn = ({ productId, media }) => {
             <IconButton color="info" onClick={handleDownloadMedia}>
                 <Icon fontSize="small">download</Icon>
             </IconButton>
-            <MDSnackbar
+            {/* <MDSnackbar
                 color={sb.color}
                 icon={sb.icon}
                 title={sb.title}
@@ -61,7 +71,7 @@ const DownloadBtn = ({ productId, media }) => {
                 onClose={closeSb}
                 close={closeSb}
                 bgWhite
-            />
+            /> */}
         </MDBox>
     );
 };
@@ -80,7 +90,6 @@ const ReviewBtn = ({ productId, productTitle }) => {
     };
 
     const onSubmit = async (data) => {
-
         const formData = new FormData();
         formData.append('description', data.review);
         formData.append('rating', data.rating);
@@ -102,11 +111,19 @@ const ReviewBtn = ({ productId, productTitle }) => {
             <IconButton color="info" onClick={openModal}>
                 <Icon fontSize="small">rate_review</Icon>
             </IconButton>
-            <ReviewModal isOpen={isModalOpen} handleClose={closeModal} productId={productId} productTitle={productTitle} handleSubmit={handleSubmit} onSubmit={onSubmit} register={register} reset={reset} />
+            <ReviewModal
+                isOpen={isModalOpen}
+                handleClose={closeModal}
+                productId={productId}
+                productTitle={productTitle}
+                handleSubmit={handleSubmit}
+                onSubmit={onSubmit}
+                register={register}
+                reset={reset}
+            />
         </MDBox>
     );
 };
-
 
 export default function orderHistoryTableData(orders) {
     return {
@@ -133,7 +150,7 @@ export default function orderHistoryTableData(orders) {
                         color="text"
                         fontWeight="medium"
                     >
-                        {order.order_date}
+                        {getDate(order.order_date)}
                     </MDTypography>
                 ),
                 action: (
@@ -153,3 +170,5 @@ export default function orderHistoryTableData(orders) {
         }),
     };
 }
+
+// Hey Dipesh, thanks for the review, I have made the necessary changes.
