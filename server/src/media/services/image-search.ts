@@ -23,13 +23,17 @@ export async function searchImage(
 
     try {
         const blobUrlWithSAS = await generateSASUrl(containerName, blobNameMedia)
+
+        // Set up parameters for Clarifai API request
         const metadata = new grpc.Metadata();
         const PAT = 'dba92bdd6546425fb3ae71d859093119';
         const request = new PostModelOutputsRequest();
         const clarifai = new V2Client("api.clarifai.com", grpc.ChannelCredentials.createSsl());
 
+        // Set authorization header with API key
         metadata.set('authorization', 'Key ' + PAT);
 
+        // Configure Clarifai API request with necessary parameters
         request.setUserAppId(new UserAppIDSet().setUserId("gu01vh22m3xp").setAppId("gdsd4"))
         request.setModelId("general-image-recognition");
         request.addInputs(
@@ -52,6 +56,7 @@ export async function searchImage(
                 return reject(err);
             }
               
+            // Extract concepts from the Clarifai API response
             const output = response.getOutputsList()[0];
             const concepts = output.getData()?.getConceptsList();
         
