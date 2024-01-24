@@ -1,5 +1,5 @@
 import { getProductDetails } from "layouts/ProductDetails/services/productDetailsServices.service";
-import ReactGa from "react-ga";
+import ReactGa from "react-ga4";
 
 export const getFormattedDate = (date) => {
     if (date) {

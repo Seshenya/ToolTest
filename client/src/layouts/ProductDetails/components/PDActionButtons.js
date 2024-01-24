@@ -6,7 +6,7 @@ import ConfirmationModal from './ConfirmationModal';
 import { useContext, useState } from 'react';
 import useAxiosPrivate from 'hooks/useAxiosPrivate';
 import AuthContext from 'context/AuthProvider';
-import ReactGa from 'react-ga';
+import ReactGa from 'react-ga4';
 
 const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D }) => {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);

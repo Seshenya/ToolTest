@@ -26,7 +26,7 @@ import Footer from 'examples/Footer';
 // Data
 import categoriesTableData from "./data/categoriesData";
 
-import ReactGa from 'react-ga';
+import ReactGa from 'react-ga4';
 
 
 function Categories() {

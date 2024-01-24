@@ -22,7 +22,7 @@ import IconButton from '@mui/material/IconButton';
 import { useEffect } from 'react';
 import { useSnackbar } from 'context/SnackbarContext';
 
-import ReactGa from 'react-ga';
+import ReactGa from 'react-ga4';
 
 const AddEditProductModal = ({
     openModal,
