@@ -77,6 +77,10 @@ export class DigitalProduct extends BaseEntity {
     @Column({ type: 'tinyint' })
     isDeleted: number
 
+    // Jonas: We use different ways of writing our variables here.
+    // I'd say your way is correct but the isDeleted is wrong.
+    // But the problem is also on DB side already. No changes need from you
+    // Seshenya: Yes, I agree. The way I have written it is correct.
     @Column({ type: 'simple-array' })
     transcribed_text: string[]
 }

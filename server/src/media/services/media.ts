@@ -141,6 +141,12 @@ async function createMedia(media: MediaData) {
 
         storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
         
+        // Jonas: Do we need some error handling if the transcribeAudio fails?
+        // Seshenya: In my opinion, error of transcribeAudio failing is handled in transcribe-audio.ts.
+        // And corresponding error is thrown media.ts line 163.
+        // Eventually it is caught from the API layer media/api/media.ts line 42.
+        // I don't think it is mandatory to handle it here. What do you think? @choan312
+        // Jonas: Ah yes you are right. This looks good
         const transcribedTexts: string[] = []
         for (const mediaFile of blobNameMedias) {
             if(newDigitalProduct.media_type === 2){
