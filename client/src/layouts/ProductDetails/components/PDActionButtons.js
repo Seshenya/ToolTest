@@ -33,11 +33,11 @@ const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D }) => {
                 navigate('/order-history');
             })
             .catch((err) => {
-                ReactGa.exception({
-                    category: 'User',
-                    action: 'Error buying media',
-                    fatal: false,
-                })
+                ReactGa.send('exception', {
+                    exDescription: "Error buying media",
+                    description: err?.response?.data?.message || err?.message,
+                    exFatal: false
+                });
                 setLoading(false);
                 console.log(err);
             });
