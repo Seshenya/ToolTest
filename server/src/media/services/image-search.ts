@@ -19,6 +19,8 @@ export async function searchImage(
     const blobNameMedia = `media_${Date.now()}_${Math.random()}.${file_format}`
     const dataMedia = await fsPromises.readFile(media.fileMedia.path)
 
+    // Seshenya: If the main function 'searchImage' terminates before this is completed, since there is no 'await' here, 
+    //it might lead to undesired outcomes. It is better to have 'await' before 'storeBlobToBlobStorage' function
     storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
 
     try {
@@ -26,6 +28,7 @@ export async function searchImage(
 
         // Set up parameters for Clarifai API request
         const metadata = new grpc.Metadata();
+        //Seshenya : Can we move this PAT value to .env file ?
         const PAT = 'dba92bdd6546425fb3ae71d859093119';
         const request = new PostModelOutputsRequest();
         const clarifai = new V2Client("api.clarifai.com", grpc.ChannelCredentials.createSsl());
@@ -34,6 +37,7 @@ export async function searchImage(
         metadata.set('authorization', 'Key ' + PAT);
 
         // Configure Clarifai API request with necessary parameters
+       // Seshenya: Can we move this userId to .env file?
         request.setUserAppId(new UserAppIDSet().setUserId("gu01vh22m3xp").setAppId("gdsd4"))
         request.setModelId("general-image-recognition");
         request.addInputs(

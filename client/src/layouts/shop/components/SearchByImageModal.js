@@ -24,6 +24,7 @@ const SearchByImageModal = ({
   filtersRef,
 }) => {
   const [uploadedMedia, setUploadedMedia] = useState([]);
+ // Seshenya: I think it is better to change this as isDragging instead of isDragging1
   const [isDragging1, setIsDragging1] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -42,6 +43,7 @@ const SearchByImageModal = ({
       message: '',
   });
 
+  // Seshenya: I think it is better to change this as handleDrop instead of handleDrop1
   const handleDrop1 = (e) => {
       e.preventDefault();
       setIsDragging1(false);
