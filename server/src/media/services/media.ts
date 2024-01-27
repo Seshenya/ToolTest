@@ -147,11 +147,12 @@ async function createMedia(media: MediaData) {
         // Eventually it is caught from the API layer media/api/media.ts line 42.
         // I don't think it is mandatory to handle it here. What do you think? @choan312
         // Jonas: Ah yes you are right. This looks good
-        const transcribedTexts: string[] = []
+        var transcribedTexts: string = ""
         for (const mediaFile of blobNameMedias) {
-            if(newDigitalProduct.media_type === 2){
+            //filter out audios
+            if(newDigitalProduct.media_type === 5){
                 const transcribedText = await transcribeAudio(mediaFile)
-                transcribedTexts.push(transcribedText)
+                transcribedTexts += transcribedText;
             }
         }
 
