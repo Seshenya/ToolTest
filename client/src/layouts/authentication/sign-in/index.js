@@ -61,7 +61,7 @@ function Basic() {
           action: "User logged in"
         })
         updateAuth({ ...res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken })
-        navigate('/shop')
+        navigate('/home')
       }).catch((error) => {
         ReactGa.send('exception', {
           exDescription: "User login failed",
