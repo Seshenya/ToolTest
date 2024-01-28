@@ -226,4 +226,15 @@ DROP INDEX `idx_title_tags` ,
 ADD FULLTEXT INDEX `idx_title_tags` (`title`, `tags`, `transcribed_text`) VISIBLE;
 ;
 
+-- search history
+
+CREATE TABLE search_history (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    search_last_updated DATETIME NOT NULL,
+    cron_last_run_time DATETIME,
+    search_history TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
 
