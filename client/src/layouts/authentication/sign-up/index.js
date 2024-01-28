@@ -21,7 +21,7 @@ import { useForm } from "react-hook-form";
 import { TextField } from "@mui/material";
 import axios from "api/axios";
 
-import ReactGa from "react-ga";
+import ReactGa from "react-ga4";
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";

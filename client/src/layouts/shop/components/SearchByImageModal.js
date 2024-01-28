@@ -26,7 +26,9 @@ const SearchByImageModal = ({
 }) => {
   const { auth } = useAuth();
   const [uploadedMedia, setUploadedMedia] = useState([]);
-  const [isDragging1, setIsDragging1] = useState(false);
+ // Seshenya: I think it is better to change this as isDragging instead of isDragging1
+ // Gihan: Thanks for the suggestion, Seshenya! I've changed it to 'isDragging' as you recommended for clarity.
+  const [isDragging1, setIsDragging] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
       handleSubmit,
@@ -44,9 +46,11 @@ const SearchByImageModal = ({
       message: '',
   });
 
-  const handleDrop1 = (e) => {
+  // Seshenya: I think it is better to change this as handleDrop instead of handleDrop1
+  // Gihan: Thanks for the suggestion, Seshenya! I've changed it to 'handleDrop' as you recommended for clarity.
+  const handleDrop = (e) => {
       e.preventDefault();
-      setIsDragging1(false);
+      setIsDragging(false);
       const files = e.dataTransfer.files;
       console.log('Dropped files:', files);
       setUploadedMedia([...uploadedMedia, ...files]);
@@ -66,12 +70,12 @@ const SearchByImageModal = ({
 
   const handleDragEnter1 = (e) => {
       e.preventDefault();
-      setIsDragging1(true);
+      setIsDragging(true);
   };
 
   const handleDragLeave1 = (e) => {
       e.preventDefault();
-      setIsDragging1(false);
+      setIsDragging(false);
   };
 
   const handleFileInputChange1 = (e) => {
@@ -208,7 +212,7 @@ const SearchByImageModal = ({
                       onDragOver={(e) => handleDragEnter1(e)}
                       onDragEnter={(e) => handleDragEnter1(e)}
                       onDragLeave={(e) => handleDragLeave1(e)}
-                      onDrop={(e) => handleDrop1(e)}
+                      onDrop={(e) => handleDrop(e)}
                   >
                       {
                           <MDTypography

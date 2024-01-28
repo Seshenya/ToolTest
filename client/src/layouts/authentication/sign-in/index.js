@@ -25,7 +25,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import useAuth from "hooks/useAuth";
 
-import ReactGa from "react-ga";
+import ReactGa from "react-ga4";
 
 function Basic() {
 

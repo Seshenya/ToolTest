@@ -218,6 +218,9 @@ CREATE TABLE `ARTSYNC`.`three_d_models` (
 ALTER TABLE `product`
 ADD COLUMN `transcribed_text` TEXT NULL DEFAULT NULL AFTER `isDeleted`;
 
+-- Jonas: General advice: Use the same table name with the same characters e.g. all uppercase or all lowercase. 
+-- Above we use 'ARTSYNC' below we use 'artsync'
+-- Seshenya: Yes, I will change that.
 ALTER TABLE `product` 
 DROP INDEX `idx_title_tags` ,
 ADD FULLTEXT INDEX `idx_title_tags` (`title`, `tags`, `transcribed_text`) VISIBLE;
