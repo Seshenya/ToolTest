@@ -4,9 +4,7 @@ async function removeOldSearchHistoryBatched() {
   try {
     console.log("Remove User Old Search Histry Cron Executed")
 
-    const weekInMillis = 24 * 60 * 60 * 1000; // One week in milliseconds
-
-    // const weekInMillis = 7 * 24 * 60 * 60 * 1000; // One week in milliseconds
+    const weekInMillis = 7 * 24 * 60 * 60 * 1000 * 1000; // One week in milliseconds
 
     let usersToRemoveHistory;
     const batchSize = 30;

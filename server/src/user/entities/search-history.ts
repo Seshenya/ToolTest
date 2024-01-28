@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, JoinColumn, ManyToOne } from 'typeorm'
+import { User } from './user'
 
 @Entity('search_history')
 export class SearchHistory extends BaseEntity {
@@ -8,6 +9,10 @@ export class SearchHistory extends BaseEntity {
     }
 
     @PrimaryGeneratedColumn()
+    id: number
+
+    @ManyToOne(() => User)
+    @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
     user_id: number
 
     @Column()

@@ -57,12 +57,13 @@ async function searchMedia(
 
         if (!query && !category && !category) {
             let searchHistory = await getSearchHistory(user_id)
-            console.log('searchHistory',searchHistory)
-            searchHistory += '*'
-            baseQuery = baseQuery.andWhere(
-                'MATCH(product.title, product.tags, product.transcribed_text) AGAINST(:searchHistory IN BOOLEAN MODE)',
-                { searchHistory }
-            )
+            if (searchHistory !== '') {
+                searchHistory += '*'
+                baseQuery = baseQuery.andWhere(
+                    'MATCH(product.title, product.tags, product.transcribed_text) AGAINST(:searchHistory IN BOOLEAN MODE)',
+                    { searchHistory }
+                )
+            }
         }
 
         const media = await baseQuery.getMany()

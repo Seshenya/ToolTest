@@ -40,7 +40,7 @@ const io = new Server(server, {
     },
 })
 
-schedule.scheduleJob('30 * * * * *', () => {
+schedule.scheduleJob('59 59 23 * * *', () => {
     removeOldSearchHistoryBatched()
  });
 
