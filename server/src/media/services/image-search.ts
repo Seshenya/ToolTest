@@ -21,7 +21,11 @@ export async function searchImage(
 
     // Seshenya: If the main function 'searchImage' terminates before this is completed, since there is no 'await' here, 
     //it might lead to undesired outcomes. It is better to have 'await' before 'storeBlobToBlobStorage' function
-    storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
+
+    //Gihan: Thanks for pointing that out. Your observation is valid. 
+    //I've added 'await' before 'storeBlobToBlobStorage' to ensure proper sequencing.
+
+    await storeBlobToBlobStorage(containerName, blobNameMedia, dataMedia)
 
     try {
         const blobUrlWithSAS = await generateSASUrl(containerName, blobNameMedia)
@@ -29,7 +33,8 @@ export async function searchImage(
         // Set up parameters for Clarifai API request
         const metadata = new grpc.Metadata();
         //Seshenya : Can we move this PAT value to .env file ?
-        const PAT = 'dba92bdd6546425fb3ae71d859093119';
+        //Gihan: Yes, I'll change that
+        const PAT = process.env.CLARIFAI_API_KEY
         const request = new PostModelOutputsRequest();
         const clarifai = new V2Client("api.clarifai.com", grpc.ChannelCredentials.createSsl());
 
@@ -37,8 +42,17 @@ export async function searchImage(
         metadata.set('authorization', 'Key ' + PAT);
 
         // Configure Clarifai API request with necessary parameters
-       // Seshenya: Can we move this userId to .env file?
-        request.setUserAppId(new UserAppIDSet().setUserId("gu01vh22m3xp").setAppId("gdsd4"))
+
+        // Seshenya: Can we move this userId to .env file?
+        //Gihan: Yes, I'll change that
+        const clarifaiUserID = process.env.CLARIFAI_USER_ID
+
+        if (clarifaiUserID) {
+          request.setUserAppId(new UserAppIDSet().setUserId(clarifaiUserID).setAppId("gdsd4"));
+        } else {
+          throw new Error("CLARIFAI_USER_ID is undefined. Please set the environment variable.")
+        }
+
         request.setModelId("general-image-recognition");
         request.addInputs(
           new Input()
