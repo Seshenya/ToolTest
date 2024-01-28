@@ -7,7 +7,8 @@ import {
     addMediaCategory,
     fetchMediaTypes,
     updateMediaCategory,
-    fetchImage
+    fetchImage,
+    checkPattern
 } from './media'
 
 export {
@@ -19,5 +20,6 @@ export {
     addMediaCategory,
     fetchMediaTypes,
     updateMediaCategory,
-    fetchImage
+    fetchImage,
+    checkPattern
 }

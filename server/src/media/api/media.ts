@@ -9,7 +9,8 @@ import {
     alterCategory,
     get3DModels,
     create3DModel,
-    searchImage
+    searchImage,
+    predictPattern
 } from '../services'
 import formidable from 'express-formidable'
 
@@ -176,6 +177,18 @@ async function add3DModel(req: any, res: any) {
     })
 }
 
+async function checkPattern(req: any, res: any) {
+    try {
+        const isPattern = await predictPattern(req.query.url)
+        res.send({
+            isPattern: isPattern
+        })
+    }
+    catch {
+        res.status(400).send({ message: 'ML Error' })
+    }
+}
+
 export {
     fetchMedia,
     addMedia,
@@ -187,5 +200,6 @@ export {
     updateMediaCategory,
     fetch3DModels,
     add3DModel,
-    fetchImage
+    fetchImage,
+    checkPattern
 }

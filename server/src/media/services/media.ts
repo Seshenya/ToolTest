@@ -3,6 +3,7 @@ import { promises as fsPromises } from 'fs'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
 import { generateBlobName, storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
 import { transcribeAudio } from './transcribe-audio'
+import { spawn } from 'child_process';
 
 interface MediaData {
     fields: any
@@ -140,10 +141,10 @@ async function createMedia(media: MediaData) {
         )
 
         storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
-        
+
         const transcribedTexts: string[] = []
         for (const mediaFile of blobNameMedias) {
-            if(newDigitalProduct.media_type === 2){
+            if (newDigitalProduct.media_type === 2) {
                 const transcribedText = await transcribeAudio(mediaFile)
                 transcribedTexts.push(transcribedText)
             }
@@ -285,4 +286,26 @@ async function alterMedia(
     }
 }
 
-export { getMedia, createMedia, alterMedia }
+
+async function predictPattern(url: string) {
+    return new Promise((resolve, reject) => {
+        const pythonProcess = spawn('python3', ['src/media/services/predict.py', url]);
+        let output = 0;
+
+        pythonProcess.stdout.on('data', (data) => {
+            console.log(data.toString())
+            output += (data.toString().includes('True') ? 1 : 0);
+        });
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`Python script process exited with code ${code}`);
+                reject(`Python script process exited with code ${code}`);
+            } else {
+                resolve(output);
+            }
+        });
+    });
+}
+
+export { getMedia, createMedia, alterMedia, predictPattern }

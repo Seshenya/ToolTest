@@ -22,6 +22,8 @@ const ProductDetails = () => {
     const navigate = useNavigate();
     const { auth } = useAuth();
     const [projectOn3D, setProjectOn3D] = useState(false)
+    const [isPattern, setIsPattern] = useState(false)
+    const [patternLoading, setPatternLoading] = useState(false)
 
     useEffect(() => {
         if (
@@ -59,9 +61,9 @@ const ProductDetails = () => {
                         }}
                     >
                         <MDBox sx={{ position: 'sticky', top: '24px' }}>
-                            <PDMainImage projectOn3D={projectOn3D} productDetails={productDetails} />
+                            <PDMainImage projectOn3D={projectOn3D} productDetails={productDetails} setIsPattern={setIsPattern} setPatternLoading={setPatternLoading} setProjectOn3D={setProjectOn3D} />
                             <br />
-                            <PDActionButtons productDetails={productDetails} projectOn3D={projectOn3D} setProjectOn3D={setProjectOn3D} />
+                            <PDActionButtons productDetails={productDetails} projectOn3D={projectOn3D} setProjectOn3D={setProjectOn3D} isPattern={isPattern} patternLoading={patternLoading} />
                             <br />
                             <br />
                             <PDSellerInfo productDetails={productDetails} />

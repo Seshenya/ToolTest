@@ -7,8 +7,9 @@ import { useContext, useState } from 'react';
 import useAxiosPrivate from 'hooks/useAxiosPrivate';
 import AuthContext from 'context/AuthProvider';
 import ReactGa from 'react-ga';
+import { CircularProgress } from '@mui/material';
 
-const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D }) => {
+const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D, isPattern, patternLoading }) => {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const navigate = useNavigate();
 
@@ -81,6 +82,7 @@ const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D }) => {
                 </MDButton>
             </MDBox>
             <MDButton
+                disabled={!isPattern}
                 variant="gradient"
                 color={'secondary'}
                 fullWidth
@@ -88,6 +90,7 @@ const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D }) => {
                 onClick={() => {
                     setProjectOn3D(!projectOn3D)
                 }}
+                endIcon={patternLoading ? <CircularProgress size={20} /> : null}
             >
                 {projectOn3D ? `Original Image` : `Project On 3D`}
             </MDButton>

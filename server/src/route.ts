@@ -9,7 +9,8 @@ import {
     addMediaCategory,
     updateMediaCategory,
     fetchMediaTypes,
-    fetchImage
+    fetchImage,
+    checkPattern
 } from './media/api'
 import { hasToken, refreshToken, logoutUser, loginUser } from './middleware'
 import { buyMedia, fetchOrders } from './orders/api'
@@ -32,6 +33,7 @@ router.get('/media', hasToken, fetchSearchedMedia)
 router.post('/media', hasToken, addMedia)
 router.put('/media/:id', hasToken, updateMedia)
 router.post('/image', hasToken, fetchImage)
+router.get('/check-pattern', hasToken, checkPattern)
 
 router.get('/categories', hasToken, fetchMediaCategories)
 router.post('/categories', hasToken, addMediaCategory)
