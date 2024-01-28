@@ -7,6 +7,7 @@ import {
 import MDButton from 'components/MDButton';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import useAuth from "hooks/useAuth";
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 import useAxiosPrivate from 'hooks/useAxiosPrivate';
@@ -23,6 +24,7 @@ const SearchByImageModal = ({
   reCallApi,
   filtersRef,
 }) => {
+  const { auth } = useAuth();
   const [uploadedMedia, setUploadedMedia] = useState([]);
   const [isDragging1, setIsDragging1] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -136,6 +138,7 @@ const SearchByImageModal = ({
       console.log('On Submit:', data);
 
       const formData = new FormData();
+      formData.append('user_id', auth.user_id);
       formData.append(
           'file_format',
           data.media[0]?.name.split('.').pop().toLowerCase()
