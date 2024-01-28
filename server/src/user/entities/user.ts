@@ -40,6 +40,4 @@ export class User extends BaseEntity {
     @Column({ type: 'text', nullable: true })
     description: string
 
-    @Column({ type: 'text', nullable: true })
-    search_history: string
 }
