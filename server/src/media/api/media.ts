@@ -96,8 +96,8 @@ async function updateMedia(req: any, res: any) {
 }
 
 async function fetchSearchedMedia(req: any, res: any) {
-    const { page, size, category, media_type, query, status, owner_id } = req.query // get search parameters
-    searchMedia(page, size, category, media_type, query, status, owner_id)
+    const { page, size, category, media_type, query, status, owner_id, user_id } = req.query // get search parameters
+    searchMedia(page, size, category, media_type, query, status, owner_id, user_id)
         .then(({ media, totalCount }) => {
             res.send({ media, totalCount })
         })

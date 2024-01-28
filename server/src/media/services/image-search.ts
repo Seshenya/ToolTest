@@ -6,12 +6,13 @@ import { grpc } from 'clarifai-nodejs-grpc';
 import { V2Client } from 'clarifai-nodejs-grpc/proto/clarifai/api/service_grpc_pb';
 import { PostModelOutputsRequest } from 'clarifai-nodejs-grpc/proto/clarifai/api/service_pb';
 import { Data, Input, UserAppIDSet, Image } from 'clarifai-nodejs-grpc/proto/clarifai/api/resources_pb';
+import { updateSearchHistory } from './search-history';
 
 export async function searchImage(
   media: any
 ): Promise<{ query: string }> {
 
-  const { file_format } = media.fields
+  const { user_id, file_format } = media.fields
   const containerName = 'gdsdt4'
 
   if (media.fileMedia !== undefined) {
@@ -70,8 +71,9 @@ export async function searchImage(
               result.push(concept.getName());
             }
         
-            const query = result.join(', ')
+            const query = result.slice(0, 10).join(', ')
             console.log('query', query)
+            updateSearchHistory(user_id, query)
         
             return resolve({query});
             

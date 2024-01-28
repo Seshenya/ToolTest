@@ -10,6 +10,8 @@ dotenv.config()
 import { Server } from 'socket.io'
 import http from 'http'
 import { setupSocketEvents } from './chat/socketEvents'
+import schedule from 'node-schedule'
+import { removeOldSearchHistoryBatched } from './media/services/search-history-cron'
 
 const app = express()
 const corsOptions = {
@@ -37,6 +39,10 @@ const io = new Server(server, {
         optionsSuccessStatus: 200,
     },
 })
+
+schedule.scheduleJob('30 * * * * *', () => {
+    removeOldSearchHistoryBatched()
+ });
 
 setupSocketEvents(io)
 

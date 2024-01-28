@@ -1,5 +1,6 @@
 import { DigitalProduct } from '../entities'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
+import { getSearchHistory, updateSearchHistory } from './search-history'
 
 async function searchMedia(
     page: number,
@@ -8,7 +9,8 @@ async function searchMedia(
     media_type: number,
     query: string,
     status: number,
-    owner_id: number
+    owner_id: number,
+    user_id: number
 ) {
     const skip = (page - 1) * size
 
@@ -45,10 +47,21 @@ async function searchMedia(
         }
 
         if (query) {
+            updateSearchHistory(user_id, query)
             query += '*' // for partial string matching
             baseQuery = baseQuery.andWhere(
                 'MATCH(product.title, product.tags, product.transcribed_text) AGAINST(:query IN BOOLEAN MODE)',
                 { query }
+            )
+        }
+
+        if (!query && !category && !category) {
+            let searchHistory = await getSearchHistory(user_id)
+            console.log('searchHistory',searchHistory)
+            searchHistory += '*'
+            baseQuery = baseQuery.andWhere(
+                'MATCH(product.title, product.tags, product.transcribed_text) AGAINST(:searchHistory IN BOOLEAN MODE)',
+                { searchHistory }
             )
         }
 
