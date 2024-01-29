@@ -150,9 +150,10 @@ function Categories() {
           console.error('Failed to update category');
         }
       } catch (error) {
-        ReactGa.exception({
-          description: `Error updating category ${selectedCategory.id}:`,
-          fatal: false,
+        ReactGa.send('exception', {
+          exDescription: `Error updating category ${selectedCategory.id}:`,
+          description: error?.response?.data?.message || error?.message,
+          exFatal: false
         })
         console.error('Error updating category:', error);
       }
