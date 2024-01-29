@@ -42,7 +42,7 @@ import ProtectedRoute from "components/ProtectedRoute";
 import { SnackbarProvider } from "context/SnackbarContext";
 import useAuth from "hooks/useAuth";
 
-import ReactGa from "react-ga";
+import ReactGa from "react-ga4";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -60,10 +60,23 @@ export default function App() {
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
   const { auth } = useAuth();
+  const location = useLocation();
 
   // Google Analytics
-  const TRACKING_ID = "G-JJWXE7DPC1";
-  ReactGa.initialize(TRACKING_ID);
+  const TRACKING_ID = "G-60L0PNKCYF";
+  useEffect(() => {
+    console.log("Initializing Google Analytics");
+    ReactGa.initialize(TRACKING_ID);
+  
+    return () => {
+      console.log("Cleaning up Google Analytics");
+    };
+  }, []);
+  
+  useEffect(() => {
+    console.log("Tracking pageview:", location.pathname + location.search);
+    ReactGa.send({ hitType: "pageview", page: location.pathname + location.search });
+  }, [location]);
 
   // Cache for the rtl
   useMemo(() => {
@@ -143,10 +156,6 @@ export default function App() {
     </MDBox>
   );
 
-  useEffect(() => {
-    ReactGa.pageview(window.location.pathname + window.location.search);
-  }, []);
-
   return <ThemeProvider theme={darkMode ? themeDark : theme}>
     <SnackbarProvider>
       <CssBaseline />
@@ -167,7 +176,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </SnackbarProvider>
   </ThemeProvider>

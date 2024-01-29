@@ -6,9 +6,9 @@ import ConfirmationModal from './ConfirmationModal';
 import { useContext, useState } from 'react';
 import useAxiosPrivate from 'hooks/useAxiosPrivate';
 import AuthContext from 'context/AuthProvider';
-import ReactGa from 'react-ga';
+import ReactGa from 'react-ga4';
 
-const PDActionButtons = ({ productDetails }) => {
+const PDActionButtons = ({ productDetails, projectOn3D, setProjectOn3D }) => {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const navigate = useNavigate();
 
@@ -33,11 +33,11 @@ const PDActionButtons = ({ productDetails }) => {
                 navigate('/order-history');
             })
             .catch((err) => {
-                ReactGa.exception({
-                    category: 'User',
-                    action: 'Error buying media',
-                    fatal: false,
-                })
+                ReactGa.send('exception', {
+                    exDescription: "Error buying media",
+                    description: err?.response?.data?.message || err?.message,
+                    exFatal: false
+                });
                 setLoading(false);
                 console.log(err);
             });
@@ -79,11 +79,18 @@ const PDActionButtons = ({ productDetails }) => {
                     Contact Seller &nbsp;
                     <SwapHorizRounded />
                 </MDButton>
-                {/* <MDButton variant='gradient' color={'secondary'} fullWidth>
-          Add to Cart &nbsp;
-          <ShoppingCartRounded />
-        </MDButton> */}
             </MDBox>
+            <MDButton
+                variant="gradient"
+                color={'secondary'}
+                fullWidth
+                sx={{ marginTop: 1 }}
+                onClick={() => {
+                    setProjectOn3D(!projectOn3D)
+                }}
+            >
+                {projectOn3D ? `Original Image` : `Project On 3D`}
+            </MDButton>
             <ConfirmationModal
                 open={showConfirmationModal}
                 onClose={handleCloseModal}

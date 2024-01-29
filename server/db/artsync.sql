@@ -203,14 +203,42 @@ ADD COLUMN `isDeleted` BIT(1) NULL DEFAULT 0 AFTER `comment`;
 ALTER TABLE `ARTSYNC`.`product` 
 CHANGE COLUMN `isDeleted` `isDeleted` TINYINT(1) NULL DEFAULT 0 ;
 
+
+
+-- 3D Model
+
+CREATE TABLE `ARTSYNC`.`three_d_models` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `url` TEXT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);
 -- transcribe text
 
 ALTER TABLE `product`
 ADD COLUMN `transcribed_text` TEXT NULL DEFAULT NULL AFTER `isDeleted`;
 
+-- Jonas: General advice: Use the same table name with the same characters e.g. all uppercase or all lowercase. 
+-- Above we use 'ARTSYNC' below we use 'artsync'
+-- Seshenya: Yes, I will change that.
 ALTER TABLE `product` 
 DROP INDEX `idx_title_tags` ,
 ADD FULLTEXT INDEX `idx_title_tags` (`title`, `tags`, `transcribed_text`) VISIBLE;
 ;
 
+-- search history
 
+CREATE TABLE search_history (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    search_last_updated DATETIME NOT NULL,
+    cron_last_run_time DATETIME,
+    search_history TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user(user_id) ON DELETE CASCADE
+);
+
+
+-- Selling count
+
+ALTER TABLE `product`
+ADD COLUMN `selling_count` INT NULL DEFAULT 0 AFTER `transcribed_text`;

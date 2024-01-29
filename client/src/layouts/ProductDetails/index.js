@@ -1,6 +1,6 @@
 import MDBox from 'components/MDBox';
 import DashboardLayout from 'examples/LayoutContainers/DashboardLayout';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PDMainImage from './components/PDMainImage';
 import PDSellerInfo from './components/PDSellerInfo';
 import { CircularProgress, Grid } from '@mui/material';
@@ -13,6 +13,7 @@ import useProductReviewDetails from './hooks/useProductReviewDetails';
 import MDSnackbar from 'components/MDSnackbar';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import useAuth from 'hooks/useAuth';
+import MDTypography from '@mui/material/Typography';
 
 const ProductDetails = () => {
     const { productId } = useParams();
@@ -21,6 +22,7 @@ const ProductDetails = () => {
         useProductReviewDetails(productId);
     const navigate = useNavigate();
     const { auth } = useAuth();
+    const [projectOn3D, setProjectOn3D] = useState(false)
 
     useEffect(() => {
         if (
@@ -58,12 +60,24 @@ const ProductDetails = () => {
                         }}
                     >
                         <MDBox sx={{ position: 'sticky', top: '24px' }}>
-                            <PDMainImage productDetails={productDetails} />
+                            <PDMainImage projectOn3D={projectOn3D} productDetails={productDetails} />
                             <br />
-                            <PDActionButtons productDetails={productDetails} />
+                            <PDActionButtons productDetails={productDetails} projectOn3D={projectOn3D} setProjectOn3D={setProjectOn3D} />
                             <br />
                             <br />
                             <PDSellerInfo productDetails={productDetails} />
+                            <MDBox style={{textAlign: 'center'}}>
+                                <MDTypography variant="h6" fontWeight="medium">
+                                    {productDetails?.selling_count === 0 ? (
+                                        "No units sold yet"
+                                    ) : productDetails?.selling_count === 1 ? (
+                                        `This item was sold once`
+                                    ) : (
+                                        `This item was sold ${productDetails?.selling_count} times`
+                                    )}
+                                </MDTypography>
+                            </MDBox>
+                            
                         </MDBox>
                     </Grid>
                     <Grid item width={'100%'}>

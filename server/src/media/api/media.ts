@@ -7,9 +7,12 @@ import {
     createCategory,
     getMediaTypes,
     alterCategory,
+    get3DModels,
+    create3DModel,
     searchImage
 } from '../services'
 import formidable from 'express-formidable'
+import { similaritySearchFromAudio } from '../services/similarity-search-audio'
 
 async function fetchMedia(req: any, res: any) {
     getMedia(req.params.id)
@@ -33,7 +36,7 @@ async function fetchImage(req: any, res: any) {
         }
 
         await searchImage(imageData)
-            .then(({query}) => {
+            .then(({ query }) => {
                 res.send(query)
             })
             .catch((error) => {
@@ -94,8 +97,8 @@ async function updateMedia(req: any, res: any) {
 }
 
 async function fetchSearchedMedia(req: any, res: any) {
-    const { page, size, category, media_type, query, status, owner_id } = req.query // get search parameters
-    searchMedia(page, size, category, media_type, query, status, owner_id)
+    const { page, size, category, media_type, query, status, owner_id, user_id } = req.query // get search parameters
+    searchMedia(page, size, category, media_type, query, status, owner_id, user_id)
         .then(({ media, totalCount }) => {
             res.send({ media, totalCount })
         })
@@ -144,6 +147,47 @@ async function fetchMediaTypes(req: any, res: any) {
         })
 }
 
+async function fetch3DModels(req: any, res: any) {
+    get3DModels()
+        .then((models) => {
+            res.send(models)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error })
+        })
+}
+
+async function add3DModel(req: any, res: any) {
+    formidable()(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ error: 'File upload failed.' })
+        }
+
+        const data = {
+            fields: req.fields,
+            file: req.files.model,
+        }
+
+        try {
+            const model = await create3DModel(data)
+            res.send(model)
+        } catch (error) {
+            res.status(500).send({ message: 'Error creating model.' })
+        }
+    })
+}
+
+async function fetchSimilaritySearchedMedia(req: any, res: any) {
+    const { search_term } = req.query // get search term
+    similaritySearchFromAudio(search_term)
+        .then((model) => {
+            res.send(model)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error.message })
+        })
+}
+
 export {
     fetchMedia,
     addMedia,
@@ -153,5 +197,8 @@ export {
     addMediaCategory,
     fetchMediaTypes,
     updateMediaCategory,
-    fetchImage
+    fetch3DModels,
+    add3DModel,
+    fetchImage,
+    fetchSimilaritySearchedMedia
 }

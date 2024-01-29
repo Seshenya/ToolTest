@@ -1,5 +1,5 @@
-import { getProductDetails } from 'layouts/ProductDetails/services/productDetailsServices.service';
-import ReactGa from 'react-ga';
+import { getProductDetails } from "layouts/ProductDetails/services/productDetailsServices.service";
+import ReactGa from "react-ga4";
 
 export const getFormattedDate = (date) => {
     if (date) {
@@ -86,6 +86,10 @@ export const downloadMedia = async (productId, fileName) => {
                 document.body.removeChild(link);
             })
             .catch((error) => {
+                ReactGa.send('exception', {
+                    exDescription: 'Error downloading file',
+                    exFatal: false,
+                })
                 ReactGa.exception({
                     description: 'Error downloading file',
                     fatal: false,

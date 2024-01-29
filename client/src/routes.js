@@ -21,33 +21,35 @@
 */
 
 // Material Dashboard 2 React layouts
-import Dashboard from 'layouts/dashboard'
-import Tables from 'layouts/tables'
-import Billing from 'layouts/billing'
-import RTL from 'layouts/rtl'
-import Notifications from 'layouts/notifications'
-import Profile from 'layouts/profile'
-import SignIn from 'layouts/authentication/sign-in'
-import SignUp from 'layouts/authentication/sign-up'
-import Team from 'layouts/about/'
-import Home from 'layouts/home'
+import Dashboard from 'layouts/dashboard';
+import Tables from 'layouts/tables';
+import Billing from 'layouts/billing';
+import RTL from 'layouts/rtl';
+import Notifications from 'layouts/notifications';
+import Profile from 'layouts/profile';
+import SignIn from 'layouts/authentication/sign-in';
+import SignUp from 'layouts/authentication/sign-up';
+import Team from 'layouts/about/';
+import Home from 'layouts/home';
 
 // @mui icons
-import Icon from '@mui/material/Icon'
-import Shop from 'layouts/shop'
-import Sell from 'layouts/sell'
-import AdminDashboard from 'layouts/admin'
-import Competitions from 'layouts/competitions'
-import MyCompetitions from 'layouts/competitions/myCompetitions'
-import Collaborations from 'layouts/collaborations'
-import MyCollaborations from 'layouts/collaborations/myCollaborations'
-import Chat from 'layouts/chat'
-import Categories from 'layouts/categories'
+import Icon from '@mui/material/Icon';
+import Shop from 'layouts/shop';
+import Sell from 'layouts/sell';
+import AdminDashboard from 'layouts/admin';
+import Competitions from 'layouts/competitions';
+import MyCompetitions from 'layouts/competitions/myCompetitions';
+import Collaborations from 'layouts/collaborations';
+import MyCollaborations from 'layouts/collaborations/myCollaborations';
+import Chat from 'layouts/chat';
+import Categories from 'layouts/categories';
 
 //
-import ProductDetails from 'layouts/ProductDetails'
-import OrderHistory from 'layouts/orderHistory'
-import Developer from 'layouts/about/developer'
+import ProductDetails from 'layouts/ProductDetails';
+import OrderHistory from 'layouts/orderHistory';
+import Developer from 'layouts/about/developer';
+import ThreeTee from 'layouts/threeTee/ThreeTee';
+import ThreeDModels from 'layouts/3dModels';
 
 const routes = [
     {
@@ -82,38 +84,38 @@ const routes = [
         route: '/sell',
         component: <Sell />,
     },
-    {
-        type: 'collapse',
-        name: 'Competitions',
-        key: 'competitions',
-        icon: <Icon fontSize="small">event</Icon>,
-        route: '/competitions',
-        component: <Competitions />,
-    },
-    {
-        type: 'title',
-        name: 'My Competitions',
-        key: 'myCompetitions',
-        icon: <Icon fontSize="small">event</Icon>,
-        route: '/my-competitions',
-        component: <MyCompetitions />,
-    },
-    {
-        type: 'collapse',
-        name: 'Collaborations',
-        key: 'collaborarions',
-        icon: <Icon fontSize="small">group_add</Icon>,
-        route: '/collaborarions',
-        component: <Collaborations />,
-    },
-    {
-        type: 'title',
-        name: 'My Collaborations',
-        key: 'myCollaborarions',
-        icon: <Icon fontSize="small">event</Icon>,
-        route: '/my-collaborarions',
-        component: <MyCollaborations />,
-    },
+    // {
+    //     type: 'collapse',
+    //     name: 'Competitions',
+    //     key: 'competitions',
+    //     icon: <Icon fontSize="small">event</Icon>,
+    //     route: '/competitions',
+    //     component: <Competitions />,
+    // },
+    // {
+    //     type: 'title',
+    //     name: 'My Competitions',
+    //     key: 'myCompetitions',
+    //     icon: <Icon fontSize="small">event</Icon>,
+    //     route: '/my-competitions',
+    //     component: <MyCompetitions />,
+    // },
+    // {
+    //     type: 'collapse',
+    //     name: 'Collaborations',
+    //     key: 'collaborarions',
+    //     icon: <Icon fontSize="small">group_add</Icon>,
+    //     route: '/collaborarions',
+    //     component: <Collaborations />,
+    // },
+    // {
+    //     type: 'title',
+    //     name: 'My Collaborations',
+    //     key: 'myCollaborarions',
+    //     icon: <Icon fontSize="small">event</Icon>,
+    //     route: '/my-collaborarions',
+    //     component: <MyCollaborations />,
+    // },
     {
         type: 'collapse',
         name: 'Admin Dashboard',
@@ -121,7 +123,7 @@ const routes = [
         icon: <Icon fontSize="small">dashboard</Icon>,
         route: '/admin',
         component: <AdminDashboard />,
-        admin: true
+        admin: true,
     },
     {
         type: 'title',
@@ -225,6 +227,22 @@ const routes = [
         route: '/about-us/:developer',
         component: <Developer />,
     },
-]
+    {
+        type: 'collapse',
+        name: '3Tee',
+        icon: <Icon fontSize="small">accessibility</Icon>,
+        key: '3tee',
+        route: '/3tee',
+        component: <ThreeTee />,
+    },
+    {
+        type: 'collapse',
+        name: '3D Models',
+        key: '3d-models',
+        icon: <Icon fontSize="small">category</Icon>,
+        route: '/3d-models',
+        component: <ThreeDModels />,
+    },
+];
 
-export default routes
+export default routes;

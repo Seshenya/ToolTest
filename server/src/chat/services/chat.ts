@@ -25,7 +25,8 @@ export const saveMessage = async (senderId: string, receiverId: string, content:
     message.content = content;
 
     try {
-        await message.save();
+        const savedMessage = await message.save();
+        return savedMessage
     } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error saving message:', error);

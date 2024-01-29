@@ -22,7 +22,7 @@ import IconButton from '@mui/material/IconButton';
 import { useEffect } from 'react';
 import { useSnackbar } from 'context/SnackbarContext';
 
-import ReactGa from 'react-ga';
+import ReactGa from 'react-ga4';
 
 const AddEditProductModal = ({
     openModal,
@@ -187,9 +187,10 @@ const AddEditProductModal = ({
                 console.error('Failed to create media');
             }
         } catch (error) {
-            ReactGa.exception({
-                description: 'Error creating media:',
-                fatal: false,
+            ReactGa.send('exception', {
+                exDescription: 'Error creating media:',
+                description: error?.response?.data?.message || error?.message,
+                exFatal: false,
             });
             console.error('Error creating media:', error);
             showSnackbar({
@@ -239,9 +240,10 @@ const AddEditProductModal = ({
             })
 
             .catch((error) => {
-                ReactGa.exception({
-                    description: 'Error updating media:',
-                    fatal: false,
+                ReactGa.send('exception', {
+                    exDescription: 'Error updating media:',
+                    description: error?.response?.data?.message || error?.message,
+                    exFatal: false,
                 });
                 console.error('Error updating media:', error);
                 showSnackbar({
