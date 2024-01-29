@@ -2,6 +2,8 @@
 
 # I've mentioned the changed code below for your referance
 
+# Dipesh: Thanks Alex, I went through the feedback and I made the necessary changes in the UI and it looks much better now
+
 # client\src\layouts\chat\index.js
 
 <!--  -->

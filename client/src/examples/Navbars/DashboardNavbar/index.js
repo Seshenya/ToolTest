@@ -57,6 +57,7 @@ function DashboardNavbar({
     reCallApi,
     filtersRef,
     hideBreadCrumbs,
+    shop,
 }) {
     const [navbarType, setNavbarType] = useState();
     const [controller, dispatch] = useMaterialUIController();
@@ -324,7 +325,8 @@ function DashboardNavbar({
                                         label="Search..."
                                     />
                                 </MDBox>
-                                <MDButton
+                                {shop ? (
+                                    <MDButton
                                     variant="gradient"
                                     size="medium"
                                     color={'primary'}
@@ -332,6 +334,7 @@ function DashboardNavbar({
                                     >
                                     Search By Image
                                 </MDButton>
+                                ) : null}
                             </>
                         ) : null}
 
