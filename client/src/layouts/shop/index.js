@@ -24,6 +24,7 @@ import { useEffect, useRef } from 'react';
 import { CircularProgress, Pagination } from '@mui/material';
 import MDSnackbar from 'components/MDSnackbar';
 import useAxiosPrivate from 'hooks/useAxiosPrivate';
+import useAuth from 'hooks/useAuth'
 
 function Shop() {
     const [page, setPage] = useState(1);
@@ -31,6 +32,7 @@ function Shop() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const axiosPrivate = useAxiosPrivate();
+    const { auth } = useAuth();
 
     const handleChange = (event, value) => {
         getMedia(filtersRef.current, value);
@@ -59,6 +61,7 @@ function Shop() {
                     page: pageNo,
                     size: 10,
                     status: 3,
+                    user_id: auth?.user_id,
                     ...filters,
                 },
             })
@@ -106,6 +109,7 @@ function Shop() {
                     setPage(1);
                 }}
                 filtersRef={filtersRef}
+                shop={true}
             />
             <MDBox py={3}>
                 <Card sx={{ margin: 3 }}>

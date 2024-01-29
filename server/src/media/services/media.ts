@@ -101,8 +101,9 @@ async function createMedia(media: MediaData) {
 
         const containerName = 'gdsdt4'
 
-        // Better to create helper function generate blob name since it is used more than twice.
-        // Jonas: I agree. I've created a helper function called generateBlobName() in the store-media-blob-storage.ts file. I also replaced all accurences of the blob name generation with this helper function.
+        // Gihan: Better to create helper function generate blob name since it is used more than twice.
+        // Jonas: I agree. I've created a helper function called generateBlobName() in the store-media-blob-storage.ts file. 
+        // I also replaced all accurences of the blob name generation with this helper function.
 
         // Add Medias to Azure Blob Storage
 
@@ -147,11 +148,12 @@ async function createMedia(media: MediaData) {
         // Eventually it is caught from the API layer media/api/media.ts line 42.
         // I don't think it is mandatory to handle it here. What do you think? @choan312
         // Jonas: Ah yes you are right. This looks good
-        const transcribedTexts: string[] = []
+        var transcribedTexts: string = ""
         for (const mediaFile of blobNameMedias) {
-            if(newDigitalProduct.media_type === 2){
+            //filter out audios
+            if(newDigitalProduct.media_type === 5){
                 const transcribedText = await transcribeAudio(mediaFile)
-                transcribedTexts.push(transcribedText)
+                transcribedTexts += transcribedText;
             }
         }
 
