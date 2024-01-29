@@ -238,3 +238,7 @@ CREATE TABLE search_history (
 );
 
 
+-- Selling count
+
+ALTER TABLE `product`
+ADD COLUMN `selling_count` INT NULL DEFAULT 0 AFTER `transcribed_text`;
