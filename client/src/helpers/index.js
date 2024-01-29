@@ -11,43 +11,40 @@ export const getFormattedDate = (date) => {
             minute: 'numeric',
         });
     }
-    return null
-
-}
+    return null;
+};
 
 export const statusTypes = {
     1: {
         value: 1,
         color: 'warning',
-        label: 'Pending'
+        label: 'Pending',
     },
     2: {
         value: 2,
         labe: 'Changes Needed',
-        color: 'info'
+        color: 'info',
     },
     3: {
         value: 3,
         label: 'Approved',
-        color: 'success'
+        color: 'success',
     },
     4: {
         value: 4,
         label: 'Rejected',
-        color: 'error'
+        color: 'error',
     },
     5: {
         value: 5,
         label: 'Banned',
-        color: 'error'
+        color: 'error',
     },
-}
+};
 
 export const getStatus = (status) => {
-
-    return statusTypes?.[status] || { value: 'error', color: 'error' }
-
-}
+    return statusTypes?.[status] || { value: 'error', color: 'error' };
+};
 
 export const getExtensionFromUrl = (url) => {
     const match = url.match(/\.([a-zA-Z0-9]+)(\?.*)?$/);
@@ -56,7 +53,7 @@ export const getExtensionFromUrl = (url) => {
 
 export const generateKey = () => {
     return `${new Date().getTime()}`;
-}
+};
 
 export const downloadMedia = async (productId, fileName) => {
     const resp = await getProductDetails(productId);
@@ -100,4 +97,24 @@ export const downloadMedia = async (productId, fileName) => {
                 console.error(`Error downloading file ${url}:`, error);
             });
     });
+};
+
+export function getDate(timestampString) {
+    console.log(timestampString);
+    // Convert the timestamp string to a Date object
+    var timestamp = new Date(timestampString);
+
+    // Get the components of the date
+    var day = timestamp.getDate();
+    var month = timestamp.getMonth() + 1; // Note: January is 0
+    var year = timestamp.getFullYear() % 100; // Get the last two digits of the year
+
+    // Add leading zeros to day and month if needed
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+
+    // Create the formatted date string
+    var formattedDate = day + '/' + month + '/' + year;
+
+    return formattedDate;
 }
