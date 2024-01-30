@@ -9,6 +9,11 @@ async function transcribeAudio(mediaFile: string): Promise<string> {
     });
 
     try {
+        // Jonas: Two different ways of throwing an error are used here. Decide on one common way.
+        // throw String
+        // OR
+        // throw Error(String) (see below)
+        // Seshenya: will update this with the second method.
         if (!mediaFile){
             throw new Error("Req body incomplete")
         }
@@ -19,6 +24,8 @@ async function transcribeAudio(mediaFile: string): Promise<string> {
             audio,
         };
 
+        // Jonas: Do we need this dead code? Since the options are not set I believe we don't need the Options
+        // Seshenya: yes, I'll remove this. It won't be neccesary.
 
         const transcript = await client.transcripts.transcribe(params);
         

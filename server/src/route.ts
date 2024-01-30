@@ -16,6 +16,7 @@ import { hasToken, refreshToken, logoutUser, loginUser } from './middleware'
 import { buyMedia, fetchOrders } from './orders/api'
 import { fetchProductReviews, addProductReviews } from './review/api'
 import { add3DModel, fetch3DModels } from './media/api/media'
+import { fetchSimilaritySearchedMedia } from './media/api'
 
 const router = express.Router()
 
@@ -34,6 +35,7 @@ router.post('/media', hasToken, addMedia)
 router.put('/media/:id', hasToken, updateMedia)
 router.post('/image', hasToken, fetchImage)
 router.get('/check-pattern', hasToken, checkPattern)
+router.post('/similarity-search', hasToken, fetchSimilaritySearchedMedia)
 
 router.get('/categories', hasToken, fetchMediaCategories)
 router.post('/categories', hasToken, addMediaCategory)

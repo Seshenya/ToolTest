@@ -13,6 +13,7 @@ import useProductReviewDetails from './hooks/useProductReviewDetails';
 import MDSnackbar from 'components/MDSnackbar';
 import DashboardNavbar from 'examples/Navbars/DashboardNavbar';
 import useAuth from 'hooks/useAuth';
+import MDTypography from '@mui/material/Typography';
 
 const ProductDetails = () => {
     const { productId } = useParams();
@@ -67,6 +68,18 @@ const ProductDetails = () => {
                             <br />
                             <br />
                             <PDSellerInfo productDetails={productDetails} />
+                            <MDBox style={{textAlign: 'center'}}>
+                                <MDTypography variant="h6" fontWeight="medium">
+                                    {productDetails?.selling_count === 0 ? (
+                                        "No units sold yet"
+                                    ) : productDetails?.selling_count === 1 ? (
+                                        `This item was sold once`
+                                    ) : (
+                                        `This item was sold ${productDetails?.selling_count} times`
+                                    )}
+                                </MDTypography>
+                            </MDBox>
+                            
                         </MDBox>
                     </Grid>
                     <Grid item width={'100%'}>

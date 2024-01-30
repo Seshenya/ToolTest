@@ -27,11 +27,13 @@
     "chroma-js": "2.4.2",
     "date-fns": "^2.30.0",
     "lodash": "^4.17.21",
+    "maath": "^0.10.7",
     "prop-types": "15.8.1",
     "react": "18.2.0",
     "react-chartjs-2": "5.2.0",
+    "react-color": "^2.19.3",
     "react-dom": "18.2.0",
-    "react-ga": "^3.3.1",
+    "react-ga4": "^2.1.0",
     "react-github-btn": "1.4.0",
     "react-hook-form": "^7.48.2",
     "react-material-ui-carousel": "^3.4.2",
@@ -42,6 +44,7 @@
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
     "three": "^0.160.0",
+    "valtio": "^1.13.0",
     "yup": "1.1.1"
   },
   "scripts": {

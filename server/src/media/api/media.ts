@@ -13,6 +13,7 @@ import {
     predictPattern
 } from '../services'
 import formidable from 'express-formidable'
+import { similaritySearchFromAudio } from '../services/similarity-search-audio'
 
 async function fetchMedia(req: any, res: any) {
     getMedia(req.params.id)
@@ -97,8 +98,8 @@ async function updateMedia(req: any, res: any) {
 }
 
 async function fetchSearchedMedia(req: any, res: any) {
-    const { page, size, category, media_type, query, status, owner_id } = req.query // get search parameters
-    searchMedia(page, size, category, media_type, query, status, owner_id)
+    const { page, size, category, media_type, query, status, owner_id, user_id } = req.query // get search parameters
+    searchMedia(page, size, category, media_type, query, status, owner_id, user_id)
         .then(({ media, totalCount }) => {
             res.send({ media, totalCount })
         })
@@ -189,6 +190,17 @@ async function checkPattern(req: any, res: any) {
     }
 }
 
+async function fetchSimilaritySearchedMedia(req: any, res: any) {
+    const { search_term } = req.query // get search term
+    similaritySearchFromAudio(search_term)
+        .then((model) => {
+            res.send(model)
+        })
+        .catch((error) => {
+            res.status(400).send({ message: error.message })
+        })
+}
+
 export {
     fetchMedia,
     addMedia,
@@ -201,5 +213,6 @@ export {
     fetch3DModels,
     add3DModel,
     fetchImage,
-    checkPattern
+    checkPattern,
+    fetchSimilaritySearchedMedia
 }

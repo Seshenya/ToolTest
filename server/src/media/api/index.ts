@@ -8,7 +8,8 @@ import {
     fetchMediaTypes,
     updateMediaCategory,
     fetchImage,
-    checkPattern
+    checkPattern,
+    fetchSimilaritySearchedMedia
 } from './media'
 
 export {
@@ -21,5 +22,6 @@ export {
     fetchMediaTypes,
     updateMediaCategory,
     fetchImage,
-    checkPattern
+    checkPattern,
+    fetchSimilaritySearchedMedia
 }
