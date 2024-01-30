@@ -3,6 +3,7 @@ import { promises as fsPromises } from 'fs'
 import { generateSASUrl } from '../../middleware/fetch-media-blob-storage'
 import { generateBlobName, storeBlobToBlobStorage } from '../../middleware/store-media-blob-storage'
 import { transcribeAudio } from './transcribe-audio'
+import { spawn } from 'child_process';
 
 interface MediaData {
     fields: any
@@ -141,7 +142,7 @@ async function createMedia(media: MediaData) {
         )
 
         storeBlobToBlobStorage(containerName, blobNameThumbnail, dataThumbnail)
-        
+
         // Jonas: Do we need some error handling if the transcribeAudio fails?
         // Seshenya: In my opinion, error of transcribeAudio failing is handled in transcribe-audio.ts.
         // And corresponding error is thrown media.ts line 163.
@@ -151,7 +152,7 @@ async function createMedia(media: MediaData) {
         var transcribedTexts: string = ""
         for (const mediaFile of blobNameMedias) {
             //filter out audios
-            if(newDigitalProduct.media_type === 5){
+            if (newDigitalProduct.media_type === 5) {
                 const transcribedText = await transcribeAudio(mediaFile)
                 transcribedTexts += transcribedText;
             }
@@ -293,4 +294,26 @@ async function alterMedia(
     }
 }
 
-export { getMedia, createMedia, alterMedia }
+
+async function predictPattern(url: string) {
+    return new Promise((resolve, reject) => {
+        const pythonProcess = spawn('python3', ['src/media/services/predict.py', url]);
+        let output = 0;
+
+        pythonProcess.stdout.on('data', (data) => {
+            console.log(data.toString())
+            output += (data.toString().includes('True') ? 1 : 0);
+        });
+
+        pythonProcess.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`Python script process exited with code ${code}`);
+                reject(`Python script process exited with code ${code}`);
+            } else {
+                resolve(output);
+            }
+        });
+    });
+}
+
+export { getMedia, createMedia, alterMedia, predictPattern }

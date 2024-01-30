@@ -16,7 +16,7 @@ import useAxiosPrivate from "hooks/useAxiosPrivate";
 import { useSnackbar } from "context/SnackbarContext";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-const PDMainImage = ({ productDetails, projectOn3D }) => {
+const PDMainImage = ({ productDetails, projectOn3D, setIsPattern, setPatternLoading, setProjectOn3D }) => {
 
   const [curPreview, setCurPreview] = useState(0)
   const [models, setModels] = useState([])
@@ -66,6 +66,7 @@ const PDMainImage = ({ productDetails, projectOn3D }) => {
   };
 
   const handleArrowClick = (direction) => {
+    setProjectOn3D(false)
     if (direction === 'prev') {
       setCurPreview((prev) => (prev > 0 ? prev - 1 : productDetails?.previews?.length - 1));
     } else if (direction === 'next') {
@@ -95,6 +96,36 @@ const PDMainImage = ({ productDetails, projectOn3D }) => {
   useEffect(() => {
     get3DModels()
   }, [])
+
+  const checkPattern = () => {
+    setPatternLoading(true)
+    axiosPrivate
+      .get(`/check-pattern`, {
+        params: {
+          url: productDetails?.previews?.[curPreview]
+        }
+      })
+      .then((res) => {
+        setPatternLoading(false)
+        setIsPattern(res?.data?.isPattern)
+      })
+      .catch((error) => {
+        setPatternLoading(false)
+        showSnackbar({
+          color: 'error',
+          title: error.message,
+          message: '',
+          icon: 'error',
+        });
+      })
+  }
+
+  useEffect(() => {
+    if (getExtensionFromUrl(productDetails?.previews?.[curPreview])?.toLowerCase() != 'glb') {
+      setIsPattern(0)
+      checkPattern()
+    }
+  }, [curPreview])
 
   return (
     <MDBox>
