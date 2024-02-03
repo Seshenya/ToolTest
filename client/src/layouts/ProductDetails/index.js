@@ -64,11 +64,11 @@ const ProductDetails = () => {
                         <MDBox sx={{ position: 'sticky', top: '24px' }}>
                             <PDMainImage projectOn3D={projectOn3D} productDetails={productDetails} setIsPattern={setIsPattern} setPatternLoading={setPatternLoading} setProjectOn3D={setProjectOn3D} />
                             <br />
-                            <PDActionButtons productDetails={productDetails} projectOn3D={projectOn3D} setProjectOn3D={setProjectOn3D} isPattern={isPattern} patternLoading={patternLoading} />
+                            {auth?.user_id ? <PDActionButtons productDetails={productDetails} projectOn3D={projectOn3D} setProjectOn3D={setProjectOn3D} isPattern={isPattern} patternLoading={patternLoading} /> : 'You need to sign in to access all functionalities'}
                             <br />
                             <br />
                             <PDSellerInfo productDetails={productDetails} />
-                            <MDBox style={{textAlign: 'center'}}>
+                            <MDBox style={{ textAlign: 'center' }}>
                                 <MDTypography variant="h6" fontWeight="medium">
                                     {productDetails?.selling_count === 0 ? (
                                         "No units sold yet"
@@ -79,7 +79,7 @@ const ProductDetails = () => {
                                     )}
                                 </MDTypography>
                             </MDBox>
-                            
+
                         </MDBox>
                     </Grid>
                     <Grid item width={'100%'}>

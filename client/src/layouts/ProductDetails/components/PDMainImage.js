@@ -15,6 +15,7 @@ import ImageIn3DScene from "./ImageIn3DScene";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import { useSnackbar } from "context/SnackbarContext";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import useAuth from "hooks/useAuth";
 
 const PDMainImage = ({ productDetails, projectOn3D, setIsPattern, setPatternLoading, setProjectOn3D }) => {
 
@@ -23,7 +24,7 @@ const PDMainImage = ({ productDetails, projectOn3D, setIsPattern, setPatternLoad
   const [selectedShape, setSelectedShape] = useState(null);
   const axiosPrivate = useAxiosPrivate()
   const { showSnackbar } = useSnackbar();
-
+  const { auth } = useAuth();
 
 
   const handleShapeChange = (event) => {
@@ -94,7 +95,9 @@ const PDMainImage = ({ productDetails, projectOn3D, setIsPattern, setPatternLoad
   }
 
   useEffect(() => {
-    get3DModels()
+    if (auth?.user_id) {
+      get3DModels()
+    }
   }, [])
 
   const checkPattern = () => {
@@ -121,9 +124,11 @@ const PDMainImage = ({ productDetails, projectOn3D, setIsPattern, setPatternLoad
   }
 
   useEffect(() => {
-    if (getExtensionFromUrl(productDetails?.previews?.[curPreview])?.toLowerCase() != 'glb') {
-      setIsPattern(0)
-      checkPattern()
+    if (auth?.user_id) {
+      if (getExtensionFromUrl(productDetails?.previews?.[curPreview])?.toLowerCase() != 'glb') {
+        setIsPattern(0)
+        checkPattern()
+      }
     }
   }, [curPreview])
 
