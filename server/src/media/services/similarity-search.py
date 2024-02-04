@@ -39,11 +39,23 @@ def search_audio():
             similarities = [cosine_similarity([query_vector], [doc_vector])[0][0] for doc_vector in document_vectors]
 
             print("Similaraties", similarities)
-            most_similar_index = similarities.index(max(similarities))
-            most_similar_document = audio_transcriptions[most_similar_index]
+            filtered_documents = [
+                    {"product_id": audio_transcriptions[i]["product_id"], "transcribed_text": audio_transcriptions[i]["transcribed_text"], "similarity": float(similarities[i])}
+                for i in range(len(similarities)) if similarities[i] > 0
+            ]
+
+            if not filtered_documents:
+                return jsonify({"results": []})
+
+            sorted_documents = sorted(filtered_documents, key=lambda x: x["similarity"], reverse=True)
+            most_similar_documents = sorted_documents[:3]
+            print("most similar", most_similar_documents)
+
+            # most_similar_index = similarities.index(max(similarities))
+            # most_similar_document = audio_transcriptions[most_similar_index]
 
             # Return a JSON response
-            return jsonify({"results": most_similar_document })
+            return jsonify({"results": most_similar_documents })
         else:
             return jsonify({"error": "Invalid vectors. Unable to compute cosine similarity."}), 500
     else:

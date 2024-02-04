@@ -50,6 +50,7 @@ import OrderHistory from 'layouts/orderHistory';
 import Developer from 'layouts/about/developer';
 import ThreeTee from 'layouts/threeTee/ThreeTee';
 import ThreeDModels from 'layouts/3dModels';
+import SmartSearch from 'layouts/SmartSearch';
 
 const routes = [
     {
@@ -242,6 +243,14 @@ const routes = [
         icon: <Icon fontSize="small">category</Icon>,
         route: '/3d-models',
         component: <ThreeDModels />,
+    },
+    {
+        type: 'collapse',
+        name: 'Smart Search',
+        key: 'smart-search',
+        icon: <Icon fontSize="small">insights</Icon>,
+        route: '/smart-search',
+        component: <SmartSearch />,
     },
 ];
 

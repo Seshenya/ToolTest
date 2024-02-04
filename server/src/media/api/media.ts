@@ -191,7 +191,7 @@ async function checkPattern(req: any, res: any) {
 }
 
 async function fetchSimilaritySearchedMedia(req: any, res: any) {
-    const { search_term } = req.query // get search term
+    const { search_term } = req.body // get search term
     similaritySearchFromAudio(search_term)
         .then((model) => {
             res.send(model)
