@@ -1,4 +1,4 @@
-import { createMedia, alterMedia, getMedia } from './media'
+import { createMedia, alterMedia, getMedia, predictPattern } from './media'
 import { searchMedia } from './search-media'
 import { getMediaCategories, createCategory, alterCategory } from './media-category'
 import { getMediaTypes } from './media-type'
@@ -18,5 +18,6 @@ export {
     get3DModels,
     create3DModel,
     searchImage,
-    transcribeAudio
+    transcribeAudio,
+    predictPattern
 }

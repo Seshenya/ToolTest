@@ -61,14 +61,13 @@ function Basic() {
           action: "User logged in"
         })
         updateAuth({ ...res.data.user, accessToken: res.data.accessToken, refreshToken: res.data.refreshToken })
-        navigate('/shop')
+        navigate('/home')
       }).catch((error) => {
-        ReactGa.exception({
-          category: "User",
-          action: "User login failed",
-          label: error?.response?.data?.message || error?.message || '',
-          fatal: false
-        })
+        ReactGa.send('exception', {
+          exDescription: "User login failed",
+          description: error?.response?.data?.message || error?.message || '',
+          exFatal: false
+        });
         setSb({
           open: true,
           color: 'error',

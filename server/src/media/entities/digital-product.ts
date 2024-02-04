@@ -83,4 +83,7 @@ export class DigitalProduct extends BaseEntity {
     // Seshenya: Yes, I agree. The way I have written it is correct.
     @Column({ type: 'text' })
     transcribed_text: string
+
+    @Column({ type: 'tinyint' })
+    selling_count: number
 }

@@ -31,8 +31,12 @@ async function similaritySearchFromAudio(query:string): Promise<any> {
 
       if (searchResults?.results) {
         try {
-          const searchedMedia = await getMedia(searchResults.results.product_id)
-          return searchedMedia;
+            const mediaArray = await Promise.all(searchResults.results.map(async (result:any) => {
+              const searchedMedia = await getMedia(result.product_id);
+            return searchedMedia;
+          }));
+        
+          return mediaArray;
         } catch {
           throw new Error("Error getting searched media");
         }   

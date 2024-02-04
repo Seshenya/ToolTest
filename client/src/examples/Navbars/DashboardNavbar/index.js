@@ -58,6 +58,8 @@ function DashboardNavbar({
     filtersRef,
     hideBreadCrumbs,
     shop,
+    smartsearch,
+    onSearch,
 }) {
     const [navbarType, setNavbarType] = useState();
     const [controller, dispatch] = useMaterialUIController();
@@ -76,6 +78,8 @@ function DashboardNavbar({
 
     const [categories, setCategories] = useState([]);
     const [mediaTypes, setMediaTypes] = useState([]);
+
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleModalOpen = () => {
         setOpenModal(true)
@@ -337,6 +341,33 @@ function DashboardNavbar({
                                 ) : null}
                             </>
                         ) : null}
+
+                        {smartsearch ? (
+                            <>
+                                <MDBox pr={1}>
+                                    <MDInput
+                                        onChange={debounce((e) => {
+                                            setSearchQuery(e.target.value);
+                                        }, 400)}
+                                        label="Search..."
+                                        required
+                                    />
+                                </MDBox>
+                                <MDButton
+                                    variant="gradient"
+                                    size="medium"
+                                    color={'primary'}
+                                    onClick={() => {
+                                        if (searchQuery.trim() !== '') {
+                                            onSearch(searchQuery);
+                                        } else {
+                                            alert('Search field cannot be empty!');
+                                        }
+                                    }}
+                                >Search
+                                </MDButton>
+                            </>
+                        ) : null }
 
                         <MDBox color={light ? 'white' : 'inherit'}>
                             <IconButton
