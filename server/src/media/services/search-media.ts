@@ -58,11 +58,19 @@ async function searchMedia(
         if (!query && !category && !category) {
             let searchHistory = await getSearchHistory(user_id)
             if (searchHistory !== '') {
-                searchHistory += '*'
-                baseQuery = baseQuery.andWhere(
-                    'MATCH(product.title, product.tags, product.transcribed_text) AGAINST(:searchHistory IN BOOLEAN MODE)',
-                    { searchHistory }
-                )
+                searchHistory += '*';
+
+                const matchingProducts = await DigitalProduct
+                    .createQueryBuilder('product')
+                    .select(['product.product_id'])
+                    .where('MATCH(product.title, product.tags, product.transcribed_text) AGAINST(:searchHistory IN BOOLEAN MODE)', { searchHistory })
+                    .getMany();
+
+                const matchingProductsIds = matchingProducts.map((product) => product.product_id)
+
+                baseQuery = baseQuery.addSelect("(CASE WHEN product.product_id IN (:...ids) THEN 1 ELSE 2 END)", "customOrder")
+                .orderBy("customOrder")
+                .setParameter('ids', matchingProductsIds);
             }
         }
 
