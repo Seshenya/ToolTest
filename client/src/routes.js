@@ -59,16 +59,17 @@ const routes = [
         key: 'home',
         icon: <Icon fontSize="small">home</Icon>,
         route: '/home',
-        component: <Home />,
-    },
-    {
-        type: 'collapse',
-        name: 'Shop',
-        key: 'shop',
-        icon: <Icon fontSize="small">shoppingBasket</Icon>,
-        route: '/shop',
         component: <Shop />,
+        notProtected: true,
     },
+    // {
+    //     type: 'collapse',
+    //     name: 'Shop',
+    //     key: 'shop',
+    //     icon: <Icon fontSize="small">shoppingBasket</Icon>,
+    //     route: '/shop',
+    //     component: <Shop />,
+    // },
     {
         // type: 'collapse',
         // name: 'Shop',
@@ -76,6 +77,7 @@ const routes = [
         // icon: <Icon fontSize='small'>shoppingBasket</Icon>,
         route: '/shop/:productId',
         component: <ProductDetails />,
+        notProtected: true,
     },
     {
         type: 'collapse',

@@ -90,26 +90,30 @@ function DashboardNavbar({
     }
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await axiosPrivate.get('/categories/');
-                setCategories(response.data);
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
-        };
+        if (auth?.user_id) {
 
-        const fetchMediaTypes = async () => {
-            try {
-                const response = await axiosPrivate.get('/types/');
-                setMediaTypes(response.data);
-            } catch (error) {
-                console.error('Error fetching media types:', error);
-            }
-        };
 
-        fetchCategories();
-        fetchMediaTypes();
+            const fetchCategories = async () => {
+                try {
+                    const response = await axiosPrivate.get('/categories/');
+                    setCategories(response.data);
+                } catch (error) {
+                    console.error('Error fetching categories:', error);
+                }
+            };
+
+            const fetchMediaTypes = async () => {
+                try {
+                    const response = await axiosPrivate.get('/types/');
+                    setMediaTypes(response.data);
+                } catch (error) {
+                    console.error('Error fetching media types:', error);
+                }
+            };
+
+            fetchCategories();
+            fetchMediaTypes();
+        }
     }, []);
 
     useEffect(() => {
@@ -331,13 +335,13 @@ function DashboardNavbar({
                                 </MDBox>
                                 {shop ? (
                                     <MDButton
-                                    variant="gradient"
-                                    size="medium"
-                                    color={'primary'}
-                                    onClick={handleModalOpen}
+                                        variant="gradient"
+                                        size="medium"
+                                        color={'primary'}
+                                        onClick={handleModalOpen}
                                     >
-                                    Search By Image
-                                </MDButton>
+                                        Search By Image
+                                    </MDButton>
                                 ) : null}
                             </>
                         ) : null}
@@ -420,7 +424,7 @@ function DashboardNavbar({
                 ) : (
                     <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
                         <MDBox pr={1}>
-                            <Link to="/authentication/sign-in/basic">
+                            <Link to="/authentication/sign-in">
                                 <MDButton variant="outlined" color="primary">
                                     <Icon sx={{ fontWeight: 'bold' }}>
                                         login
@@ -430,7 +434,7 @@ function DashboardNavbar({
                             </Link>
                         </MDBox>
                         <MDBox>
-                            <Link to="/authentication/sign-in/basic">
+                            <Link to="/authentication/sign-up">
                                 <MDButton variant="gradient" color="primary">
                                     <Icon sx={{ fontWeight: 'bold' }}>
                                         person
@@ -450,7 +454,7 @@ function DashboardNavbar({
                 filtersRef={filtersRef}
             />
         </AppBar>
-        
+
     );
 }
 
