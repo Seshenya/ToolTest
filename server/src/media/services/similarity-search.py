@@ -8,7 +8,7 @@ from gensim.models import KeyedVectors
 
 app = Flask(__name__)
 
-glove_model = KeyedVectors.load_word2vec_format('glove.6B.300d.txt', binary=False, no_header=True)
+glove_model = KeyedVectors.load_word2vec_format('glove.6B.300d.txt', binary=False, no_header=True)     # Model taken from : https://nlp.stanford.edu/projects/glove/
 @app.route('/search_audio', methods=['POST'])
 
 def search_audio():
@@ -31,7 +31,8 @@ def search_audio():
             words = text.lower().split()
             vectors = [model[word] for word in words if word in model.index_to_key]
             return sum(vectors) / len(vectors) if vectors else None
-        document_vectors = [vectorize_text(doc["transcribed_text"], glove_model) for doc in audio_transcriptions]
+       
+        document_vectors = [vectorize_text(doc["transcribed_text"], glove_model) for doc in audio_transcriptions if doc["transcribed_text"] != ""]
         query_vector = vectorize_text(search_term, glove_model)
 
         # Compute cosine similarity
@@ -45,16 +46,14 @@ def search_audio():
             ]
 
             if not filtered_documents:
+                # Return a JSON response of empty results
                 return jsonify({"results": []})
 
             sorted_documents = sorted(filtered_documents, key=lambda x: x["similarity"], reverse=True)
             most_similar_documents = sorted_documents[:3]
             print("most similar", most_similar_documents)
 
-            # most_similar_index = similarities.index(max(similarities))
-            # most_similar_document = audio_transcriptions[most_similar_index]
-
-            # Return a JSON response
+            # Return a JSON response of results
             return jsonify({"results": most_similar_documents })
         else:
             return jsonify({"error": "Invalid vectors. Unable to compute cosine similarity."}), 500

@@ -81,7 +81,7 @@ export class DigitalProduct extends BaseEntity {
     // I'd say your way is correct but the isDeleted is wrong.
     // But the problem is also on DB side already. No changes need from you
     // Seshenya: Yes, I agree. The way I have written it is correct.
-    @Column({ type: 'text' })
+    @Column({ type: 'text' , nullable: true})
     transcribed_text: string
 
     @Column({ type: 'tinyint' })

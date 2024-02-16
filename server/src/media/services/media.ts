@@ -149,20 +149,27 @@ async function createMedia(media: MediaData) {
         // Eventually it is caught from the API layer media/api/media.ts line 42.
         // I don't think it is mandatory to handle it here. What do you think? @choan312
         // Jonas: Ah yes you are right. This looks good
-        var transcribedTexts: string = ""
+        var transcribedTexts: string | null = null
         for (const mediaFile of blobNameMedias) {
             //filter out audios
             if (newDigitalProduct.media_type === 5) {
                 const transcribedText = await transcribeAudio(mediaFile)
-                transcribedTexts += transcribedText;
+                if(transcribedText != ""){
+                    if( transcribedTexts == null ){
+                        transcribedTexts = transcribedText;
+                    } else {
+                        transcribedTexts += transcribedText;
+                    }
+                }
             }
         }
 
         newDigitalProduct.media = blobNameMedias
         newDigitalProduct.previews = blobNamePreviews
         newDigitalProduct.thumbnail = blobNameThumbnail
-        newDigitalProduct.transcribed_text = transcribedTexts
-
+        if (transcribedTexts != null){
+            newDigitalProduct.transcribed_text = transcribedTexts
+        }
         const createdMedia = await newDigitalProduct.save()
         return createdMedia
     } catch (error) {
