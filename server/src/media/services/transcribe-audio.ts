@@ -28,8 +28,7 @@ async function transcribeAudio(mediaFile: string): Promise<string> {
         // Seshenya: yes, I'll remove this. It won't be neccesary.
 
         const transcript = await client.transcripts.transcribe(params);
-        
-        if (transcript && transcript.text) {
+        if (transcript && transcript.text != undefined && transcript.text != null) {
             return transcript.text;
         } else {
             throw new Error("Transcription failed or returned null/undefined text.");
