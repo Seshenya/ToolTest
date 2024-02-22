@@ -4,7 +4,6 @@ import { SearchHistory } from "../../user/entities";
 async function getSearchHistory(user_id: number) {
   if (user_id === undefined) {
     console.error('User ID is undefined.');
-    // to be implemented
     return ''
   }
 
@@ -14,14 +13,12 @@ async function getSearchHistory(user_id: number) {
     })
 
     if (!searchHistoryData) {
-      // to be implemented
       return ''
     }
 
     const searchHistory = searchHistoryData.search_history;
 
     if (!searchHistory) {
-      // to be implemented
       return ''
     }
 
