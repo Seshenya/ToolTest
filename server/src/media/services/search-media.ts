@@ -55,7 +55,7 @@ async function searchMedia(
             )
         }
 
-        if (!query && !category && !category) {
+        if (!query && !category && !media_type) {
             let searchHistory = await getSearchHistory(user_id)
             if (searchHistory !== '') {
                 searchHistory += '*';
