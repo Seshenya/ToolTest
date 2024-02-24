@@ -13,7 +13,6 @@ export const getChatHistory = async (senderId: string, receiverId: string) => {
         return messages
 
     } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Error fetching chat history:', error);
     }
 };
@@ -28,7 +27,6 @@ export const saveMessage = async (senderId: string, receiverId: string, content:
         const savedMessage = await message.save();
         return savedMessage
     } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Error saving message:', error);
     }
 };
@@ -64,7 +62,6 @@ export const getPastChats = async (userId: string) => {
         return result;
 
     } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Error fetching past chat users:', error);
     }
 };

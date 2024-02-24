@@ -27,8 +27,6 @@ import Select from '@mui/material/Select';
 // Data
 import productsTableData from "./data/productsData";
 import { useEffect, useRef, useState } from "react";
-import competitionsTableData from "./data/cometitionsData";
-import userReportsData from "./data/userReports";
 import { useSnackbar } from "context/SnackbarContext";
 import useAxiosPrivate from "hooks/useAxiosPrivate";
 import { CircularProgress, Pagination } from "@mui/material";
@@ -39,12 +37,6 @@ function AdminDashboard() {
 
   const [products, setProducts] = useState([])
   const [totalProducts, setTotalProducts] = useState(0)
-
-  const [competitions, setCompetitions] = useState([])
-  const [totalCompetitions, setTotalCompetitions] = useState(0)
-
-  const [reports, setReports] = useState([])
-  const [totalReports, seTotalReports] = useState(0)
 
   const [updateStatusOpen, setUpdateStatusOpen] = useState(false);
   const curItem = useRef(null)
@@ -63,56 +55,6 @@ function AdminDashboard() {
     setLoading(true)
     axiosPrivate
       .get(`/media`, {
-        params: {
-          page: page,
-          size: 10,
-        },
-      })
-      .then((res) => {
-        setLoading(false)
-        setProducts(res.data.media)
-        setTotalProducts(res.data.totalCount)
-      })
-      .catch((error) => {
-        setLoading(false)
-        showSnackbar({
-          color: 'error',
-          title: error.message,
-          message: '',
-          icon: 'error',
-        });
-      })
-  }
-
-  const getCompetitions = () => {
-    setLoading(true)
-    axiosPrivate
-      .get(`/competitions`, {
-        params: {
-          page: page,
-          size: 10,
-        },
-      })
-      .then((res) => {
-        setLoading(false)
-        setProducts(res.data.media)
-        setTotalProducts(res.data.totalCount)
-      })
-      .catch((error) => {
-        setLoading(false)
-        showSnackbar({
-          color: 'error',
-          title: error.message,
-          message: '',
-          icon: 'error',
-        });
-      })
-  }
-
-  const getUserReports = () => {
-    setLoading(true)
-    axiosPrivate
-      .get(`/user-reports`, {
         params: {
           page: page,
           size: 10,
@@ -159,11 +101,9 @@ function AdminDashboard() {
   }
 
   const updateStatus = () => {
-    switch (curItem.current.type) {
+    switch (curItem?.current?.type) {
       case "media":
         updateMedia()
-        break
-      case "competition":
         break
       default:
         console.log("Invalid Type")
@@ -183,11 +123,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     getMedia()
-    // getCompetitions()
-    // getUserReports()
   }, [page])
-
-  console.log(Object.values(statusTypes))
 
 
   return (
@@ -237,60 +173,6 @@ function AdminDashboard() {
               /> : null}
             </Card>
           </Grid>
-          {/* <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Competitions
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={competitionsTableData(competitions, openUpdateStatus)}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid> */}
-          {/* <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  User Reports
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={userReportsData(reports)}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid> */}
         </Grid>
       </MDBox>)}
       <Footer />
