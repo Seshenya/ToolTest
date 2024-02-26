@@ -217,6 +217,7 @@ const routes = [
         icon: <Icon fontSize="small">category</Icon>,
         route: '/categories',
         component: <Categories />,
+        admin: true,
     },
     {
         type: 'title',
