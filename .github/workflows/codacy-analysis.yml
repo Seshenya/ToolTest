@@ -11,26 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
+      # Step 1: Checkout the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Set up Java (if your project uses Java)
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          distribution: 'temurin'
-          java-version: '11'
+          node-version: '16' # Change this version based on your project requirements
 
-      # Run your project tests and generate coverage
+      # Step 3: Install project dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run tests and generate coverage
       - name: Run tests and generate coverage
         run: |
-          ./gradlew test
-          ./gradlew jacocoTestReport
+          npm test
+          npx nyc npm test # Adjust this if you're using a specific test/coverage tool
+          npx nyc report --reporter=text-lcov > coverage.lcov
 
-      # Upload coverage to Codacy
+      # Step 5: Upload coverage to Codacy
       - name: Upload coverage to Codacy
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
-          bash <(curl -Ls https://coverage.codacy.com/get.sh)
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage.lcov
