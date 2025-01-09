@@ -1,0 +1,36 @@
+name: Codacy Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  codacy-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Java (if your project uses Java)
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      # Run your project tests and generate coverage
+      - name: Run tests and generate coverage
+        run: |
+          ./gradlew test
+          ./gradlew jacocoTestReport
+
+      # Upload coverage to Codacy
+      - name: Upload coverage to Codacy
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh)
