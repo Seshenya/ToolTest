@@ -18,7 +18,7 @@
         "@azure/storage-blob": "^12.17.0",
         "assemblyai": "^4.2.0",
         "axios": "^1.6.2",
-        "bcrypt": "^5.1.1",
+        "bcrypt": "^6.0.0",
         "body-parser": "^1.20.2",
         "clarifai-nodejs-grpc": "^10.0.3",
         "cors": "^2.8.5",
